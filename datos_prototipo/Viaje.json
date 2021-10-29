@@ -1,0 +1,38 @@
+[
+    {
+      "id": "0",
+      "conductor":"1",
+      "destino": "Algeciras",
+      "duracion": "130",
+      "fecha": "01/10/2020",
+      "foto_vehiculo":"foto.jpg",
+      "hora": "10:00",
+      "origen": "Granada",
+      "periodicidad": "0",
+      "plazas_disponibles":"4",
+      "precio": "12",
+      "tipo_vehiculo":"Ford",
+      "fotos_opcionales": "",
+      "plazas_totales": "4",
+      "vehiculo": "Ford Fiesta"
+ 
+    },
+    {
+      "id": "1",
+      "conductor":"1",
+      "destino": "Madrid",
+      "duracion": "400",
+      "fecha": "02/10/2020",
+      "foto_vehiculo":"foto2.jpg",
+      "hora": "16:00",
+      "origen": "Malaga",
+      "periodicidad": "0",
+      "plazas_disponibles":"2",
+      "precio": "15",
+      "tipo_vehiculo":"Volkswagen",
+      "fotos_opcionales": "",
+      "plazas_totales": "4",
+      "vehiculo": "Polo"
+ 
+    }
+]

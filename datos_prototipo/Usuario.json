@@ -1,0 +1,3 @@
+[
+{"id":"0", "destino":"Malaga","fecha":"02/11/2021","hora":"10:00","origen":"Granada","plazas_reserva":"6", "conductor":"1","duracion":"120","periodicidad":"0","precio_total":"12","vehiculo":"1"},{"id":"1", "destino":"Valencia","fecha":"03/11/2021","hora":"12:00","origen":"Granada","plazas_reserva":"3", "conductor":"1","duracion":"140","periodicidad":"0","precio_total":"15","vehiculo":"1"}
+]
