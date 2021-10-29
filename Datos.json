@@ -1,0 +1,64 @@
+--VIAJE
+[
+    {
+      "id": "0",
+      "destino": "Algeciras",
+      "duracion": "130",
+      "fecha": "01/10/2020",
+      "fotos_opcionales": "",
+      "hora": "10:00",
+      "origen": "Granada",
+      "periodicidad": "0",
+      "plazas_totales": "4",
+      "precio": "12",
+      "vehiculo": "Ford Fiesta",
+      "conductor":"1"
+    }
+]
+
+--USUARIO
+[  
+    {
+    "id": "1",
+    "antiguedad_permisos": "3",
+    "correo": "usuario1@gmail.com",
+    "dni": "98765432M",
+    "fecha_nacimiento": "01/10/1983",
+    "foto_perfil": "5",
+    "nombre": "Benjamin",
+    "permisos_conduccion": "1",
+    "valoracion": "4.5"
+    }      
+ ]
+
+--RESERVA
+[
+{"destino":"Malaga","fecha":"02/11/2021","hora":"10:00","origen":"Granada","plazas_reserva":"6"},{"destino":"Albacete","fecha":"31/10/2021","hora":"11:00","origen":"Sevilla","plazas_reserva":"3"}
+]
+
+--VEHICULO
+[
+    {
+    "id": "1",
+    "foto": "fordfiesta.jpg",
+    "marca": "Ford",
+    "matricula": "3645GTD",
+    "modelo": "Fiesta",
+    "plazas_totales": "4",
+    }, 
+     {
+    "id": "2",
+    "foto": "opelcorsa.jpg",
+    "marca": "Opel",
+    "matricula": "9867BWA",
+    "modelo": "Corsa",
+    "plazas_totales": "3",
+    } 
+]
+
+--CHAT
+[{"id":"1","usuario1":"jose@gmail.com","usuario2":"juan@gmail.com","mensajes":["1","2"]}],[{"id":"2","usuario1":"juan@gmail.com","usuario2":"jose@gmail.com","mensajes":["1","2"]}]
+
+--MENSAJE
+[{"id":"0","emisor":"0","destinatario":"1","fecha":"01/10/2020","hora":"17:00", "texto":"hola"},
+{"id":"1","emisor":"1","destinatario":"0","fecha":"01/10/2020","hora":"17:10", "texto":"hola amigo"}]
