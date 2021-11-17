@@ -4,6 +4,7 @@ import pymongo
 import sys
 from bson import json_util
 from bson.objectid import ObjectId
+from werkzeug.wrappers import response
 
 app = Flask(__name__)	
 client = pymongo.MongoClient("mongodb+srv://Gestionpymongo:Gestionpymongo@cluster0.iixvr.mongodb.net/iweb?retryWrites=true&w=majority&ssl=true&ssl_cert_reqs=CERT_NONE")
@@ -76,13 +77,14 @@ def create_usuario():
     else:
         return {"message":"error"}
 
-
+# Borra un usuario
 @app.route('/usuario/delete/<id>', methods=['DELETE'])
 def delete_usuario(id):
     usuario_db.delete_one({'_id': ObjectId(id)})
     response = jsonify({'message': 'El usuario con id '+id+' se ha eliminado exitosamente'})
     return response
 
+#Updatea un usuario
 @app.route('/usuario/update/<id>', methods=['PUT'])
 def update_usuario(id):
     nombre_completo = request.json['nombre_completo']
@@ -116,6 +118,87 @@ def update_usuario(id):
         return {"message":"error"}
 
 # ---------------------------------------------FIN USUARIO-----------------------------------------------------------
+
+# Javi yo hago los métodos IMPARES lista Trayecto, inserta trayecto, delte trayecto y tu los PARES trayectoId,update trayecto
+# Son más o menos las mismas líneas de código a ojo =)
+
+# ---------------------------------------------INICIO TRAYECTO-----------------------------------------------------------
+
+# Obtengo la colección de trayectos
+trayecto_db = db['Trayecto']
+
+# Obtiene la lista de trayectos
+@app.route('/trayecto', methods=['GET'])
+def get_trayectos():
+    trayectos = trayecto_db.find()
+    response = json_util.dumps(trayectos)
+
+    return Response(response, mimetype='application/json')
+
+# TODO (JAVI)
+# Obtiene un usuario con el id que se le pasa por parámetro (JAVI)
+
+
+# Inserta un trayecto
+@app.route('/trayecto/create', methods=["POST"])
+def create_trayecto():
+    conductor= request.json['conductor']
+    destino= request.json['destino']
+    duracion= request.json['duracion']
+    fecha= request.json['fecha']
+    hora= request.json['hora']
+    origen= request.json['origen']
+    periodicidad= request.json['periodicidad']
+    precio= request.json['precio']
+    fotos_opcionales= request.json['fotos_opcionales']
+    plazas_totales= request.json['plazas_totales']
+    vehiculo= request.json['vehiculo']
+
+    if conductor and destino and fecha and hora and precio :
+        id=trayecto_db.insert_one({
+            "conductor": conductor,
+            "destino":destino,
+            "duracion":duracion,
+            "fecha":fecha,
+            "hora":hora,
+            "origen":origen,
+            "periodicidad":periodicidad,
+            "precio":precio,
+            "fotos_opcionales":fotos_opcionales,
+            "plazas_totales":plazas_totales,
+            "vehiculo":vehiculo
+        })
+        response = {
+            "id":str(id),
+            "conductor":conductor,
+            "destino":destino,
+            "duracion":duracion,
+            "fecha":fecha,
+            "hora":hora,
+            "origen":origen,
+            "periodicidad":periodicidad,
+            "precio":precio,
+            "fotos_opcionales":fotos_opcionales,
+            "plazas_totales":plazas_totales,
+            "vehiculo":vehiculo
+        }
+        return response
+    else:
+        return {"message":"error"}
+
+
+# Borra un trayecto
+@app.route('/trayecto/delete/<id>', methods=['DELETE'])
+def delete_trayecto(id):
+    trayecto_db.delete_one({'_id': ObjectId(id)})
+    response = jsonify({'message': 'El trayecto con id '+id+' se ha eliminado exitosamente'})
+    return response
+
+# TODO (JAVI)
+#Updatea un trayecto 
+
+
+# ---------------------------------------------FIN TRAYECTO-----------------------------------------------------------
 
 app.run()
 
