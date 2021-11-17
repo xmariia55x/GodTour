@@ -8,13 +8,10 @@ client = PyMongo("mongodb+srv://Gestionpymongo:Gestionpymongo@cluster0.iixvr.mon
 # mongo = PyMongo(app)
 db = client.get_default_database()
 
-<<<<<<< HEAD
-
-=======
 app.config["MONGO_URI"] = "mongodb+srv://Gestionpymongo:Gestionpymongo@cluster0.iixvr.mongodb.net/iweb?retryWrites=true&w=majority"
 mongo = PyMongo(app)
 db = mongo.db
->>>>>>> a91689078e786a87fe43e43dffcec0f1ff40c660
+
 @app.route('/')
 def hello_world():
     
