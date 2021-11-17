@@ -4,25 +4,19 @@ import pymongo
 import sys
 
 app = Flask(__name__)	
-client = PyMongo("mongodb+srv://Gestionpymongo:Gestionpymongo@cluster0.iixvr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority")
+client = pymongo.MongoClient("mongodb+srv://Gestionpymongo:Gestionpymongo@cluster0.iixvr.mongodb.net/iweb?retryWrites=true&w=majority&ssl=true&ssl_cert_reqs=CERT_NONE")
+                              
 # mongo = PyMongo(app)
 db = client.get_default_database()
-
-app.config["MONGO_URI"] = "mongodb+srv://Gestionpymongo:Gestionpymongo@cluster0.iixvr.mongodb.net/iweb?retryWrites=true&w=majority"
-mongo = PyMongo(app)
-db = mongo.db
+test = db["Usuario"]
 
 @app.route('/')
 def hello_world():
+    findtest = test.find()
     
-    
-    doc = {'paco'}
-    t = db['test']
-    a = t.insert_one(doc)
+    for x in findtest:
+        print(x)
 
     return "insertado"
-
-  
-
 
 app.run()
