@@ -117,6 +117,21 @@ def update_usuario(id):
     else:
         return {"message":"error"}
 
+# Obtiene los usuarios ordenados alfabeticamente, orden ascendente -> python.ASCENDING , orden descendente -> python.DESCENDING
+@app.route('/usuario/byname', methods=['GET'])
+def get_usuario_ordered_by_name():
+    usuarios = usuario_db.find().sort("nombre_completo", pymongo.ASCENDING)
+    response = json_util.dumps(usuarios)
+    return Response(response, mimetype='application/json')
+
+# Obtiene un usuario a partir de (parte de) su correo electronico 
+@app.route('/usuario/byemail/<email>', methods=['GET'])
+def get_usuario_by_email(email):
+    usuarios = usuario_db.find( { 'correo': { "$regex": email + '.*', "$options" :'i' }} )
+    response = json_util.dumps(usuarios)
+    return Response(response, mimetype='application/json')
+
+
 # ---------------------------------------------FIN USUARIO-----------------------------------------------------------
 
 # Javi yo hago los métodos IMPARES lista Trayecto, inserta trayecto, delte trayecto y tu los PARES trayectoId,update trayecto
@@ -132,7 +147,6 @@ trayecto_db = db['Trayecto']
 def get_trayectos():
     trayectos = trayecto_db.find()
     response = json_util.dumps(trayectos)
-
     return Response(response, mimetype='application/json')
 
 # TODO (JAVI)
@@ -244,7 +258,34 @@ def update_trayecto(id):
     else:
         return {"message":"error"}
 
+# Obtiene los trayectos cuyo destino se le pasa por parámetro 
+@app.route('/trayecto/bydestino/<destino>', methods=['GET'])
+def get_trayecto_destino(destino):
+    trayecto = trayecto_db.find({'destino': destino})
+    response = json_util.dumps(trayecto)
+    return Response(response, mimetype='application/json')
 
+# Obtiene los trayectos que tienen como origen y destino los indicados. Ej trayectos de Malaga a Cadiz
+@app.route('/trayecto/byorigenanddestino/<origen>/<destino>', methods=['GET'])
+def get_trayecto_origen_destino(origen, destino):
+    trayecto = trayecto_db.find({'origen': origen}, {'destino': destino})
+    response = json_util.dumps(trayecto)
+    return Response(response, mimetype='application/json')
+
+# Obtiene los trayectos que cuesten menos que la cantidad indicada
+@app.route('/trayecto/byprecio/<precio>', methods=['GET'])
+def get_trayecto_precio(precio):
+    trayecto = trayecto_db.find({'precio': { "$lt" : precio }})
+    response = json_util.dumps(trayecto)
+    return Response(response, mimetype='application/json')
+
+# Obtiene los usuarios de un trayecto a partir del id del trayecto
+@app.route('/usuario/bytrayecto/<id>', methods=['GET'])
+def get_usuario_trayecto(id):
+    trayecto = trayecto_db.find_one({'_id': ObjectId(id)})
+    pasajeros = trayecto.get("pasajeros")
+    response = json_util.dumps(pasajeros)
+    return Response(response, mimetype='application/json')
 # ---------------------------------------------FIN TRAYECTO-----------------------------------------------------------
 
 app.run()
