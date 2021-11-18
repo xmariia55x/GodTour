@@ -136,7 +136,12 @@ def get_trayectos():
     return Response(response, mimetype='application/json')
 
 # TODO (JAVI)
-# Obtiene un usuario con el id que se le pasa por parámetro (JAVI)
+# Obtiene un trayecto con el id que se le pasa por parámetro 
+@app.route('/trayecto/<id>', methods=['GET'])
+def get_trayecto(id):
+    trayecto = trayecto_db.find_one({'_id': ObjectId(id)})
+    response = json_util.dumps(trayecto)
+    return Response(response, mimetype='application/json')
 
 
 # Inserta un trayecto
@@ -198,6 +203,46 @@ def delete_trayecto(id):
 
 # TODO (JAVI)
 #Updatea un trayecto 
+
+@app.route('/trayecto/update/<id>', methods=['PUT'])
+def update_trayecto(id):
+
+    destino = request.json['destino']
+    duracion = request.json['duracion']
+    fecha = request.json['fecha']
+    hora = request.json['hora']
+    origen = request.json['origen']
+    periodicidad = request.json['periodicidad']
+    precio = request.json['precio']
+    fotos_opcionales = request.json['fotos_opcionales']
+    plazas_totales = request.json['plazas_totales']
+    vehiculo = request.json['vehiculo']
+    creador= request.json['creador']
+
+    if creador and destino and fecha and hora and precio:
+        filter = {"_id": ObjectId(id)}
+        new_values = {"$set":{
+            "creador": creador,
+            "destino":destino,
+            "duracion":duracion,
+            "fecha":fecha,
+            "hora":hora,
+            "origen":origen,
+            "periodicidad":periodicidad,
+            "precio":precio,
+            "fotos_opcionales":fotos_opcionales,
+            "plazas_totales":plazas_totales,
+            "vehiculo":vehiculo, 
+            "pasajeros": []
+        }}
+        
+        trayecto_db.update_one(filter, new_values) 
+
+        response = jsonify({'message': 'El trayecto con id '+id+' se ha actualizado exitosamente'})
+        
+        return response
+    else:
+        return {"message":"error"}
 
 
 # ---------------------------------------------FIN TRAYECTO-----------------------------------------------------------
