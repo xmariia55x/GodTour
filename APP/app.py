@@ -142,7 +142,6 @@ def get_trayectos():
 # Inserta un trayecto
 @app.route('/trayecto/create', methods=["POST"])
 def create_trayecto():
-    conductor= request.json['conductor']
     destino= request.json['destino']
     duracion= request.json['duracion']
     fecha= request.json['fecha']
@@ -153,10 +152,11 @@ def create_trayecto():
     fotos_opcionales= request.json['fotos_opcionales']
     plazas_totales= request.json['plazas_totales']
     vehiculo= request.json['vehiculo']
+    creador= request.json['creador']
 
-    if conductor and destino and fecha and hora and precio :
+    if creador and destino and fecha and hora and precio :
         id=trayecto_db.insert_one({
-            "conductor": conductor,
+            "creador": creador,
             "destino":destino,
             "duracion":duracion,
             "fecha":fecha,
@@ -166,11 +166,12 @@ def create_trayecto():
             "precio":precio,
             "fotos_opcionales":fotos_opcionales,
             "plazas_totales":plazas_totales,
-            "vehiculo":vehiculo
+            "vehiculo":vehiculo, 
+            "pasajeros": []
         })
         response = {
             "id":str(id),
-            "conductor":conductor,
+            "creador":creador,
             "destino":destino,
             "duracion":duracion,
             "fecha":fecha,
@@ -180,7 +181,8 @@ def create_trayecto():
             "precio":precio,
             "fotos_opcionales":fotos_opcionales,
             "plazas_totales":plazas_totales,
-            "vehiculo":vehiculo
+            "vehiculo":vehiculo, 
+            "pasajeros": []
         }
         return response
     else:
