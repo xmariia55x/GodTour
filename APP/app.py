@@ -249,23 +249,22 @@ def update_trayecto(id):
     fotos_opcionales = request.json['fotos_opcionales']
     plazas_totales = request.json['plazas_totales']
     vehiculo = request.json['vehiculo']
-    creador= request.json['creador']
+    pasajeros = request.json['pasajeros']
 
-    if creador and destino and fecha and hora and precio:
+    if destino and fecha and hora and precio:
         filter = {"_id": ObjectId(id)}
         new_values = {"$set":{
-            "creador": creador,
-            "destino":destino,
-            "duracion":duracion,
-            "fecha":fecha,
-            "hora":hora,
-            "origen":origen,
-            "periodicidad":periodicidad,
-            "precio":precio,
-            "fotos_opcionales":fotos_opcionales,
-            "plazas_totales":plazas_totales,
-            "vehiculo":vehiculo, 
-            "pasajeros": []
+            "destino": destino,
+            "duracion": duracion,
+            "fecha": fecha,
+            "hora": hora,
+            "origen": origen,
+            "periodicidad": periodicidad,
+            "precio": precio,
+            "fotos_opcionales": fotos_opcionales,
+            "plazas_totales": plazas_totales,
+            "vehiculo": vehiculo, 
+            "pasajeros": pasajeros
         }}
         
         trayecto_db.update_one(filter, new_values) 
