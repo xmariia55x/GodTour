@@ -5,6 +5,17 @@ import sys
 from bson import json_util
 from bson.objectid import ObjectId
 from werkzeug.wrappers import response
+from urllib import request
+import json
+
+'''
+LINKS DE INTERÉS:
+    
+    Puntos de interés de España: http://datos.santander.es/api/rest/datasets/puntos_interes.json
+    Kilometros de carretera en España: https://opendata.arcgis.com/api/v3/datasets/c68d7c5e350c47cb9ad7ac491c327115_2/downloads/data?format=geojson&spatialRefId=4326
+    Precio gasolineras España: 'https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/'
+
+'''
 
 from datetime import datetime, timedelta
 
@@ -15,10 +26,17 @@ db = client.get_default_database()
 # app.config['MONGO_URI'] = 'mongodb://localhost/pythonmongodb'
 # mongo = PyMongo(app)
 
-
-@app.route('/')
-def hello_world():
-    return "Hello world"
+# Este código sirve para sacar los datos del link, en este caso es un GeoJSON.
+@app.route('/pruebaGeoJSON')
+def buscaSpain():
+    # Esto devuelve todos los datos de esta/nuestra patria
+    link = 'https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/'
+    f = request.urlopen(link)
+    myfile = f.read()
+    y=json.loads(myfile)
+    for g in y["ListaEESSPrecio"]:
+        print(g["Localidad"])
+    return y
 
 # -----------------------------------------------------USUARIO-------------------------------------------------------------
 # Obtengo la colección de usuarios
