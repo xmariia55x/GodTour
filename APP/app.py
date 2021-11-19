@@ -6,6 +6,8 @@ from bson import json_util
 from bson.objectid import ObjectId
 from werkzeug.wrappers import response
 
+from datetime import datetime, timedelta
+
 app = Flask(__name__)	
 client = pymongo.MongoClient("mongodb+srv://Gestionpymongo:Gestionpymongo@cluster0.iixvr.mongodb.net/iweb?retryWrites=true&w=majority&ssl=true&ssl_cert_reqs=CERT_NONE")
 db = client.get_default_database()
@@ -162,18 +164,18 @@ def get_trayecto(id):
 @app.route('/trayecto/create', methods=["POST"])
 def create_trayecto():
     destino= request.json['destino']
-    duracion= request.json['duracion']
+    duracion= int(request.json['duracion'])
     fecha= request.json['fecha']
     hora= request.json['hora']
     origen= request.json['origen']
     periodicidad= request.json['periodicidad']
-    precio= request.json['precio']
+    precio= float(request.json['precio'])
     fotos_opcionales= request.json['fotos_opcionales']
-    plazas_totales= request.json['plazas_totales']
+    plazas_totales= int(request.json['plazas_totales'])
     vehiculo= request.json['vehiculo']
     creador= request.json['creador']
 
-    if creador and destino and fecha and hora and precio :
+    if creador and destino and fecha and hora and precio and plazas_totales and vehiculo:
         id=trayecto_db.insert_one({
             "creador": creador,
             "destino":destino,
@@ -220,20 +222,19 @@ def delete_trayecto(id):
 
 @app.route('/trayecto/update/<id>', methods=['PUT'])
 def update_trayecto(id):
-
     destino = request.json['destino']
-    duracion = request.json['duracion']
+    duracion= int(request.json['duracion'])
     fecha = request.json['fecha']
     hora = request.json['hora']
     origen = request.json['origen']
     periodicidad = request.json['periodicidad']
-    precio = request.json['precio']
+    precio= float(request.json['precio'])
     fotos_opcionales = request.json['fotos_opcionales']
-    plazas_totales = request.json['plazas_totales']
+    plazas_totales= int(request.json['plazas_totales'])
     vehiculo = request.json['vehiculo']
     pasajeros = request.json['pasajeros']
 
-    if destino and fecha and hora and precio:
+    if destino and fecha and hora and precio and plazas_totales and vehiculo:
         filter = {"_id": ObjectId(id)}
         new_values = {"$set":{
             "destino": destino,
@@ -285,6 +286,7 @@ def get_usuario_trayecto(id):
     pasajeros = trayecto.get("pasajeros")
     response = json_util.dumps(pasajeros)
     return Response(response, mimetype='application/json')
+
 # ---------------------------------------------FIN TRAYECTO-----------------------------------------------------------
 
 app.run()
