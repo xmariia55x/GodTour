@@ -288,7 +288,12 @@ def get_usuario_trayecto(id):
     return Response(response, mimetype='application/json')
 
 # ---------------------------------------------FIN TRAYECTO-----------------------------------------------------------
+# --------------------------------------------- DATOS ABIERTOS -----------------------------------------------------------
+# Sacamos las gasolineras cercanas a la localidad indicada por el usuario
+@app.route('/gasolineras/<ubicacion>', methods=['GET'])
+def get_gasolineras_ubicacion(ubicacion):
+    return datos_abiertos.get_gasolineras_ubicacion(ubicacion)
 
-app.run(debug=True)
+app.run()
 
 client.close()
