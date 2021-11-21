@@ -5,18 +5,7 @@ import sys
 from bson import json_util
 from bson.objectid import ObjectId
 from werkzeug.wrappers import response
-from urllib import request
-import json
-
-'''
-LINKS DE INTERÉS:
-    
-    Puntos de interés de España: http://datos.santander.es/api/rest/datasets/puntos_interes.json
-    Kilometros de carretera en España: https://opendata.arcgis.com/api/v3/datasets/c68d7c5e350c47cb9ad7ac491c327115_2/downloads/data?format=geojson&spatialRefId=4326
-    Precio gasolineras España: 'https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/'
-
-'''
-
+import datos_abiertos
 from datetime import datetime, timedelta
 
 app = Flask(__name__)	
@@ -27,16 +16,9 @@ db = client.get_default_database()
 # mongo = PyMongo(app)
 
 # Este código sirve para sacar los datos del link, en este caso es un GeoJSON.
-@app.route('/pruebaGeoJSON')
+@app.route('/pruebaGeoJSON', methods=['GET'])
 def buscaSpain():
-    # Esto devuelve todos los datos de esta/nuestra patria
-    link = 'https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/'
-    f = request.urlopen(link)
-    myfile = f.read()
-    y=json.loads(myfile)
-    for g in y["ListaEESSPrecio"]:
-        print(g["Localidad"])
-    return y
+    return datos_abiertos.get_datos_abiertos()
 
 # -----------------------------------------------------USUARIO-------------------------------------------------------------
 # Obtengo la colección de usuarios
@@ -235,7 +217,7 @@ def delete_trayecto(id):
     response = jsonify({'message': 'El trayecto con id '+id+' se ha eliminado exitosamente'})
     return response
 
-# TODO (JAVI)
+# (JAVI)
 #Updatea un trayecto 
 
 @app.route('/trayecto/update/<id>', methods=['PUT'])
@@ -307,6 +289,6 @@ def get_usuario_trayecto(id):
 
 # ---------------------------------------------FIN TRAYECTO-----------------------------------------------------------
 
-app.run()
+app.run(debug=True)
 
 client.close()
