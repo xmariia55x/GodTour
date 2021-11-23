@@ -271,22 +271,26 @@ def update_trayecto(id):
         return {"message":"error"}
 
 # Obtiene los trayectos cuyo destino se le pasa por parámetro 
-@app.route('/trayecto/bydestino/<destino>', methods=['GET'])
-def get_trayecto_destino(destino):
+@app.route('/trayecto/bydestino', methods=['POST'])
+def get_trayecto_destino():
+    destino = request.json['destino']
     trayecto = trayecto_db.find({'destino': destino})
     response = json_util.dumps(trayecto)
     return Response(response, mimetype='application/json')
 
 # Obtiene los trayectos que tienen como origen y destino los indicados. Ej trayectos de Malaga a Cadiz
-@app.route('/trayecto/byorigenanddestino/<origen>/<destino>', methods=['GET'])
-def get_trayecto_origen_destino(origen, destino):
-    trayecto = trayecto_db.find({'origen': origen}, {'destino': destino})
+@app.route('/trayecto/byorigenanddestino', methods=['POST'])
+def get_trayecto_origen_destino():
+    origen = request.json['origen']
+    destino = request.json['destino']
+    trayecto = trayecto_db.find({'origen': origen, 'destino': destino})
     response = json_util.dumps(trayecto)
     return Response(response, mimetype='application/json')
 
 # Obtiene los trayectos que cuesten menos que la cantidad indicada
-@app.route('/trayecto/byprecio/<precio>', methods=['GET'])
-def get_trayecto_precio(precio):
+@app.route('/trayecto/byprecio', methods=['POST'])
+def get_trayecto_precio():
+    precio = request.json['precio']
     trayecto = trayecto_db.find({'precio': { "$lt" : precio }})
     response = json_util.dumps(trayecto)
     return Response(response, mimetype='application/json')
