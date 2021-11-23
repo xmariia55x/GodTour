@@ -17,17 +17,20 @@ LINKS DE INTERÉS:
 '''
 def descargar_gasolineras():
     link = 'https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/'
-    f = request.urlopen(link)
-    myfile = f.read()
-    y=json.loads(myfile)
-    return y
+    file = request.urlopen(link)
+    file_leido = file.read()
+    gasolineras = json.loads(file_leido)
+    return gasolineras
 
-def get_gasolineras(gasolineras_datosabiertos):
-        # Esto devuelve todos los datos de esta/nuestra patria
-    #for g in y["ListaEESSPrecio"]:
-    #    print(g["Localidad"])
-
-    return None
+def get_gasolineras_gasolina95_lowcost_localidad(localidad, datos_gasolineras):
+    lista_gasolineras = []
+    for gasolinera in datos_gasolineras["ListaEESSPrecio"]:
+        if gasolinera["Localidad"] == localidad:
+            lista_gasolineras.append(gasolinera)
+    gasolineras_json_string = json.dumps(lista_gasolineras)
+    gasolineras_json = json.loads(gasolineras_json_string)
+    gasolineras_json_ordenadas = sorted(gasolineras_json, key=lambda k: k['Precio Gasolina 95 E5'], reverse=False)
+    return gasolineras_json_ordenadas
 
 def get_gasolineras_ubicacion(ubicacion):
         # Esto devuelve todos los datos de esta/nuestra patria
@@ -53,7 +56,7 @@ def get_gasolineras_ubicacion(ubicacion):
 
 # Esta función calcula la latitud y longitud maxima dada un rango y la ubicación actual, lo devuelve en forma de diccionario
 
-def calculaLatMaxyMinActual(rango):
+def calcula_ubicacion():
 
     # ------VÁLIDO PARA UBICACIÓN ACTUAL-----
     Nomi_locator = Nominatim(user_agent="My App")
@@ -64,27 +67,43 @@ def calculaLatMaxyMinActual(rango):
     latitude= my_location.geojson['features'][0]['properties']['lat']
     longitude = my_location.geojson['features'][0]['properties']['lng']
     #------- FIN DE UBICACIÓN ACTUAL
-
-    #   get the location
-    location = Nomi_locator.reverse(f"{latitude}, {longitude}")
-    
     '''
+    #   get the location
+    #location = Nomi_locator.reverse(f"{latitude}, {longitude}")
+
     print("Mi latitud es",latitude)
     print("Mi longitud es",longitude)
     print("Mi rango de latitud es",latitude+float(rango))
     print("Mi rango de longitud es",longitude+float(rango))
     print("Your Current IP location is", location)
     
+    #dict = {"Longitud_max":longitude+float(rango),"Longitud_min":longitude-float(rango),"Latitud_max":latitude+float(rango),"Latitud_min":latitude-float(rango)}
+    #print(dict)
     '''
-    
-    dict = {"Longitud_max":longitude+float(rango),"Longitud_min":longitude-float(rango),"Latitud_max":latitude+float(rango),"Latitud_min":latitude-float(rango)}
-    print(dict)
-    return dict
+    return latitude, longitude
 
 
-#def calculaLatMaxyMin(longitude,latitude,rango): 
-def calculaLatMaxyMin(latitude,longitude,rango):
-    
-    dict = {"Longitud_max":longitude+float(rango),"Longitud_min":longitude-float(rango),"Latitud_max":latitude+float(rango),"Latitud_min":latitude-float(rango)}
-    print(dict)
-    return dict
+def get_gasolineras_ubicacion(gasolineras_datos_abiertos, latitud, longitud, rango):
+    #Si el parametro recibido es nulo, se actualiza con la ubicación actual
+    if not latitud and not longitud:
+        latitud, longitud = calcula_ubicacion()     
+
+    latitud_min = latitud - float(rango)
+    latitud_max = latitud + float(rango)
+    longitud_min = longitud - float(rango)
+    longitud_max = longitud + float(rango)
+    lista = []
+    for g in gasolineras_datos_abiertos["ListaEESSPrecio"]:
+        lat = float(g["Latitud"].replace(",","."))
+        lon = float(g["Longitud (WGS84)"].replace(",","."))
+        if (latitud_min < lat < latitud_max) and (longitud_min < lon < longitud_max):
+            lista.append(g)
+    return lista
+
+def get_gasolineras_24horas(gasolineras_datos_abiertos, provincia):
+    #Si el parametro recibido es nulo, se actualiza con la ubicación actual
+    lista = []
+    for g in gasolineras_datos_abiertos["ListaEESSPrecio"]:
+        if g["Provincia"].upper() == provincia.upper() and g["Horario"].find("24H") != -1:
+            lista.append(g)
+    return lista
