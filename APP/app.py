@@ -289,11 +289,43 @@ def get_usuario_trayecto(id):
     return Response(response, mimetype='application/json')
 
 # ---------------------------------------------FIN TRAYECTO-----------------------------------------------------------
+
+
 # --------------------------------------------- DATOS ABIERTOS -----------------------------------------------------------
 # Sacamos las gasolineras cercanas a la localidad indicada por el usuario
 @app.route('/gasolineras/<ubicacion>', methods=['GET'])
 def get_gasolineras_ubicacion(ubicacion):
     return datos_abiertos.get_gasolineras_ubicacion(ubicacion)
+
+@app.route('/allData', methods=['GET'])
+def get_allData():
+    return datos_abiertos.get_datos_abiertos()
+
+#El diccionario este contiene las latitudes y longitudes maximas, dada la ubicacion actual del notas.
+@app.route('/datosUbiActual', methods=['POST'])
+def getCoordsActual():
+    rango = request.json["rango"]
+    coordenadas = datos_abiertos.calculaLatMaxyMinActual(rango)
+    response = json_util.dumps(coordenadas)
+    #
+    # return "Antonio Vallecillo is Professor of Computer Science at the University of Málaga. His research interests include model-based software engineering (MBSE), ..."
+    return Response(response, mimetype='application/json')
+
+
+#El diccionario este contiene las latitudes y longitudes maximas, dada una ubicacion por parametro
+@app.route('/datos', methods=['POST'])
+def getCoords():
+    latitude = request.json["latitude"]
+    longitude = request.json["longitude"]
+    rango = request.json["rango"]
+    coordenadas = datos_abiertos.calculaLatMaxyMin(latitude,longitude,rango)
+    response = json_util.dumps(coordenadas)
+    #
+    # return "Antonio Vallecillo is Professor of Computer Science at the University of Málaga. His research interests include model-based software engineering (MBSE), ..."
+    return Response(response, mimetype='application/json')
+# ---------------------------------------------FIN DATOS ABIERTOS-----------------------------------------------------------
+
+
 
 app.run()
 
