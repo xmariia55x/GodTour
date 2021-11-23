@@ -302,37 +302,47 @@ def get_gasolineras_gasolina95_lowcost():
     return datos_abiertos.get_gasolineras_ubicacion(ubicacion)
 
 @app.route('/gasolineras/rango', methods=['POST'])
-def get_gasolineras_rango():
+def get_gasolineras_rango(): 
     # Devuelve una lista de gasolineras de un rango X de una ubicación pasada por parámetro o la ubicación real
-    return datos_abiertos.get_gasolineras_ubicacion(ubicacion)
+    #PRUEBA
+    '''
+    {
+        "latitude": 36.73428,
+        "longitude": -4.56591,
+        "rango": 0.1
+    }
+    '''
+    latitude = request.json["latitude"]
+    longitude = request.json["longitude"]
+    rango = request.json["rango"]
+    lista = None
+    if rango:
+        if latitude and longitude:
+            lista = datos_abiertos.get_gasolineras_ubicacion(get_gasolineras(), latitude, longitude, rango)
+        else:
+            lista = datos_abiertos.get_gasolineras_ubicacion(get_gasolineras(), None, None, rango)
+        
+        response = {
+            "consulta": lista
+        }
+        return response
+
+    else:
+        return {"message":"error"}
 
 @app.route('/gasolineras/provincia_24horas', methods=['POST'])
 def get_gasolineras_provincia_24horas():
     # Devuelve las gasolineras abiertas 24 horas de una provincia pasada por parametro
-    return datos_abiertos.get_gasolineras_ubicacion(ubicacion)
+    provincia = request.json["Provincia"]
 
-#El diccionario este contiene las latitudes y longitudes maximas, dada la ubicacion actual del notas.
-@app.route('/datosUbiActual', methods=['POST'])
-def getCoordsActual():
-    rango = request.json["rango"]
-    coordenadas = datos_abiertos.calculaLatMaxyMinActual(rango)
-    response = json_util.dumps(coordenadas)
-    #
-    # return "Antonio Vallecillo is Professor of Computer Science at the University of Málaga. His research interests include model-based software engineering (MBSE), ..."
-    return Response(response, mimetype='application/json')
-
-
-#El diccionario este contiene las latitudes y longitudes maximas, dada una ubicacion por parametro
-@app.route('/datos', methods=['POST'])
-def getCoords():
-    latitude = request.json["latitude"]
-    longitude = request.json["longitude"]
-    rango = request.json["rango"]
-    coordenadas = datos_abiertos.calculaLatMaxyMin(latitude,longitude,rango)
-    response = json_util.dumps(coordenadas)
-    #
-    # return "Antonio Vallecillo is Professor of Computer Science at the University of Málaga. His research interests include model-based software engineering (MBSE), ..."
-    return Response(response, mimetype='application/json')
+    if provincia:
+        lista = datos_abiertos.get_gasolineras_24horas(get_gasolineras(), provincia)
+        response = {
+            "consulta": lista
+        }
+        return response
+    else:
+        return {"message":"error"}
 # ---------------------------------------------FIN DATOS ABIERTOS-----------------------------------------------------------
 
 
