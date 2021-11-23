@@ -352,9 +352,9 @@ def get_gasolineras_rango():
     lista = None
     if rango:
         if latitude and longitude:
-            lista = datos_abiertos.get_gasolineras_ubicacion(get_gasolineras(), latitude, longitude, rango)
+            lista = datos_abiertos.get_gasolineras_ubicacion(gasolineras_datos_abiertos, latitude, longitude, rango)
         else:
-            lista = datos_abiertos.get_gasolineras_ubicacion(get_gasolineras(), None, None, rango)
+            lista = datos_abiertos.get_gasolineras_ubicacion(gasolineras_datos_abiertos, None, None, rango)
         
         response = {
             "consulta": lista
@@ -370,7 +370,7 @@ def get_gasolineras_provincia_24horas():
     provincia = request.json["Provincia"]
 
     if provincia:
-        lista = datos_abiertos.get_gasolineras_24horas(get_gasolineras(), provincia)
+        lista = datos_abiertos.get_gasolineras_24horas(gasolineras_datos_abiertos, provincia)
         response = {
             "consulta": lista
         }
