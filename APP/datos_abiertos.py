@@ -15,12 +15,28 @@ LINKS DE INTERÉS:
     Precio gasolineras España: 'https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/'
 
 '''
+def descargar_datos_trafico():
+    link = 'https://opendata.arcgis.com/datasets/a64659151f0a42c69a38563e9d006c6b_0.geojson'
+    file = request.urlopen(link)
+    datos_trafico = file.read()
+    incidencias_trafico = json.loads(datos_trafico)
+    return incidencias_trafico
+
 def descargar_gasolineras():
     link = 'https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/'
     file = request.urlopen(link)
     file_leido = file.read()
     gasolineras = json.loads(file_leido)
     return gasolineras
+
+def get_incidencias_comunidad_autonoma_and_provincia(comunidad_autonoma, provincia, trafico_actualizado):
+    lista_incidencias = []
+    for incidencia in trafico_actualizado["features"]:
+        if incidencia["properties"]["autonomia"] == comunidad_autonoma and incidencia["properties"]["provincia"] == provincia:
+            lista_incidencias.append(incidencia)
+    incidencias_json_string = json.dumps(lista_incidencias)
+    incidencias_json = json.loads(incidencias_json_string)
+    return incidencias_json
 
 def get_gasolineras_gasolina95_lowcost_localidad(localidad, datos_gasolineras):
     lista_gasolineras = []

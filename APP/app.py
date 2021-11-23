@@ -8,15 +8,17 @@ from werkzeug.wrappers import response
 import datos_abiertos
 from datetime import datetime, timedelta
 
-ultima_actualizacion = 0
+ultima_actualizacion_gasolineras = 0
+ultima_actualizacion_trafico = 0
 class FlaskApp(Flask):
   def run(self, host=None, port=None, debug=None, load_dotenv=True, **options):
     if not self.debug or os.getenv('WERKZEUG_RUN_MAIN') == 'true':
       with self.app_context():
-        global gasolineras_datos_abiertos
-        gasolineras_datos_abiertos = datos_abiertos.descargar_gasolineras()
-        global ultima_actualizacion 
-        ultima_actualizacion = datetime.now()
+        global gasolineras_datos_abiertos, ultima_actualizacion_gasolineras, trafico_datos_abiertos, ultima_actualizacion_trafico
+        gasolineras_datos_abiertos = datos_abiertos.descargar_gasolineras() 
+        ultima_actualizacion_gasolineras = datetime.now()
+        trafico_datos_abiertos = datos_abiertos.descargar_datos_trafico()
+        ultima_actualizacion_trafico = datetime.now()
     super(FlaskApp, self).run(host=host, port=port, debug=debug, load_dotenv=load_dotenv, **options)
 app = FlaskApp(__name__)
 
@@ -305,13 +307,43 @@ def get_usuario_trayecto(id):
 
 # ---------------------------------------------FIN TRAYECTO-----------------------------------------------------------
 
+# --------------------------------------------- DATOS ABIERTOS - TRAFICO -----------------------------------------------------------
+def get_datos_trafico_actualizados():
+    global ultima_actualizacion_trafico, trafico_datos_abiertos #Llamada a la vbles globales para obtener y actualizar su valor
+    proxima_actualizacion_trafico = ultima_actualizacion_trafico + timedelta(minutes = 2) #Comprobamos que los datos se actualizan cada 2 min
+    if ultima_actualizacion_trafico > proxima_actualizacion_trafico: #Descargar los datos y actualizar en caso de que este desactualizado
+        ultima_actualizacion_trafico = proxima_actualizacion_trafico
+        trafico_datos_abiertos = datos_abiertos.descargar_datos_trafico()
+    return trafico_datos_abiertos
+
+#Devuelve una lista con las incidencias de trafico del conjunto de datos abiertos
+@app.route('/trafico', methods=['GET'])
+def get_trafico():
+    datos_trafico = get_datos_trafico_actualizados()
+    response = json_util.dumps(datos_trafico)    
+    return Response(response, mimetype='application/json')
+
+#Devuelve las incidencias de trafico de una provincia de una comunidad autonoma
+@app.route('/trafico/by_comunidad_autonoma_and_provincia', methods=['POST'])
+def get_incidencias_comunidad_autonoma_and_provincia():
+    comunidad_autonoma = request.json["comunidad_autonoma"]
+    provincia = request.json["provincia"]
+    if comunidad_autonoma and provincia:
+        trafico_actualizado = get_datos_trafico_actualizados()
+        incidencias_trafico = datos_abiertos.get_incidencias_comunidad_autonoma_and_provincia(comunidad_autonoma, provincia, trafico_actualizado)
+        response = json_util.dumps(incidencias_trafico)    
+        return Response(response, mimetype='application/json')
+    else: 
+        #to do 
+        return None
+# --------------------------------------------- FIN DATOS ABIERTOS - TRAFICO -------------------------------------------------------
 
 # --------------------------------------------- DATOS ABIERTOS - GASOLINERA -----------------------------------------------------------
 def get_datos_gasolineras_actualizadas():
-    global ultima_actualizacion, gasolineras_datos_abiertos #Llamada a la vbles globales para obtener y actualizar su valor
-    proxima_actualizacion = ultima_actualizacion + timedelta(hours = 1) #Comprobamos que los datos se actualizan cada hora
-    if ultima_actualizacion > proxima_actualizacion: #Descargar los datos y actualizar en caso de que este desactualizado
-        ultima_actualizacion = proxima_actualizacion
+    global ultima_actualizacion_gasolineras, gasolineras_datos_abiertos #Llamada a la vbles globales para obtener y actualizar su valor
+    proxima_actualizacion = ultima_actualizacion_gasolineras + timedelta(hours = 1) #Comprobamos que los datos se actualizan cada hora
+    if ultima_actualizacion_gasolineras > proxima_actualizacion: #Descargar los datos y actualizar en caso de que este desactualizado
+        ultima_actualizacion_gasolineras = proxima_actualizacion
         gasolineras_datos_abiertos = datos_abiertos.descargar_gasolineras()
     return gasolineras_datos_abiertos
 
@@ -333,7 +365,8 @@ def get_gasolineras_gasolina95_lowcost():
         response = json_util.dumps(gasolineras_lowcost)    
         return Response(response, mimetype='application/json')
     else:
-        return {"message":"No se ha especificado una localidad"} #TODO: MODIFICAR ESTO 
+        #reemplazado por lo de adri 
+        return None
 
 @app.route('/gasolineras/rango', methods=['POST'])
 def get_gasolineras_rango():
