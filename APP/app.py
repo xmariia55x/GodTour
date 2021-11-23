@@ -1,9 +1,11 @@
+from logging import NullHandler
 from flask import Flask, request, jsonify, Response
 from flask_pymongo import PyMongo
 import pymongo
 import sys
 from bson import json_util
 from bson.objectid import ObjectId
+from pymongo import message
 from werkzeug.wrappers import response
 import datos_abiertos
 from datetime import datetime, timedelta
@@ -49,7 +51,10 @@ def get_usuarios():
 def get_usuario(id):
     usuario = usuario_db.find_one({'_id': ObjectId(id)})
     response = json_util.dumps(usuario)
-    return Response(response, mimetype='application/json')
+    if response == 'null':
+        return not_found("No se han encontrado usuarios con el id: " + id)
+    else:     
+        return Response(response, mimetype='application/json')
 
 # Inserta un usuario 
 @app.route('/usuario/create', methods=['POST'])
@@ -90,7 +95,7 @@ def create_usuario():
         
         return response
     else:
-        return {"message":"error"}
+        return not_found("No se ha podido crear un usuario")
 
 # Borra un usuario
 @app.route('/usuario/delete/<id>', methods=['DELETE'])
@@ -130,7 +135,7 @@ def update_usuario(id):
         
         return response
     else:
-        return {"message":"error"}
+        return not_found("No se ha podido actualizar el usuario con el id: " + id)
 
 # Obtiene los usuarios ordenados alfabeticamente, orden ascendente -> python.ASCENDING , orden descendente -> python.DESCENDING
 @app.route('/usuario/byname', methods=['GET'])
@@ -145,7 +150,10 @@ def get_usuario_by_email():
     email = request.json['correo']
     usuarios = usuario_db.find( { 'correo': { "$regex": email + '.*', "$options" :'i' }} )
     response = json_util.dumps(usuarios)
-    return Response(response, mimetype='application/json')
+    if response == '[]':
+        return not_found("No se ha encontrado ningún usuario con el email " + email)
+    else:     
+        return Response(response, mimetype='application/json')
 
 
 # ---------------------------------------------FIN USUARIO-----------------------------------------------------------
@@ -221,7 +229,7 @@ def create_trayecto():
         }
         return response
     else:
-        return {"message":"error"}
+        return not_found("No se ha podido crear el trayecto")
 
 
 # Borra un trayecto
@@ -270,7 +278,7 @@ def update_trayecto(id):
         
         return response
     else:
-        return {"message":"error"}
+        return not_found("No se ha podido actualizar el trayecto con id: " + id)
 
 # Obtiene los trayectos cuyo destino se le pasa por parámetro 
 @app.route('/trayecto/bydestino', methods=['POST'])
@@ -278,7 +286,11 @@ def get_trayecto_destino():
     destino = request.json['destino']
     trayecto = trayecto_db.find({'destino': destino})
     response = json_util.dumps(trayecto)
-    return Response(response, mimetype='application/json')
+    if response == '[]':
+        return not_found("No se han encontrado trayectos con destino " + destino)
+    else:     
+        return Response(response, mimetype='application/json')
+    
 
 # Obtiene los trayectos que tienen como origen y destino los indicados. Ej trayectos de Malaga a Cadiz
 @app.route('/trayecto/byorigenanddestino', methods=['POST'])
@@ -287,7 +299,10 @@ def get_trayecto_origen_destino():
     destino = request.json['destino']
     trayecto = trayecto_db.find({'origen': origen, 'destino': destino})
     response = json_util.dumps(trayecto)
-    return Response(response, mimetype='application/json')
+    if response == '[]':
+        return not_found("No se han encontrado trayectos con origen " + origen + " y destino " + destino)
+    else:     
+        return Response(response, mimetype='application/json')
 
 # Obtiene los trayectos que cuesten menos que la cantidad indicada
 @app.route('/trayecto/byprecio', methods=['POST'])
@@ -295,7 +310,10 @@ def get_trayecto_precio():
     precio = request.json['precio']
     trayecto = trayecto_db.find({'precio': { "$lt" : precio }})
     response = json_util.dumps(trayecto)
-    return Response(response, mimetype='application/json')
+    if response == '[]':
+        return not_found("Trayectos con precio menor a " + precio + " no encontrados")
+    else:     
+        return Response(response, mimetype='application/json')
 
 # Obtiene los usuarios de un trayecto a partir del id del trayecto
 @app.route('/usuario/bytrayecto/<id>', methods=['GET'])
@@ -303,7 +321,10 @@ def get_usuario_trayecto(id):
     trayecto = trayecto_db.find_one({'_id': ObjectId(id)})
     pasajeros = trayecto.get("pasajeros")
     response = json_util.dumps(pasajeros)
-    return Response(response, mimetype='application/json')
+    if response == '[]':
+        return not_found("El trayecto con id: " + id + " no tiene usuarios")
+    else:     
+        return Response(response, mimetype='application/json')
 
 # ---------------------------------------------FIN TRAYECTO-----------------------------------------------------------
 
@@ -337,6 +358,43 @@ def get_incidencias_comunidad_autonoma_and_provincia():
         #to do 
         return None
 # --------------------------------------------- FIN DATOS ABIERTOS - TRAFICO -------------------------------------------------------
+# ---------------------------------------------MANEJO DE ERRORES-----------------------------------------------------------
+
+#Error 400
+@app.errorhandler(400)
+def not_found(error=None):
+    response = jsonify({
+        'message': 'Bad request: ' + request.url,
+        'status': 400
+    })
+    response.status_code = 400
+    return response
+
+#Error 404
+@app.errorhandler(404)
+def not_found(error=None):
+    if error is None : 
+        response = jsonify({
+        'message': 'Recurso no encontrado: ' + request.url,
+        'status': 404
+        })
+    else: 
+        response = jsonify({
+        'message': error,
+        'status': 404
+        })
+    response.status_code = 404
+    return response
+
+#Error 500
+@app.errorhandler(500)
+def server_error(error):
+    response = jsonify({
+        'message': 'Error del servidor: ' + request.url,
+        'status': 500
+    })
+    response.status_code = 500
+    return response
 
 # --------------------------------------------- DATOS ABIERTOS - GASOLINERA -----------------------------------------------------------
 def get_datos_gasolineras_actualizadas():
@@ -369,37 +427,47 @@ def get_gasolineras_gasolina95_lowcost():
         return None
 
 @app.route('/gasolineras/rango', methods=['POST'])
-def get_gasolineras_rango():
+def get_gasolineras_rango(): 
     # Devuelve una lista de gasolineras de un rango X de una ubicación pasada por parámetro o la ubicación real
-    return datos_abiertos.get_gasolineras_ubicacion(ubicacion)
+    #PRUEBA
+    '''
+    {
+        "latitude": 36.73428,
+        "longitude": -4.56591,
+        "rango": 0.1
+    }
+    '''
+    latitude = request.json["latitude"]
+    longitude = request.json["longitude"]
+    rango = request.json["rango"]
+    lista = None
+    if rango:
+        if latitude and longitude:
+            lista = datos_abiertos.get_gasolineras_ubicacion(gasolineras_datos_abiertos, latitude, longitude, rango)
+        else:
+            lista = datos_abiertos.get_gasolineras_ubicacion(gasolineras_datos_abiertos, None, None, rango)
+        
+        response = {
+            "consulta": lista
+        }
+        return response
+
+    else:
+        return {"message":"error"}
 
 @app.route('/gasolineras/provincia_24horas', methods=['POST'])
 def get_gasolineras_provincia_24horas():
     # Devuelve las gasolineras abiertas 24 horas de una provincia pasada por parametro
-    return datos_abiertos.get_gasolineras_ubicacion(ubicacion)
+    provincia = request.json["Provincia"]
 
-#El diccionario este contiene las latitudes y longitudes maximas, dada la ubicacion actual del notas.
-@app.route('/datosUbiActual', methods=['POST'])
-def getCoordsActual():
-    rango = request.json["rango"]
-    coordenadas = datos_abiertos.calculaLatMaxyMinActual(rango)
-    response = json_util.dumps(coordenadas)
-    #
-    # return "Antonio Vallecillo is Professor of Computer Science at the University of Málaga. His research interests include model-based software engineering (MBSE), ..."
-    return Response(response, mimetype='application/json')
-
-
-#El diccionario este contiene las latitudes y longitudes maximas, dada una ubicacion por parametro
-@app.route('/datos', methods=['POST'])
-def getCoords():
-    latitude = request.json["latitude"]
-    longitude = request.json["longitude"]
-    rango = request.json["rango"]
-    coordenadas = datos_abiertos.calculaLatMaxyMin(latitude,longitude,rango)
-    response = json_util.dumps(coordenadas)
-    #
-    # return "Antonio Vallecillo is Professor of Computer Science at the University of Málaga. His research interests include model-based software engineering (MBSE), ..."
-    return Response(response, mimetype='application/json')
+    if provincia:
+        lista = datos_abiertos.get_gasolineras_24horas(gasolineras_datos_abiertos, provincia)
+        response = {
+            "consulta": lista
+        }
+        return response
+    else:
+        return {"message":"error"}
 # ---------------------------------------------FIN DATOS ABIERTOS-----------------------------------------------------------
 
 app.run()

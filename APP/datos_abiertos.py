@@ -72,7 +72,7 @@ def get_gasolineras_ubicacion(ubicacion):
 
 # Esta función calcula la latitud y longitud maxima dada un rango y la ubicación actual, lo devuelve en forma de diccionario
 
-def calculaLatMaxyMinActual(rango):
+def calcula_ubicacion():
 
     # ------VÁLIDO PARA UBICACIÓN ACTUAL-----
     Nomi_locator = Nominatim(user_agent="My App")
@@ -83,27 +83,43 @@ def calculaLatMaxyMinActual(rango):
     latitude= my_location.geojson['features'][0]['properties']['lat']
     longitude = my_location.geojson['features'][0]['properties']['lng']
     #------- FIN DE UBICACIÓN ACTUAL
-
-    #   get the location
-    location = Nomi_locator.reverse(f"{latitude}, {longitude}")
-    
     '''
+    #   get the location
+    #location = Nomi_locator.reverse(f"{latitude}, {longitude}")
+
     print("Mi latitud es",latitude)
     print("Mi longitud es",longitude)
     print("Mi rango de latitud es",latitude+float(rango))
     print("Mi rango de longitud es",longitude+float(rango))
     print("Your Current IP location is", location)
     
+    #dict = {"Longitud_max":longitude+float(rango),"Longitud_min":longitude-float(rango),"Latitud_max":latitude+float(rango),"Latitud_min":latitude-float(rango)}
+    #print(dict)
     '''
-    
-    dict = {"Longitud_max":longitude+float(rango),"Longitud_min":longitude-float(rango),"Latitud_max":latitude+float(rango),"Latitud_min":latitude-float(rango)}
-    print(dict)
-    return dict
+    return latitude, longitude
 
 
-#def calculaLatMaxyMin(longitude,latitude,rango): 
-def calculaLatMaxyMin(latitude,longitude,rango):
-    
-    dict = {"Longitud_max":longitude+float(rango),"Longitud_min":longitude-float(rango),"Latitud_max":latitude+float(rango),"Latitud_min":latitude-float(rango)}
-    print(dict)
-    return dict
+def get_gasolineras_ubicacion(gasolineras_datos_abiertos, latitud, longitud, rango):
+    #Si el parametro recibido es nulo, se actualiza con la ubicación actual
+    if not latitud and not longitud:
+        latitud, longitud = calcula_ubicacion()     
+
+    latitud_min = latitud - float(rango)
+    latitud_max = latitud + float(rango)
+    longitud_min = longitud - float(rango)
+    longitud_max = longitud + float(rango)
+    lista = []
+    for g in gasolineras_datos_abiertos["ListaEESSPrecio"]:
+        lat = float(g["Latitud"].replace(",","."))
+        lon = float(g["Longitud (WGS84)"].replace(",","."))
+        if (latitud_min < lat < latitud_max) and (longitud_min < lon < longitud_max):
+            lista.append(g)
+    return lista
+
+def get_gasolineras_24horas(gasolineras_datos_abiertos, provincia):
+    #Si el parametro recibido es nulo, se actualiza con la ubicación actual
+    lista = []
+    for g in gasolineras_datos_abiertos["ListaEESSPrecio"]:
+        if g["Provincia"].upper() == provincia.upper() and g["Horario"].find("24H") != -1:
+            lista.append(g)
+    return lista
