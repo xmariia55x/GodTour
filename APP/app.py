@@ -1,9 +1,11 @@
+from logging import NullHandler
 from flask import Flask, request, jsonify, Response
 from flask_pymongo import PyMongo
 import pymongo
 import sys
 from bson import json_util
 from bson.objectid import ObjectId
+from pymongo import message
 from werkzeug.wrappers import response
 import datos_abiertos
 from datetime import datetime, timedelta
@@ -36,7 +38,10 @@ def get_usuarios():
 def get_usuario(id):
     usuario = usuario_db.find_one({'_id': ObjectId(id)})
     response = json_util.dumps(usuario)
-    return Response(response, mimetype='application/json')
+    if response == 'null':
+        return not_found("No se han encontrado usuarios con el id: " + id)
+    else:     
+        return Response(response, mimetype='application/json')
 
 # Inserta un usuario 
 @app.route('/usuario/create', methods=['POST'])
@@ -77,7 +82,7 @@ def create_usuario():
         
         return response
     else:
-        return {"message":"error"}
+        return not_found("No se ha podido crear un usuario")
 
 # Borra un usuario
 @app.route('/usuario/delete/<id>', methods=['DELETE'])
@@ -117,7 +122,7 @@ def update_usuario(id):
         
         return response
     else:
-        return {"message":"error"}
+        return not_found("No se ha podido actualizar el usuario con el id: " + id)
 
 # Obtiene los usuarios ordenados alfabeticamente, orden ascendente -> python.ASCENDING , orden descendente -> python.DESCENDING
 @app.route('/usuario/byname', methods=['GET'])
@@ -132,7 +137,10 @@ def get_usuario_by_email():
     email = request.json['correo']
     usuarios = usuario_db.find( { 'correo': { "$regex": email + '.*', "$options" :'i' }} )
     response = json_util.dumps(usuarios)
-    return Response(response, mimetype='application/json')
+    if response == '[]':
+        return not_found("No se ha encontrado ningún usuario con el email " + email)
+    else:     
+        return Response(response, mimetype='application/json')
 
 
 # ---------------------------------------------FIN USUARIO-----------------------------------------------------------
@@ -208,7 +216,7 @@ def create_trayecto():
         }
         return response
     else:
-        return {"message":"error"}
+        return not_found("No se ha podido crear el trayecto")
 
 
 # Borra un trayecto
@@ -257,7 +265,7 @@ def update_trayecto(id):
         
         return response
     else:
-        return {"message":"error"}
+        return not_found("No se ha podido actualizar el trayecto con id: " + id)
 
 # Obtiene los trayectos cuyo destino se le pasa por parámetro 
 @app.route('/trayecto/bydestino', methods=['POST'])
@@ -265,7 +273,11 @@ def get_trayecto_destino():
     destino = request.json['destino']
     trayecto = trayecto_db.find({'destino': destino})
     response = json_util.dumps(trayecto)
-    return Response(response, mimetype='application/json')
+    if response == '[]':
+        return not_found("No se han encontrado trayectos con destino " + destino)
+    else:     
+        return Response(response, mimetype='application/json')
+    
 
 # Obtiene los trayectos que tienen como origen y destino los indicados. Ej trayectos de Malaga a Cadiz
 @app.route('/trayecto/byorigenanddestino', methods=['POST'])
@@ -274,7 +286,10 @@ def get_trayecto_origen_destino():
     destino = request.json['destino']
     trayecto = trayecto_db.find({'origen': origen, 'destino': destino})
     response = json_util.dumps(trayecto)
-    return Response(response, mimetype='application/json')
+    if response == '[]':
+        return not_found("No se han encontrado trayectos con origen " + origen + " y destino " + destino)
+    else:     
+        return Response(response, mimetype='application/json')
 
 # Obtiene los trayectos que cuesten menos que la cantidad indicada
 @app.route('/trayecto/byprecio', methods=['POST'])
@@ -282,7 +297,10 @@ def get_trayecto_precio():
     precio = request.json['precio']
     trayecto = trayecto_db.find({'precio': { "$lt" : precio }})
     response = json_util.dumps(trayecto)
-    return Response(response, mimetype='application/json')
+    if response == '[]':
+        return not_found("Trayectos con precio menor a " + precio + " no encontrados")
+    else:     
+        return Response(response, mimetype='application/json')
 
 # Obtiene los usuarios de un trayecto a partir del id del trayecto
 @app.route('/usuario/bytrayecto/<id>', methods=['GET'])
@@ -290,10 +308,50 @@ def get_usuario_trayecto(id):
     trayecto = trayecto_db.find_one({'_id': ObjectId(id)})
     pasajeros = trayecto.get("pasajeros")
     response = json_util.dumps(pasajeros)
-    return Response(response, mimetype='application/json')
+    if response == '[]':
+        return not_found("El trayecto con id: " + id + " no tiene usuarios")
+    else:     
+        return Response(response, mimetype='application/json')
 
 # ---------------------------------------------FIN TRAYECTO-----------------------------------------------------------
 
+# ---------------------------------------------MANEJO DE ERRORES-----------------------------------------------------------
+
+#Error 400
+@app.errorhandler(400)
+def not_found(error=None):
+    response = jsonify({
+        'message': 'Bad request: ' + request.url,
+        'status': 400
+    })
+    response.status_code = 400
+    return response
+
+#Error 404
+@app.errorhandler(404)
+def not_found(error=None):
+    if error is None : 
+        response = jsonify({
+        'message': 'Recurso no encontrado: ' + request.url,
+        'status': 404
+        })
+    else: 
+        response = jsonify({
+        'message': error,
+        'status': 404
+        })
+    response.status_code = 404
+    return response
+
+#Error 500
+@app.errorhandler(500)
+def server_error(error):
+    response = jsonify({
+        'message': 'Error del servidor: ' + request.url,
+        'status': 500
+    })
+    response.status_code = 500
+    return response
 
 # --------------------------------------------- DATOS ABIERTOS - GASOLINERA -----------------------------------------------------------
 @app.route('/gasolineras', methods=['GET'])
