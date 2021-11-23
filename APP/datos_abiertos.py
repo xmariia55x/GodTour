@@ -15,16 +15,19 @@ LINKS DE INTERÉS:
     Precio gasolineras España: 'https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/'
 
 '''
-def get_datos_abiertos():
-        # Esto devuelve todos los datos de esta/nuestra patria
+def descargar_gasolineras():
     link = 'https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/'
     f = request.urlopen(link)
     myfile = f.read()
     y=json.loads(myfile)
-    for g in y["ListaEESSPrecio"]:
-        print(g["Localidad"])
-
     return y
+
+def get_gasolineras(gasolineras_datosabiertos):
+        # Esto devuelve todos los datos de esta/nuestra patria
+    #for g in y["ListaEESSPrecio"]:
+    #    print(g["Localidad"])
+
+    return None
 
 def get_gasolineras_ubicacion(ubicacion):
         # Esto devuelve todos los datos de esta/nuestra patria

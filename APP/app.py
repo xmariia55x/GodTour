@@ -295,15 +295,25 @@ def get_usuario_trayecto(id):
 # ---------------------------------------------FIN TRAYECTO-----------------------------------------------------------
 
 
-# --------------------------------------------- DATOS ABIERTOS -----------------------------------------------------------
-# Sacamos las gasolineras cercanas a la localidad indicada por el usuario
-@app.route('/gasolineras/<ubicacion>', methods=['GET'])
-def get_gasolineras_ubicacion(ubicacion):
+# --------------------------------------------- DATOS ABIERTOS - GASOLINERA -----------------------------------------------------------
+@app.route('/gasolineras', methods=['GET'])
+def get_gasolineras():
+    return datos_abiertos.descargar_gasolineras()
+
+@app.route('/gasolineras/gasolina95_lowcost', methods=['POST'])
+def get_gasolineras_gasolina95_lowcost():
+    # Devuelve una lista de las gasolineras de una ubicacion ordenada por el precio de la gasolina 95
     return datos_abiertos.get_gasolineras_ubicacion(ubicacion)
 
-@app.route('/allData', methods=['GET'])
-def get_allData():
-    return datos_abiertos.get_datos_abiertos()
+@app.route('/gasolineras/rango', methods=['POST'])
+def get_gasolineras_rango():
+    # Devuelve una lista de gasolineras de un rango X de una ubicación pasada por parámetro o la ubicación real
+    return datos_abiertos.get_gasolineras_ubicacion(ubicacion)
+
+@app.route('/gasolineras/provincia_24horas', methods=['POST'])
+def get_gasolineras_provincia_24horas():
+    # Devuelve las gasolineras abiertas 24 horas de una provincia pasada por parametro
+    return datos_abiertos.get_gasolineras_ubicacion(ubicacion)
 
 #El diccionario este contiene las latitudes y longitudes maximas, dada la ubicacion actual del notas.
 @app.route('/datosUbiActual', methods=['POST'])
