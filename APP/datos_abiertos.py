@@ -17,17 +17,20 @@ LINKS DE INTERÉS:
 '''
 def descargar_gasolineras():
     link = 'https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/'
-    f = request.urlopen(link)
-    myfile = f.read()
-    y=json.loads(myfile)
-    return y
+    file = request.urlopen(link)
+    file_leido = file.read()
+    gasolineras = json.loads(file_leido)
+    return gasolineras
 
-def get_gasolineras(gasolineras_datosabiertos):
-        # Esto devuelve todos los datos de esta/nuestra patria
-    #for g in y["ListaEESSPrecio"]:
-    #    print(g["Localidad"])
-
-    return None
+def get_gasolineras_gasolina95_lowcost_localidad(localidad, datos_gasolineras):
+    lista_gasolineras = []
+    for gasolinera in datos_gasolineras["ListaEESSPrecio"]:
+        if gasolinera["Localidad"] == localidad:
+            lista_gasolineras.append(gasolinera)
+    gasolineras_json_string = json.dumps(lista_gasolineras)
+    gasolineras_json = json.loads(gasolineras_json_string)
+    gasolineras_json_ordenadas = sorted(gasolineras_json, key=lambda k: k['Precio Gasolina 95 E5'], reverse=False)
+    return gasolineras_json_ordenadas
 
 def get_gasolineras_ubicacion(ubicacion):
         # Esto devuelve todos los datos de esta/nuestra patria

@@ -8,7 +8,18 @@ from werkzeug.wrappers import response
 import datos_abiertos
 from datetime import datetime, timedelta
 
-app = Flask(__name__)	
+ultima_actualizacion = 0
+class FlaskApp(Flask):
+  def run(self, host=None, port=None, debug=None, load_dotenv=True, **options):
+    if not self.debug or os.getenv('WERKZEUG_RUN_MAIN') == 'true':
+      with self.app_context():
+        global gasolineras_datos_abiertos
+        gasolineras_datos_abiertos = datos_abiertos.descargar_gasolineras()
+        global ultima_actualizacion 
+        ultima_actualizacion = datetime.now()
+    super(FlaskApp, self).run(host=host, port=port, debug=debug, load_dotenv=load_dotenv, **options)
+app = FlaskApp(__name__)
+
 client = pymongo.MongoClient("mongodb+srv://Gestionpymongo:Gestionpymongo@cluster0.iixvr.mongodb.net/iweb?retryWrites=true&w=majority&ssl=true&ssl_cert_reqs=CERT_NONE")
 db = client.get_default_database()
 # -- ESTO ES PARA LOCAL --
@@ -292,14 +303,33 @@ def get_usuario_trayecto(id):
 
 
 # --------------------------------------------- DATOS ABIERTOS - GASOLINERA -----------------------------------------------------------
+def get_datos_gasolineras_actualizadas():
+    global ultima_actualizacion, gasolineras_datos_abiertos #Llamada a la vbles globales para obtener y actualizar su valor
+    proxima_actualizacion = ultima_actualizacion + timedelta(hours = 1) #Comprobamos que los datos se actualizan cada hora
+    if ultima_actualizacion > proxima_actualizacion: #Descargar los datos y actualizar en caso de que este desactualizado
+        ultima_actualizacion = proxima_actualizacion
+        gasolineras_datos_abiertos = datos_abiertos.descargar_gasolineras()
+    return gasolineras_datos_abiertos
+
+#Devuelve una lista con todas las gasolineras del conjunto de datos abiertos
 @app.route('/gasolineras', methods=['GET'])
 def get_gasolineras():
-    return datos_abiertos.descargar_gasolineras()
+    datos_actualizados = get_datos_gasolineras_actualizadas()
+    response = json_util.dumps(datos_actualizados)    
+    return Response(response, mimetype='application/json')
 
+#Devuelve una lista con las gasolineras de una localidad pasada por parametro
+#Las gasolineras estan ordenadas segun el precio de la gasolina 95 (de mas barata a mas cara)
 @app.route('/gasolineras/gasolina95_lowcost', methods=['POST'])
 def get_gasolineras_gasolina95_lowcost():
-    # Devuelve una lista de las gasolineras de una ubicacion ordenada por el precio de la gasolina 95
-    return datos_abiertos.get_gasolineras_ubicacion(ubicacion)
+    localidad = request.json["localidad"]
+    if localidad:
+        datos_actualizados = get_datos_gasolineras_actualizadas()
+        gasolineras_lowcost = datos_abiertos.get_gasolineras_gasolina95_lowcost_localidad(localidad, datos_actualizados)
+        response = json_util.dumps(gasolineras_lowcost)    
+        return Response(response, mimetype='application/json')
+    else:
+        return {"message":"No se ha especificado una localidad"} #TODO: MODIFICAR ESTO 
 
 @app.route('/gasolineras/rango', methods=['POST'])
 def get_gasolineras_rango():
@@ -334,8 +364,6 @@ def getCoords():
     # return "Antonio Vallecillo is Professor of Computer Science at the University of Málaga. His research interests include model-based software engineering (MBSE), ..."
     return Response(response, mimetype='application/json')
 # ---------------------------------------------FIN DATOS ABIERTOS-----------------------------------------------------------
-
-
 
 app.run()
 
