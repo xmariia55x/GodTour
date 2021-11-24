@@ -336,8 +336,35 @@ def get_incidencias_provincia():
     response = json_util.dumps(incidencias_trafico)    
     if response == '[]':
         not_found("No hay incidencias en " + provincia) 
+    else: 
+        Response(response, mimetype='application/json')
+        
+
+@app.route('/trafico/rango', methods=['POST'])
+def get_trafico_in_rango():
+    latitude = None
+    longitude = None
+
+    try : 
+        latitude = request.json["latitude"]
+        longitude = request.json["longitude"]
+    except :
+        print("Latitud y longitud no introducidas")
+    
+    rango = float(request.json["rango"])
+    lista = None
+    trafico_actualizado = get_datos_trafico_actualizados()
+    if latitude and longitude:
+        lista = datos_abiertos.get_incidencias_rango(latitude, longitude, rango, trafico_actualizado)
     else:
-        return Response(response, mimetype='application/json') 
+        lista = datos_abiertos.get_incidencias_rango(None, None, rango, trafico_actualizado)
+        
+    response = json_util.dumps(lista)
+
+    if response == '[]':
+        return not_found("No se han encontrado incidencias de trafico a " + str(rango) + " kms de la ubicacion actual")
+    else:
+        return Response(response, mimetype='application/json')
 
 # --------------------------------------------- FIN DATOS ABIERTOS - TRAFICO -------------------------------------------------------
 
@@ -404,7 +431,7 @@ def get_gasolineras_gasolina95_lowcost():
     gasolineras_lowcost = datos_abiertos.get_gasolineras_gasolina95_lowcost_localidad(localidad, datos_actualizados)
     response = json_util.dumps(gasolineras_lowcost) 
     if response == '[]':
-        return not_found("No se han encontrado gasolineras en " + localidad)
+        not_found("No se han encontrado gasolineras en " + localidad)
     else:     
         return Response(response, mimetype='application/json')
     
@@ -444,7 +471,7 @@ def get_gasolineras_rango():
 
     # Controla los errores
     if response == '[]':
-        not_found("No hay gasolineras en el rango de " + rango +" a partir de la ubicación actual")
+        not_found("No hay gasolineras en el rango de " + rango_km +" a partir de la ubicación actual")
     else:
         return Response(response, mimetype='application/json')
     
