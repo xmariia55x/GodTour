@@ -324,17 +324,16 @@ def get_datos_trafico_actualizados():
 @app.route('/trafico', methods=['GET'])
 def get_trafico():
     datos_trafico = get_datos_trafico_actualizados()
-    response = json_util.dumps(datos_trafico)    
+    response = json_util.dumps(datos_trafico)
     return Response(response, mimetype='application/json')
 
 #Devuelve las incidencias de trafico de una provincia de una comunidad autonoma
-@app.route('/trafico/by_comunidad_autonoma_and_provincia', methods=['POST'])
-def get_incidencias_comunidad_autonoma_and_provincia():
-    comunidad_autonoma = request.json["comunidad_autonoma"]
+@app.route('/trafico/by_provincia', methods=['POST'])
+def get_incidencias_provincia():
     provincia = request.json["provincia"]
-    if comunidad_autonoma and provincia:
+    if provincia:
         trafico_actualizado = get_datos_trafico_actualizados()
-        incidencias_trafico = datos_abiertos.get_incidencias_comunidad_autonoma_and_provincia(comunidad_autonoma, provincia, trafico_actualizado)
+        incidencias_trafico = datos_abiertos.get_incidencias_comunidad_autonoma_and_provincia(provincia, trafico_actualizado)
         response = json_util.dumps(incidencias_trafico)    
         return Response(response, mimetype='application/json')
     else: 
@@ -361,8 +360,16 @@ def get_trafico_in_rango():
     else:
         return {"message":"error"}
     
+    trafico_actualizado = get_datos_trafico_actualizados()
+    incidencias_trafico = datos_abiertos.get_incidencias_provincia(provincia, trafico_actualizado)
+    response = json_util.dumps(incidencias_trafico)    
+    if response == '[]':
+        not_found("No hay incidencias en " + provincia) 
+    else:
+        return Response(response, mimetype='application/json') 
 
 # --------------------------------------------- FIN DATOS ABIERTOS - TRAFICO -------------------------------------------------------
+
 # ---------------------------------------------MANEJO DE ERRORES-----------------------------------------------------------
 
 #Error 400
@@ -422,57 +429,75 @@ def get_gasolineras():
 @app.route('/gasolineras/gasolina95_lowcost', methods=['POST'])
 def get_gasolineras_gasolina95_lowcost():
     localidad = request.json["localidad"]
-    if localidad:
-        datos_actualizados = get_datos_gasolineras_actualizadas()
-        gasolineras_lowcost = datos_abiertos.get_gasolineras_gasolina95_lowcost_localidad(localidad, datos_actualizados)
-        response = json_util.dumps(gasolineras_lowcost)    
+    datos_actualizados = get_datos_gasolineras_actualizadas()
+    gasolineras_lowcost = datos_abiertos.get_gasolineras_gasolina95_lowcost_localidad(localidad, datos_actualizados)
+    response = json_util.dumps(gasolineras_lowcost) 
+    if response == '[]':
+        return not_found("No se han encontrado gasolineras en " + localidad)
+    else:     
         return Response(response, mimetype='application/json')
-    else:
-        #reemplazado por lo de adri 
-        return None
+    
 
 @app.route('/gasolineras/rango', methods=['POST'])
 def get_gasolineras_rango(): 
-    # Devuelve una lista de gasolineras de un rango X de una ubicación pasada por parámetro o la ubicación real
+    # Devuelve una lista de gasolineras de un rango X en km de una ubicación pasada por parámetro o la ubicación real
     #PRUEBA
     '''
     {
         "latitude": 36.73428,
         "longitude": -4.56591,
-        "rango": 0.1
+        "rango": 5
     }
     '''
-    latitude = request.json["latitude"]
-    longitude = request.json["longitude"]
-    rango = request.json["rango"]
-    lista = None
-    if rango:
-        if latitude and longitude:
-            lista = datos_abiertos.get_gasolineras_ubicacion(gasolineras_datos_abiertos, latitude, longitude, rango)
-        else:
-            lista = datos_abiertos.get_gasolineras_ubicacion(gasolineras_datos_abiertos, None, None, rango)
-        
-        response = {
-            "consulta": lista
-        }
-        return response
+    latitude = None
+    longitude = None
 
+    try : 
+        latitude = request.json["latitude"]
+        longitude = request.json["longitude"]
+    except :
+        print("Latitud y longitud no introducidas")
+
+    rango_km = float(request.json["rango"])
+    consulta = None
+
+    rango = rango_km / 111.12  # Paso de km a grados
+
+    if latitude and longitude:
+        consulta = datos_abiertos.get_gasolineras_ubicacion(gasolineras_datos_abiertos, latitude, longitude, rango)
     else:
-        return {"message":"error"}
+        consulta = datos_abiertos.get_gasolineras_ubicacion(gasolineras_datos_abiertos, None, None, rango)
+    
+    response = json_util.dumps(consulta)
+
+    if response == '[]':
+        not_found("No hay gasolineras en el rango de " + rango +" a partir de la ubicación actual")
+    else:
+        return Response(response, mimetype='application/json')
+
+
+    
+    
 
 @app.route('/gasolineras/provincia_24horas', methods=['POST'])
 def get_gasolineras_provincia_24horas():
     # Devuelve las gasolineras abiertas 24 horas de una provincia pasada por parametro
+    # PRUEBA
+    '''
+    {
+        "Provincia" : "Málaga"
+    }
+    '''
     provincia = request.json["Provincia"]
 
-    if provincia:
-        lista = datos_abiertos.get_gasolineras_24horas(gasolineras_datos_abiertos, provincia)
-        response = {
-            "consulta": lista
-        }
-        return response
+    consulta = datos_abiertos.get_gasolineras_24horas(gasolineras_datos_abiertos, provincia)
+    response = json_util.dumps(consulta)
+    
+    if response == '[]':
+        not_found("No se han encontrado gasolineras abiertas 24 horas en " + provincia)
     else:
-        return {"message":"error"}
+        return Response(response, mimetype='application/json')    
+    
 # ---------------------------------------------FIN DATOS ABIERTOS-----------------------------------------------------------
 
 app.run()
