@@ -412,13 +412,13 @@ def get_gasolineras_gasolina95_lowcost():
 
 @app.route('/gasolineras/rango', methods=['POST'])
 def get_gasolineras_rango(): 
-    # Devuelve una lista de gasolineras de un rango X de una ubicación pasada por parámetro o la ubicación real
+    # Devuelve una lista de gasolineras de un rango X en km de una ubicación pasada por parámetro o la ubicación real
     #PRUEBA
     '''
     {
         "latitude": 36.73428,
         "longitude": -4.56591,
-        "rango": 0.1
+        "rango": 5
     }
     '''
     latitude = None
