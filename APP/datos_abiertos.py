@@ -118,7 +118,11 @@ def get_gasolineras_ubicacion(gasolineras_datos_abiertos, latitud, longitud, ran
         lon = float(g["Longitud (WGS84)"].replace(",","."))
         if (latitud_min < lat < latitud_max) and (longitud_min < lon < longitud_max):
             lista.append(g)
-    return lista
+
+    gasolineras_json_string = json.dumps(lista)
+    gasolineras_json = json.loads(gasolineras_json_string)
+
+    return gasolineras_json
 
 def get_gasolineras_24horas(gasolineras_datos_abiertos, provincia):
     #Si el parametro recibido es nulo, se actualiza con la ubicación actual
@@ -126,4 +130,7 @@ def get_gasolineras_24horas(gasolineras_datos_abiertos, provincia):
     for g in gasolineras_datos_abiertos["ListaEESSPrecio"]:
         if g["Provincia"].upper() == provincia.upper() and g["Horario"].find("24H") != -1:
             lista.append(g)
-    return lista
+    gasolineras_json_string = json.dumps(lista)
+    gasolineras_json = json.loads(gasolineras_json_string)
+
+    return gasolineras_json
