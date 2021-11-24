@@ -67,7 +67,7 @@ def get_incidencias_provincia(provincia, trafico_actualizado):
     return incidencias_json
 
 
-def get_incidencias_rango(latitud, longitud, rango):
+def get_incidencias_rango(latitud, longitud, rango,trafico_actualizado):
 
     if not latitud and not longitud:
         latitud, longitud = calcula_ubicacion()

@@ -333,7 +333,7 @@ def get_incidencias_provincia():
     provincia = request.json["provincia"]
     if provincia:
         trafico_actualizado = get_datos_trafico_actualizados()
-        incidencias_trafico = datos_abiertos.get_incidencias_comunidad_autonoma_and_provincia(provincia, trafico_actualizado)
+        incidencias_trafico = datos_abiertos.get_incidencias_provincia(provincia, trafico_actualizado)
         response = json_util.dumps(incidencias_trafico)    
         return Response(response, mimetype='application/json')
     else: 
@@ -346,11 +346,12 @@ def get_trafico_in_rango():
     longitude = request.json["longitude"]
     rango = request.json["rango"]
     lista = None
+    trafico_actualizado = get_datos_trafico_actualizados()
     if rango:
         if latitude and longitude:
-            lista = datos_abiertos.get_incidencias_rango(latitude, longitude, rango)
+            lista = datos_abiertos.get_incidencias_rango(latitude, longitude, rango, trafico_actualizado)
         else:
-            lista = datos_abiertos.get_incidencias_rango(None, None, rango)
+            lista = datos_abiertos.get_incidencias_rango(None, None, rango, trafico_actualizado)
         
         response = {
             "consulta": lista
