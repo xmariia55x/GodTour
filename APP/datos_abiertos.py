@@ -29,6 +29,34 @@ def descargar_gasolineras():
     gasolineras = json.loads(file_leido)
     return gasolineras
 
+def calcula_ubicacion():
+
+    # ------VÁLIDO PARA UBICACIÓN ACTUAL-----
+    Nomi_locator = Nominatim(user_agent="My App")
+
+    my_location= geocoder.ip('me')
+
+    #my latitude and longitude coordinates
+    latitude= my_location.geojson['features'][0]['properties']['lat']
+    longitude = my_location.geojson['features'][0]['properties']['lng']
+    #------- FIN DE UBICACIÓN ACTUAL
+    '''
+    #   get the location
+    #location = Nomi_locator.reverse(f"{latitude}, {longitude}")
+
+    print("Mi latitud es",latitude)
+    print("Mi longitud es",longitude)
+    print("Mi rango de latitud es",latitude+float(rango))
+    print("Mi rango de longitud es",longitude+float(rango))
+    print("Your Current IP location is", location)
+    
+    #dict = {"Longitud_max":longitude+float(rango),"Longitud_min":longitude-float(rango),"Latitud_max":latitude+float(rango),"Latitud_min":latitude-float(rango)}
+    #print(dict)
+    '''
+    return latitude, longitude
+
+# --------------- OPERACIONES TRÁFICO ------------------------#
+
 def get_incidencias_comunidad_autonoma_and_provincia(comunidad_autonoma, provincia, trafico_actualizado):
     lista_incidencias = []
     for incidencia in trafico_actualizado["features"]:
@@ -37,6 +65,8 @@ def get_incidencias_comunidad_autonoma_and_provincia(comunidad_autonoma, provinc
     incidencias_json_string = json.dumps(lista_incidencias)
     incidencias_json = json.loads(incidencias_json_string)
     return incidencias_json
+
+# --------------- OPERACIONES GASOLINERAS ------------------------#
 
 def get_gasolineras_gasolina95_lowcost_localidad(localidad, datos_gasolineras):
     lista_gasolineras = []
@@ -71,32 +101,6 @@ def get_gasolineras_ubicacion(ubicacion):
 # lines.sort() is more efficient than lines = lines.sorted()
 
 # Esta función calcula la latitud y longitud maxima dada un rango y la ubicación actual, lo devuelve en forma de diccionario
-
-def calcula_ubicacion():
-
-    # ------VÁLIDO PARA UBICACIÓN ACTUAL-----
-    Nomi_locator = Nominatim(user_agent="My App")
-
-    my_location= geocoder.ip('me')
-
-    #my latitude and longitude coordinates
-    latitude= my_location.geojson['features'][0]['properties']['lat']
-    longitude = my_location.geojson['features'][0]['properties']['lng']
-    #------- FIN DE UBICACIÓN ACTUAL
-    '''
-    #   get the location
-    #location = Nomi_locator.reverse(f"{latitude}, {longitude}")
-
-    print("Mi latitud es",latitude)
-    print("Mi longitud es",longitude)
-    print("Mi rango de latitud es",latitude+float(rango))
-    print("Mi rango de longitud es",longitude+float(rango))
-    print("Your Current IP location is", location)
-    
-    #dict = {"Longitud_max":longitude+float(rango),"Longitud_min":longitude-float(rango),"Latitud_max":latitude+float(rango),"Latitud_min":latitude-float(rango)}
-    #print(dict)
-    '''
-    return latitude, longitude
 
 
 def get_gasolineras_ubicacion(gasolineras_datos_abiertos, latitud, longitud, rango):
