@@ -429,8 +429,11 @@ def get_gasolineras_rango():
     except :
         print("Latitud y longitud no introducidas")
 
-    rango = request.json["rango"]
+    rango_km = float(request.json["rango"])
     consulta = None
+
+    rango = rango_km / 111.12  # Paso de km a grados
+
     if latitude and longitude:
         consulta = datos_abiertos.get_gasolineras_ubicacion(gasolineras_datos_abiertos, latitude, longitude, rango)
     else:
