@@ -324,7 +324,7 @@ def get_datos_trafico_actualizados():
 @app.route('/trafico', methods=['GET'])
 def get_trafico():
     datos_trafico = get_datos_trafico_actualizados()
-    response = json_util.dumps(datos_trafico)    
+    response = json_util.dumps(datos_trafico)
     return Response(response, mimetype='application/json')
 
 #Devuelve las incidencias de trafico de una provincia de una comunidad autonoma
@@ -341,6 +341,7 @@ def get_incidencias_comunidad_autonoma_and_provincia():
         #to do 
         return None
 # --------------------------------------------- FIN DATOS ABIERTOS - TRAFICO -------------------------------------------------------
+
 # ---------------------------------------------MANEJO DE ERRORES-----------------------------------------------------------
 
 #Error 400
@@ -420,10 +421,16 @@ def get_gasolineras_rango():
         "rango": 0.1
     }
     '''
-    latitude = request.json["latitude"]
-    longitude = request.json["longitude"]
+    latitude = None
+    longitude = None
+
+    try : 
+        latitude = request.json["latitude"]
+        longitude = request.json["longitude"]
+    except :
+        print("Latitud y longitud no introducidas")
+
     rango = request.json["rango"]
-    lista = None
     if rango:
         if latitude and longitude:
             lista = datos_abiertos.get_gasolineras_ubicacion(gasolineras_datos_abiertos, latitude, longitude, rango)
