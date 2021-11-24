@@ -340,6 +340,28 @@ def get_incidencias_comunidad_autonoma_and_provincia():
     else: 
         #to do 
         return None
+
+@app.route('/trafico/rango', methods=['POST'])
+def get_trafico_in_rango():
+    latitude = request.json["latitude"]
+    longitude = request.json["longitude"]
+    rango = request.json["rango"]
+    lista = None
+    if rango:
+        if latitude and longitude:
+            lista = datos_abiertos.get_incidencias_rango(latitude, longitude, rango)
+        else:
+            lista = datos_abiertos.get_incidencias_rango(None, None, rango)
+        
+        response = {
+            "consulta": lista
+        }
+        return response
+
+    else:
+        return {"message":"error"}
+    
+
 # --------------------------------------------- FIN DATOS ABIERTOS - TRAFICO -------------------------------------------------------
 # ---------------------------------------------MANEJO DE ERRORES-----------------------------------------------------------
 

@@ -66,6 +66,53 @@ def get_incidencias_comunidad_autonoma_and_provincia(comunidad_autonoma, provinc
     incidencias_json = json.loads(incidencias_json_string)
     return incidencias_json
 
+
+def get_incidencias_rango(latitud, longitud, rango):
+
+    if not latitud and not longitud:
+        latitud, longitud = calcula_ubicacion()
+
+    rangoGrados = rango/112.12
+    latitud_min = latitud - float(rangoGrados)
+    latitud_max = latitud + float(rangoGrados)
+    longitud_min = longitud - float(rangoGrados)
+    longitud_max = longitud + float(rangoGrados)
+    lista_incidencias = []
+    for incidencia in trafico_actualizado["features"]:
+        cords = incidencia["geometry"]["coordinates"].split(',')
+        lat = cords[0]
+        lon = cords[1]
+        if (latitud_min < lat < latitud_max) and (longitud_min < lon < longitud_max):
+            lista_incidencias.append(incidencia)
+    incidencias_json_string = json.dumps(lista_incidencias)
+    incidencias_json = json.loads(incidencias_json_string)
+    return incidencias_json
+
+
+
+    lista_incidencias = []
+    for incidencia in trafico_actualizado["features"]:
+        if incidencia["properties"]["autonomia"] == comunidad_autonoma and incidencia["properties"]["provincia"] == provincia:
+            lista_incidencias.append(incidencia)
+    incidencias_json_string = json.dumps(lista_incidencias)
+    incidencias_json = json.loads(incidencias_json_string)
+    return incidencias_json
+
+    #Si el parametro recibido es nulo, se actualiza con la ubicación actual
+         
+
+    latitud_min = latitud - float(rango)
+    latitud_max = latitud + float(rango)
+    longitud_min = longitud - float(rango)
+    longitud_max = longitud + float(rango)
+    lista = []
+    for g in gasolineras_datos_abiertos["ListaEESSPrecio"]:
+        lat = float(g["Latitud"].replace(",","."))
+        lon = float(g["Longitud (WGS84)"].replace(",","."))
+        if (latitud_min < lat < latitud_max) and (longitud_min < lon < longitud_max):
+            lista.append(g)
+    return lista
+
 # --------------- OPERACIONES GASOLINERAS ------------------------#
 
 def get_gasolineras_gasolina95_lowcost_localidad(localidad, datos_gasolineras):
