@@ -385,13 +385,14 @@ def get_gasolineras():
 @app.route('/gasolineras/gasolina95_lowcost', methods=['POST'])
 def get_gasolineras_gasolina95_lowcost():
     localidad = request.json["localidad"]
-    if localidad:
-        datos_actualizados = get_datos_gasolineras_actualizadas()
-        gasolineras_lowcost = datos_abiertos.get_gasolineras_gasolina95_lowcost_localidad(localidad, datos_actualizados)
-        response = json_util.dumps(gasolineras_lowcost)    
+    datos_actualizados = get_datos_gasolineras_actualizadas()
+    gasolineras_lowcost = datos_abiertos.get_gasolineras_gasolina95_lowcost_localidad(localidad, datos_actualizados)
+    response = json_util.dumps(gasolineras_lowcost) 
+    if response == '[]':
+        return not_found("No se han encontrado gasolineras en " + localidad)
+    else:     
         return Response(response, mimetype='application/json')
-    else:
-        return {"message":"No se ha especificado una localidad"} #TODO: MODIFICAR ESTO 
+    
 
 @app.route('/gasolineras/rango', methods=['POST'])
 def get_gasolineras_rango(): 
