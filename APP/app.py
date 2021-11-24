@@ -430,21 +430,26 @@ def get_gasolineras_rango():
     except :
         print("Latitud y longitud no introducidas")
 
-    rango_km = request.json["rango"]
+    rango_km = float(request.json["rango"])
     consulta = None
-    if rango:
-        rango = float(rango_km) / 111.12  # Paso de km a grados
-        if latitude and longitude:
-            consulta = datos_abiertos.get_gasolineras_ubicacion(gasolineras_datos_abiertos, latitude, longitude, rango)
-        else:
-            consulta = datos_abiertos.get_gasolineras_ubicacion(gasolineras_datos_abiertos, None, None, rango)
-    
-        response = json_util.dumps(consulta)
 
-        return Response(response, mimetype='application/json')
+    rango = rango_km / 111.12  # Paso de km a grados
 
+    if latitude and longitude:
+        consulta = datos_abiertos.get_gasolineras_ubicacion(gasolineras_datos_abiertos, latitude, longitude, rango)
     else:
-        return {"message":"error"}
+        consulta = datos_abiertos.get_gasolineras_ubicacion(gasolineras_datos_abiertos, None, None, rango)
+    
+    response = json_util.dumps(consulta)
+
+    if response == '[]':
+        not_found("No hay gasolineras en el rango de " + rango +" a partir de la ubicación actual")
+    else:
+        return Response(response, mimetype='application/json')
+        
+
+    
+    
 
 @app.route('/gasolineras/provincia_24horas', methods=['POST'])
 def get_gasolineras_provincia_24horas():
@@ -457,12 +462,14 @@ def get_gasolineras_provincia_24horas():
     '''
     provincia = request.json["Provincia"]
 
-    if provincia:
-        consulta = datos_abiertos.get_gasolineras_24horas(gasolineras_datos_abiertos, provincia)
-        response = json_util.dumps(consulta)
-        return Response(response, mimetype='application/json')
+    consulta = datos_abiertos.get_gasolineras_24horas(gasolineras_datos_abiertos, provincia)
+    response = json_util.dumps(consulta)
+    
+    if response == '[]':
+        not_found("No se han encontrado gasolineras abiertas 24 horas en " + provincia)
     else:
-        return {"message":"error"}
+        return Response(response, mimetype='application/json')    
+    
 # ---------------------------------------------FIN DATOS ABIERTOS-----------------------------------------------------------
 
 app.run()
