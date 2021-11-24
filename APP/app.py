@@ -10,41 +10,35 @@ from werkzeug.wrappers import response
 import datos_abiertos
 from datetime import datetime, timedelta
 
-ultima_actualizacion = 0
+ultima_actualizacion_gasolineras = 0
+ultima_actualizacion_trafico = 0
 class FlaskApp(Flask):
   def run(self, host=None, port=None, debug=None, load_dotenv=True, **options):
     if not self.debug or os.getenv('WERKZEUG_RUN_MAIN') == 'true':
       with self.app_context():
-        global gasolineras_datos_abiertos
-        gasolineras_datos_abiertos = datos_abiertos.descargar_gasolineras()
-        global ultima_actualizacion 
-        ultima_actualizacion = datetime.now()
+        global gasolineras_datos_abiertos, ultima_actualizacion_gasolineras, trafico_datos_abiertos, ultima_actualizacion_trafico
+        gasolineras_datos_abiertos = datos_abiertos.descargar_gasolineras() 
+        ultima_actualizacion_gasolineras = datetime.now()
+        trafico_datos_abiertos = datos_abiertos.descargar_datos_trafico()
+        ultima_actualizacion_trafico = datetime.now()
     super(FlaskApp, self).run(host=host, port=port, debug=debug, load_dotenv=load_dotenv, **options)
 app = FlaskApp(__name__)
 
 client = pymongo.MongoClient("mongodb+srv://Gestionpymongo:Gestionpymongo@cluster0.iixvr.mongodb.net/iweb?retryWrites=true&w=majority&ssl=true&ssl_cert_reqs=CERT_NONE")
 db = client.get_default_database()
-# -- ESTO ES PARA LOCAL --
-# app.config['MONGO_URI'] = 'mongodb://localhost/pythonmongodb'
-# mongo = PyMongo(app)
-
-# Este código sirve para sacar los datos del link, en este caso es un GeoJSON.
-@app.route('/pruebaGeoJSON', methods=['GET'])
-def buscaSpain():
-    return datos_abiertos.get_datos_abiertos()
 
 # -----------------------------------------------------USUARIO-------------------------------------------------------------
 # Obtengo la colección de usuarios
 usuario_db = db['Usuario']
 
-# Obtiene la lista de usuarios
+#Devuelve una lista con los usuarios
 @app.route('/usuario', methods=['GET'])
 def get_usuarios():
     usuarios = usuario_db.find()
     response = json_util.dumps(usuarios)
     return Response(response, mimetype='application/json')
 
-# Obtiene un usuario con el id que se le pasa por parámetro
+#Devuelve un usuario cuyo id coincide con el que se pasa por parámetro
 @app.route('/usuario/<id>', methods=['GET'])
 def get_usuario(id):
     usuario = usuario_db.find_one({'_id': ObjectId(id)})
@@ -54,7 +48,7 @@ def get_usuario(id):
     else:     
         return Response(response, mimetype='application/json')
 
-# Inserta un usuario 
+#Crea un nuevo usuario
 @app.route('/usuario/create', methods=['POST'])
 def create_usuario():
     nombre_completo = request.json['nombre_completo']
@@ -95,14 +89,14 @@ def create_usuario():
     else:
         return not_found("No se ha podido crear un usuario")
 
-# Borra un usuario
+#Elimina un usuario cuyo id coincide con el que se pasa por parametro
 @app.route('/usuario/delete/<id>', methods=['DELETE'])
 def delete_usuario(id):
     usuario_db.delete_one({'_id': ObjectId(id)})
     response = jsonify({'message': 'El usuario con id '+id+' se ha eliminado exitosamente'})
     return response
 
-#Updatea un usuario
+#Actualiza la informacion del usuario cuyo id coincide con el que se pasa por parametro
 @app.route('/usuario/update/<id>', methods=['PUT'])
 def update_usuario(id):
     nombre_completo = request.json['nombre_completo']
@@ -135,14 +129,14 @@ def update_usuario(id):
     else:
         return not_found("No se ha podido actualizar el usuario con el id: " + id)
 
-# Obtiene los usuarios ordenados alfabeticamente, orden ascendente -> python.ASCENDING , orden descendente -> python.DESCENDING
+#Devuelve una lista de usuarios ordenados alfabeticamente, orden ascendente -> python.ASCENDING , orden descendente -> python.DESCENDING
 @app.route('/usuario/byname', methods=['GET'])
 def get_usuario_ordered_by_name():
     usuarios = usuario_db.find().sort("nombre_completo", pymongo.ASCENDING)
     response = json_util.dumps(usuarios)
     return Response(response, mimetype='application/json')
 
-# Obtiene un usuario a partir de (parte de) su correo electronico 
+#Devuelve un usuario a partir de (parte de) su correo electronico pasado por parametro
 @app.route('/usuario/byemail', methods=['POST'])
 def get_usuario_by_email():
     email = request.json['correo']
@@ -156,31 +150,26 @@ def get_usuario_by_email():
 
 # ---------------------------------------------FIN USUARIO-----------------------------------------------------------
 
-# Javi yo hago los métodos IMPARES lista Trayecto, inserta trayecto, delte trayecto y tu los PARES trayectoId,update trayecto
-# Son más o menos las mismas líneas de código a ojo =)
-
 # ---------------------------------------------INICIO TRAYECTO-----------------------------------------------------------
 
 # Obtengo la colección de trayectos
 trayecto_db = db['Trayecto']
 
-# Obtiene la lista de trayectos
+#Devuelve una lista de trayectos
 @app.route('/trayecto', methods=['GET'])
 def get_trayectos():
     trayectos = trayecto_db.find()
     response = json_util.dumps(trayectos)
     return Response(response, mimetype='application/json')
 
-# TODO (JAVI)
-# Obtiene un trayecto con el id que se le pasa por parámetro 
+#Devuelve un trayecto cuyo id coincide con el que se pasa por parámetro
 @app.route('/trayecto/<id>', methods=['GET'])
 def get_trayecto(id):
     trayecto = trayecto_db.find_one({'_id': ObjectId(id)})
     response = json_util.dumps(trayecto)
     return Response(response, mimetype='application/json')
 
-
-# Inserta un trayecto
+#Crea un nuevo trayecto
 @app.route('/trayecto/create', methods=["POST"])
 def create_trayecto():
     destino= request.json['destino']
@@ -229,17 +218,14 @@ def create_trayecto():
     else:
         return not_found("No se ha podido crear el trayecto")
 
-
-# Borra un trayecto
+#Elimina un trayecto cuyo id coincide con el que se pasa por parametro
 @app.route('/trayecto/delete/<id>', methods=['DELETE'])
 def delete_trayecto(id):
     trayecto_db.delete_one({'_id': ObjectId(id)})
     response = jsonify({'message': 'El trayecto con id '+id+' se ha eliminado exitosamente'})
     return response
 
-# (JAVI)
-#Updatea un trayecto 
-
+#Actualiza la informacion del trayecto cuyo id coincide con el que se pasa por parametro
 @app.route('/trayecto/update/<id>', methods=['PUT'])
 def update_trayecto(id):
     destino = request.json['destino']
@@ -278,7 +264,7 @@ def update_trayecto(id):
     else:
         return not_found("No se ha podido actualizar el trayecto con id: " + id)
 
-# Obtiene los trayectos cuyo destino se le pasa por parámetro 
+#Devuelve los trayectos cuyo destino coincide con el que se pasa por parámetro 
 @app.route('/trayecto/bydestino', methods=['POST'])
 def get_trayecto_destino():
     destino = request.json['destino']
@@ -289,8 +275,7 @@ def get_trayecto_destino():
     else:     
         return Response(response, mimetype='application/json')
     
-
-# Obtiene los trayectos que tienen como origen y destino los indicados. Ej trayectos de Malaga a Cadiz
+#Devuelve los trayectos cuyos origenes y destinos coinciden con los pasados por parámetro 
 @app.route('/trayecto/byorigenanddestino', methods=['POST'])
 def get_trayecto_origen_destino():
     origen = request.json['origen']
@@ -302,7 +287,7 @@ def get_trayecto_origen_destino():
     else:     
         return Response(response, mimetype='application/json')
 
-# Obtiene los trayectos que cuesten menos que la cantidad indicada
+#Devuelve los trayectos cuyo precio es menor que la cantidad indicada por parametro
 @app.route('/trayecto/byprecio', methods=['POST'])
 def get_trayecto_precio():
     precio = request.json['precio']
@@ -313,7 +298,7 @@ def get_trayecto_precio():
     else:     
         return Response(response, mimetype='application/json')
 
-# Obtiene los usuarios de un trayecto a partir del id del trayecto
+#Devuelve los usuarios de un trayecto a partir del id del trayecto indicado por parametro
 @app.route('/usuario/bytrayecto/<id>', methods=['GET'])
 def get_usuario_trayecto(id):
     trayecto = trayecto_db.find_one({'_id': ObjectId(id)})
@@ -325,6 +310,37 @@ def get_usuario_trayecto(id):
         return Response(response, mimetype='application/json')
 
 # ---------------------------------------------FIN TRAYECTO-----------------------------------------------------------
+
+# --------------------------------------------- DATOS ABIERTOS - TRAFICO -----------------------------------------------------------
+def get_datos_trafico_actualizados():
+    global ultima_actualizacion_trafico, trafico_datos_abiertos #Llamada a la vbles globales para obtener y actualizar su valor
+    proxima_actualizacion_trafico = ultima_actualizacion_trafico + timedelta(minutes = 2) #Comprobamos que los datos se actualizan cada 2 min
+    if ultima_actualizacion_trafico > proxima_actualizacion_trafico: #Descargar los datos y actualizar en caso de que este desactualizado
+        ultima_actualizacion_trafico = proxima_actualizacion_trafico
+        trafico_datos_abiertos = datos_abiertos.descargar_datos_trafico()
+    return trafico_datos_abiertos
+
+#Devuelve una lista con las incidencias de trafico del conjunto de datos abiertos
+@app.route('/trafico', methods=['GET'])
+def get_trafico():
+    datos_trafico = get_datos_trafico_actualizados()
+    response = json_util.dumps(datos_trafico)
+    return Response(response, mimetype='application/json')
+
+#Devuelve las incidencias de trafico de una provincia de una comunidad autonoma
+@app.route('/trafico/by_comunidad_autonoma_and_provincia', methods=['POST'])
+def get_incidencias_comunidad_autonoma_and_provincia():
+    comunidad_autonoma = request.json["comunidad_autonoma"]
+    provincia = request.json["provincia"]
+    if comunidad_autonoma and provincia:
+        trafico_actualizado = get_datos_trafico_actualizados()
+        incidencias_trafico = datos_abiertos.get_incidencias_comunidad_autonoma_and_provincia(comunidad_autonoma, provincia, trafico_actualizado)
+        response = json_util.dumps(incidencias_trafico)    
+        return Response(response, mimetype='application/json')
+    else: 
+        #to do 
+        return None
+# --------------------------------------------- FIN DATOS ABIERTOS - TRAFICO -------------------------------------------------------
 
 # ---------------------------------------------MANEJO DE ERRORES-----------------------------------------------------------
 
@@ -366,10 +382,10 @@ def server_error(error):
 
 # --------------------------------------------- DATOS ABIERTOS - GASOLINERA -----------------------------------------------------------
 def get_datos_gasolineras_actualizadas():
-    global ultima_actualizacion, gasolineras_datos_abiertos #Llamada a la vbles globales para obtener y actualizar su valor
-    proxima_actualizacion = ultima_actualizacion + timedelta(hours = 1) #Comprobamos que los datos se actualizan cada hora
-    if ultima_actualizacion > proxima_actualizacion: #Descargar los datos y actualizar en caso de que este desactualizado
-        ultima_actualizacion = proxima_actualizacion
+    global ultima_actualizacion_gasolineras, gasolineras_datos_abiertos #Llamada a la vbles globales para obtener y actualizar su valor
+    proxima_actualizacion = ultima_actualizacion_gasolineras + timedelta(hours = 1) #Comprobamos que los datos se actualizan cada hora
+    if ultima_actualizacion_gasolineras > proxima_actualizacion: #Descargar los datos y actualizar en caso de que este desactualizado
+        ultima_actualizacion_gasolineras = proxima_actualizacion
         gasolineras_datos_abiertos = datos_abiertos.descargar_gasolineras()
     return gasolineras_datos_abiertos
 
@@ -405,15 +421,21 @@ def get_gasolineras_rango():
         "rango": 0.1
     }
     '''
-    latitude = request.json["latitude"]
-    longitude = request.json["longitude"]
+    latitude = None
+    longitude = None
+
+    try : 
+        latitude = request.json["latitude"]
+        longitude = request.json["longitude"]
+    except :
+        print("Latitud y longitud no introducidas")
+
     rango = request.json["rango"]
-    lista = None
     if rango:
         if latitude and longitude:
-            lista = datos_abiertos.get_gasolineras_ubicacion(get_gasolineras(), latitude, longitude, rango)
+            lista = datos_abiertos.get_gasolineras_ubicacion(gasolineras_datos_abiertos, latitude, longitude, rango)
         else:
-            lista = datos_abiertos.get_gasolineras_ubicacion(get_gasolineras(), None, None, rango)
+            lista = datos_abiertos.get_gasolineras_ubicacion(gasolineras_datos_abiertos, None, None, rango)
         
         response = {
             "consulta": lista
@@ -429,7 +451,7 @@ def get_gasolineras_provincia_24horas():
     provincia = request.json["Provincia"]
 
     if provincia:
-        lista = datos_abiertos.get_gasolineras_24horas(get_gasolineras(), provincia)
+        lista = datos_abiertos.get_gasolineras_24horas(gasolineras_datos_abiertos, provincia)
         response = {
             "consulta": lista
         }
