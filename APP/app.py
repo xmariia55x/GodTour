@@ -461,20 +461,20 @@ def get_gasolineras_rango():
 
     rango = rango_km / 111.12  # Paso de km a grados
 
+    gasolineras_actualizadas = get_datos_gasolineras_actualizadas()
+    # Si no le pasa ubicacion por parametro se pasa None en los campos para que calcule la ubicacion actual
     if latitude and longitude:
-        consulta = datos_abiertos.get_gasolineras_ubicacion(gasolineras_datos_abiertos, latitude, longitude, rango)
+        consulta = datos_abiertos.get_gasolineras_ubicacion(gasolineras_actualizadas, latitude, longitude, rango)
     else:
-        consulta = datos_abiertos.get_gasolineras_ubicacion(gasolineras_datos_abiertos, None, None, rango)
+        consulta = datos_abiertos.get_gasolineras_ubicacion(gasolineras_actualizadas, None, None, rango)
     
     response = json_util.dumps(consulta)
 
+    # Controla los errores
     if response == '[]':
         not_found("No hay gasolineras en el rango de " + rango_km +" a partir de la ubicación actual")
     else:
         return Response(response, mimetype='application/json')
-
-
-    
     
 
 @app.route('/gasolineras/provincia_24horas', methods=['POST'])
@@ -487,8 +487,8 @@ def get_gasolineras_provincia_24horas():
     }
     '''
     provincia = request.json["Provincia"]
-
-    consulta = datos_abiertos.get_gasolineras_24horas(gasolineras_datos_abiertos, provincia)
+    gasolineras_actualizadas = get_datos_gasolineras_actualizadas()
+    consulta = datos_abiertos.get_gasolineras_24horas(gasolineras_actualizadas, provincia)
     response = json_util.dumps(consulta)
     
     if response == '[]':
