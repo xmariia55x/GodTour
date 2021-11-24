@@ -327,7 +327,7 @@ def get_trafico():
     response = json_util.dumps(datos_trafico)
     return Response(response, mimetype='application/json')
 
-#Devuelve las incidencias de trafico de una provincia de una comunidad autonoma
+#Devuelve las incidencias de trafico de una provincia
 @app.route('/trafico/by_provincia', methods=['POST'])
 def get_incidencias_provincia():
     provincia = request.json["provincia"]
