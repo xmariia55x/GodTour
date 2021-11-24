@@ -57,10 +57,10 @@ def calcula_ubicacion():
 
 # --------------- OPERACIONES TRÁFICO ------------------------#
 
-def get_incidencias_comunidad_autonoma_and_provincia(comunidad_autonoma, provincia, trafico_actualizado):
+def get_incidencias_provincia(provincia, trafico_actualizado):
     lista_incidencias = []
     for incidencia in trafico_actualizado["features"]:
-        if incidencia["properties"]["autonomia"] == comunidad_autonoma and incidencia["properties"]["provincia"] == provincia:
+        if incidencia["properties"]["provincia"].upper() == provincia.upper() :
             lista_incidencias.append(incidencia)
     incidencias_json_string = json.dumps(lista_incidencias)
     incidencias_json = json.loads(incidencias_json_string)

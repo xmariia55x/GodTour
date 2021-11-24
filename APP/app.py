@@ -328,18 +328,17 @@ def get_trafico():
     return Response(response, mimetype='application/json')
 
 #Devuelve las incidencias de trafico de una provincia de una comunidad autonoma
-@app.route('/trafico/by_comunidad_autonoma_and_provincia', methods=['POST'])
-def get_incidencias_comunidad_autonoma_and_provincia():
-    comunidad_autonoma = request.json["comunidad_autonoma"]
+@app.route('/trafico/by_provincia', methods=['POST'])
+def get_incidencias_provincia():
     provincia = request.json["provincia"]
-    if comunidad_autonoma and provincia:
-        trafico_actualizado = get_datos_trafico_actualizados()
-        incidencias_trafico = datos_abiertos.get_incidencias_comunidad_autonoma_and_provincia(comunidad_autonoma, provincia, trafico_actualizado)
-        response = json_util.dumps(incidencias_trafico)    
-        return Response(response, mimetype='application/json')
-    else: 
-        #to do 
-        return None
+    trafico_actualizado = get_datos_trafico_actualizados()
+    incidencias_trafico = datos_abiertos.get_incidencias_provincia(provincia, trafico_actualizado)
+    response = json_util.dumps(incidencias_trafico)    
+    if response == '[]':
+        not_found("No hay incidencias en " + provincia) 
+    else:
+        return Response(response, mimetype='application/json') 
+
 # --------------------------------------------- FIN DATOS ABIERTOS - TRAFICO -------------------------------------------------------
 
 # ---------------------------------------------MANEJO DE ERRORES-----------------------------------------------------------
@@ -446,7 +445,7 @@ def get_gasolineras_rango():
         not_found("No hay gasolineras en el rango de " + rango +" a partir de la ubicación actual")
     else:
         return Response(response, mimetype='application/json')
-        
+
 
     
     
