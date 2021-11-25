@@ -346,8 +346,8 @@ def get_trafico_in_rango():
     longitude = None
 
     try : 
-        latitude = request.json["latitude"]
-        longitude = request.json["longitude"]
+        latitude = float(request.json["latitude"])
+        longitude = float(request.json["longitude"])
     except :
         print("Latitud y longitud no introducidas")
     
@@ -365,6 +365,111 @@ def get_trafico_in_rango():
         return not_found("No se han encontrado incidencias de trafico a " + str(rango) + " kms de la ubicacion actual")
     else:
         return Response(response, mimetype='application/json')
+
+@app.route('/trafico/nieve', methods=['POST'])
+def get_trafico_nieve():
+    latitude = None
+    longitude = None
+
+    try : 
+        latitude = float(request.json["latitude"])
+        longitude = float(request.json["longitude"])
+    except :
+        print("Latitud y longitud no introducidas")
+    
+    rango = float(request.json["rango"])
+    lista = None
+    trafico_actualizado = get_datos_trafico_actualizados()
+    if latitude and longitude:
+        lista = datos_abiertos.get_incidencias_nieve(latitude, longitude, rango, trafico_actualizado)
+    else:
+        lista = datos_abiertos.get_incidencias_nieve(None, None, rango, trafico_actualizado)
+        
+    response = json_util.dumps(lista)
+
+    if response == '[]':
+        return not_found("No se han encontrado incidencias de nieve trafico a " + str(rango) + " kms de la ubicacion actual")
+    else:
+        return Response(response, mimetype='application/json')    
+
+@app.route('/trafico/obras', methods=['POST'])
+def get_trafico_obras():
+    latitude = None
+    longitude = None
+
+    try : 
+        latitude = float(request.json["latitude"])
+        longitude = float(request.json["longitude"])
+    except :
+        print("Latitud y longitud no introducidas")
+    
+    rango = float(request.json["rango"])
+    lista = None
+    trafico_actualizado = get_datos_trafico_actualizados()
+    if latitude and longitude:
+        lista = datos_abiertos.get_incidencias_obras(latitude, longitude, rango, trafico_actualizado)
+    else:
+        lista = datos_abiertos.get_incidencias_obras(None, None, rango, trafico_actualizado)
+        
+    response = json_util.dumps(lista)
+
+    if response == '[]':
+        return not_found("No se han encontrado incidencias de obras trafico a " + str(rango) + " kms de la ubicacion actual")
+    else:
+        return Response(response, mimetype='application/json')  
+
+
+@app.route('/trafico/cortes', methods=['POST'])
+def get_trafico_cortes():
+    latitude = None
+    longitude = None
+
+    try : 
+        latitude = float(request.json["latitude"])
+        longitude = float(request.json["longitude"])
+    except :
+        print("Latitud y longitud no introducidas")
+    
+    rango = float(request.json["rango"])
+    lista = None
+    trafico_actualizado = get_datos_trafico_actualizados()
+    if latitude and longitude:
+        lista = datos_abiertos.get_incidencias_cortes(latitude, longitude, rango, trafico_actualizado)
+    else:
+        lista = datos_abiertos.get_incidencias_cortes(None, None, rango, trafico_actualizado)
+        
+    response = json_util.dumps(lista)
+
+    if response == '[]':
+        return not_found("No se han encontrado incidencias de cortes de trafico a " + str(rango) + " kms de la ubicacion actual")
+    else:
+        return Response(response, mimetype='application/json')  
+
+@app.route('/trafico/clima', methods=['POST'])
+def get_trafico_clima():
+    latitude = None
+    longitude = None
+
+    try : 
+        latitude = float(request.json["latitude"])
+        longitude = float(request.json["longitude"])
+    except :
+        print("Latitud y longitud no introducidas")
+    
+    rango = float(request.json["rango"])
+    lista = None
+    trafico_actualizado = get_datos_trafico_actualizados()
+    if latitude and longitude:
+        lista = datos_abiertos.get_incidencias_clima(latitude, longitude, rango, trafico_actualizado)
+    else:
+        lista = datos_abiertos.get_incidencias_clima(None, None, rango, trafico_actualizado)
+        
+    response = json_util.dumps(lista)
+
+    if response == '[]':
+        return not_found("No se han encontrado incidencias climatologicas a " + str(rango) + " kms de la ubicacion actual")
+    else:
+        return Response(response, mimetype='application/json')  
 
 # --------------------------------------------- FIN DATOS ABIERTOS - TRAFICO -------------------------------------------------------
 
