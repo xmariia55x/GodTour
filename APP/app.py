@@ -130,14 +130,14 @@ def update_usuario(id):
         return not_found("No se ha podido actualizar el usuario con el id: " + id)
 
 #Devuelve una lista de usuarios ordenados alfabeticamente, orden ascendente -> python.ASCENDING , orden descendente -> python.DESCENDING
-@app.route('/usuario/byname', methods=['GET'])
+@app.route('/usuario/by_name', methods=['GET'])
 def get_usuario_ordered_by_name():
     usuarios = usuario_db.find().sort("nombre_completo", pymongo.ASCENDING)
     response = json_util.dumps(usuarios)
     return Response(response, mimetype='application/json')
 
 #Devuelve un usuario a partir de (parte de) su correo electronico pasado por parametro
-@app.route('/usuario/byemail', methods=['POST'])
+@app.route('/usuario/by_email', methods=['POST'])
 def get_usuario_by_email():
     email = request.json['correo']
     usuarios = usuario_db.find( { 'correo': { "$regex": email + '.*', "$options" :'i' }} )
@@ -265,7 +265,7 @@ def update_trayecto(id):
         return not_found("No se ha podido actualizar el trayecto con id: " + id)
 
 #Devuelve los trayectos cuyo destino coincide con el que se pasa por parámetro 
-@app.route('/trayecto/bydestino', methods=['POST'])
+@app.route('/trayecto/by_destino', methods=['POST'])
 def get_trayecto_destino():
     destino = request.json['destino']
     trayecto = trayecto_db.find({'destino': destino})
@@ -276,7 +276,7 @@ def get_trayecto_destino():
         return Response(response, mimetype='application/json')
     
 #Devuelve los trayectos cuyos origenes y destinos coinciden con los pasados por parámetro 
-@app.route('/trayecto/byorigenanddestino', methods=['POST'])
+@app.route('/trayecto/by_origen_destino', methods=['POST'])
 def get_trayecto_origen_destino():
     origen = request.json['origen']
     destino = request.json['destino']
@@ -288,7 +288,7 @@ def get_trayecto_origen_destino():
         return Response(response, mimetype='application/json')
 
 #Devuelve los trayectos cuyo precio es menor que la cantidad indicada por parametro
-@app.route('/trayecto/byprecio', methods=['POST'])
+@app.route('/trayecto/by_precio', methods=['POST'])
 def get_trayecto_precio():
     precio = request.json['precio']
     trayecto = trayecto_db.find({'precio': { "$lt" : precio }})
@@ -299,7 +299,7 @@ def get_trayecto_precio():
         return Response(response, mimetype='application/json')
 
 #Devuelve los usuarios de un trayecto a partir del id del trayecto indicado por parametro
-@app.route('/usuario/bytrayecto/<id>', methods=['GET'])
+@app.route('/usuario/by_trayecto/<id>', methods=['GET'])
 def get_usuario_trayecto(id):
     trayecto = trayecto_db.find_one({'_id': ObjectId(id)})
     pasajeros = trayecto.get("pasajeros")
@@ -424,7 +424,7 @@ def get_gasolineras():
 
 #Devuelve una lista con las gasolineras de una localidad pasada por parametro
 #Las gasolineras estan ordenadas segun el precio de la gasolina 95 (de mas barata a mas cara)
-@app.route('/gasolineras/gasolina95_lowcost', methods=['POST'])
+@app.route('/gasolineras/gasolina95_low_cost', methods=['POST'])
 def get_gasolineras_gasolina95_lowcost():
     localidad = request.json["localidad"]
     datos_actualizados = get_datos_gasolineras_actualizadas()
@@ -477,7 +477,7 @@ def get_gasolineras_rango():
         return Response(response, mimetype='application/json')
     
 
-@app.route('/gasolineras/provincia_24horas', methods=['POST'])
+@app.route('/gasolineras/provincia_24_horas', methods=['POST'])
 def get_gasolineras_provincia_24horas():
     # Devuelve las gasolineras abiertas 24 horas de una provincia pasada por parametro
     # PRUEBA
