@@ -167,7 +167,10 @@ def get_trayectos():
 def get_trayecto(id):
     trayecto = trayecto_db.find_one({'_id': ObjectId(id)})
     response = json_util.dumps(trayecto)
-    return Response(response, mimetype='application/json')
+    if response == 'null':
+        return not_found("No se han encontrado trayectos con el id: " + id)
+    else:     
+        return Response(response, mimetype='application/json')
 
 #Crea un nuevo trayecto
 @app.route('/trayecto/create', methods=["POST"])
@@ -294,7 +297,7 @@ def get_trayecto_precio():
     trayecto = trayecto_db.find({'precio': { "$lt" : precio }})
     response = json_util.dumps(trayecto)
     if response == '[]':
-        return not_found("Trayectos con precio menor a " + precio + " no encontrados")
+        return not_found("Trayectos con precio menor a " + str(precio) + " no encontrados")
     else:     
         return Response(response, mimetype='application/json')
 
@@ -577,7 +580,7 @@ def get_gasolineras_rango():
 
     # Controla los errores
     if response == '[]':
-        not_found("No hay gasolineras en el rango de " + rango_km +" a partir de la ubicación actual")
+        not_found("No hay gasolineras en el rango de " + str(rango_km) +" a partir de la ubicación actual")
     else:
         return Response(response, mimetype='application/json')
     
