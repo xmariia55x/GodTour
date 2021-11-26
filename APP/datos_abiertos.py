@@ -41,19 +41,7 @@ def calcula_ubicacion():
     latitude= my_location.geojson['features'][0]['properties']['lat']
     longitude = my_location.geojson['features'][0]['properties']['lng']
     #------- FIN DE UBICACIÓN ACTUAL
-    '''
-    #   get the location
-    #location = Nomi_locator.reverse(f"{latitude}, {longitude}")
-
-    print("Mi latitud es",latitude)
-    print("Mi longitud es",longitude)
-    print("Mi rango de latitud es",latitude+float(rango))
-    print("Mi rango de longitud es",longitude+float(rango))
-    print("Your Current IP location is", location)
-    
-    #dict = {"Longitud_max":longitude+float(rango),"Longitud_min":longitude-float(rango),"Latitud_max":latitude+float(rango),"Latitud_min":latitude-float(rango)}
-    #print(dict)
-    '''
+   
     return latitude, longitude
 
 # --------------- OPERACIONES TRÁFICO ------------------------#
