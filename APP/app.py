@@ -139,7 +139,10 @@ def get_usuario_ordered_by_name():
 #Devuelve un usuario a partir de (parte de) su correo electronico pasado por parametro
 @app.route('/usuario/by_email', methods=['POST'])
 def get_usuario_by_email():
-    email = request.json['correo']
+    try:
+        email = request.json['correo']
+    except:
+        print("Email no introducido")
     usuarios = usuario_db.find( { 'correo': { "$regex": email + '.*', "$options" :'i' }} )
     response = json_util.dumps(usuarios)
     if response == '[]':
