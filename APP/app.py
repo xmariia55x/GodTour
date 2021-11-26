@@ -1,5 +1,6 @@
 from logging import NullHandler
 from flask import Flask, request, jsonify, Response
+from flask.templating import render_template
 from flask_pymongo import PyMongo
 import pymongo
 import sys
@@ -26,6 +27,12 @@ app = FlaskApp(__name__)
 
 client = pymongo.MongoClient("mongodb+srv://Gestionpymongo:Gestionpymongo@cluster0.iixvr.mongodb.net/iweb?retryWrites=true&w=majority&ssl=true&ssl_cert_reqs=CERT_NONE")
 db = client.get_default_database()
+
+
+#PRUEBA JINJA
+@app.route('/')
+def prueba_Jinja():
+    return render_template("pruebaJinja.html",variable="soy una variable")
 
 # -----------------------------------------------------USUARIO-------------------------------------------------------------
 # Obtengo la colección de usuarios
@@ -245,7 +252,7 @@ def update_trayecto(id):
     plazas_totales= int(request.json['plazas_totales'])
     vehiculo = request.json['vehiculo']
     pasajeros = request.json['pasajeros']
-
+    
     if destino and fecha and hora and precio and plazas_totales and vehiculo:
         filter = {"_id": ObjectId(id)}
         new_values = {"$set":{
