@@ -267,7 +267,12 @@ def update_trayecto(id):
 #Devuelve los trayectos cuyo destino coincide con el que se pasa por parámetro 
 @app.route('/trayecto/by_destino', methods=['POST'])
 def get_trayecto_destino():
-    destino = request.json['destino']
+    
+    try : 
+        destino = request.json['destino']
+    except :
+        print("destino no introducido")
+    
     trayecto = trayecto_db.find({'destino': destino})
     response = json_util.dumps(trayecto)
     if response == '[]':
@@ -278,8 +283,12 @@ def get_trayecto_destino():
 #Devuelve los trayectos cuyos origenes y destinos coinciden con los pasados por parámetro 
 @app.route('/trayecto/by_origen_destino', methods=['POST'])
 def get_trayecto_origen_destino():
-    origen = request.json['origen']
-    destino = request.json['destino']
+    try : 
+        origen = request.json['origen']
+        destino = request.json['destino']
+    except :
+        print("destino u origen no introducidos")
+    
     trayecto = trayecto_db.find({'origen': origen, 'destino': destino})
     response = json_util.dumps(trayecto)
     if response == '[]':
@@ -290,7 +299,11 @@ def get_trayecto_origen_destino():
 #Devuelve los trayectos cuyo precio es menor que la cantidad indicada por parametro
 @app.route('/trayecto/by_precio', methods=['POST'])
 def get_trayecto_precio():
-    precio = request.json['precio']
+    try : 
+        precio = request.json['precio']
+    except :
+        print("precio no introducido")
+    
     trayecto = trayecto_db.find({'precio': { "$lt" : precio }})
     response = json_util.dumps(trayecto)
     if response == '[]':
@@ -330,7 +343,11 @@ def get_trafico():
 #Devuelve las incidencias de trafico de una provincia
 @app.route('/trafico/by_provincia', methods=['POST'])
 def get_incidencias_provincia():
-    provincia = request.json["provincia"]
+    try : 
+        provincia = request.json["provincia"]
+    except :
+        print("provincia no introducida")
+    
     trafico_actualizado = get_datos_trafico_actualizados()
     incidencias_trafico = datos_abiertos.get_incidencias_provincia(provincia, trafico_actualizado)
     response = json_util.dumps(incidencias_trafico)    
@@ -348,10 +365,11 @@ def get_trafico_in_rango():
     try : 
         latitude = float(request.json["latitude"])
         longitude = float(request.json["longitude"])
+        rango = float(request.json["rango"])
     except :
-        print("Latitud y longitud no introducidas")
+        print("Latitud, longitud o rango no introducidos")
     
-    rango = float(request.json["rango"])
+    
     lista = None
     trafico_actualizado = get_datos_trafico_actualizados()
     if latitude and longitude:
@@ -531,7 +549,11 @@ def get_gasolineras():
 #Las gasolineras estan ordenadas segun el precio de la gasolina 95 (de mas barata a mas cara)
 @app.route('/gasolineras/gasolina95_low_cost', methods=['POST'])
 def get_gasolineras_gasolina95_lowcost():
-    localidad = request.json["localidad"]
+    try : 
+         localidad = request.json["localidad"]
+    except :
+        print("Latitud y longitud no introducidas")
+   
     datos_actualizados = get_datos_gasolineras_actualizadas()
     gasolineras_lowcost = datos_abiertos.get_gasolineras_gasolina95_lowcost_localidad(localidad, datos_actualizados)
     response = json_util.dumps(gasolineras_lowcost) 
@@ -591,7 +613,11 @@ def get_gasolineras_provincia_24horas():
         "Provincia" : "Málaga"
     }
     '''
-    provincia = request.json["Provincia"]
+    try : 
+         provincia = request.json["Provincia"]
+    except :
+        print("Latitud y longitud no introducidas")
+   
     gasolineras_actualizadas = get_datos_gasolineras_actualizadas()
     consulta = datos_abiertos.get_gasolineras_24horas(gasolineras_actualizadas, provincia)
     response = json_util.dumps(consulta)

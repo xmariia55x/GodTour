@@ -13,6 +13,7 @@ LINKS DE INTERÉS:
     Puntos de interés de España: http://datos.santander.es/api/rest/datasets/puntos_interes.json
     Kilometros de carretera en España: https://opendata.arcgis.com/api/v3/datasets/c68d7c5e350c47cb9ad7ac491c327115_2/downloads/data?format=geojson&spatialRefId=4326
     Precio gasolineras España: 'https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/'
+    Datos de incidencias de tráfico: 'https://opendata.arcgis.com/datasets/a64659151f0a42c69a38563e9d006c6b_0.geojson'
 
 '''
 def descargar_datos_trafico():
