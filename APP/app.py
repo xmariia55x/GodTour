@@ -17,11 +17,11 @@ class FlaskApp(Flask):
   def run(self, host=None, port=None, debug=None, load_dotenv=True, **options):
     if not self.debug or os.getenv('WERKZEUG_RUN_MAIN') == 'true':
       with self.app_context():
-        global gasolineras_datos_abiertos, ultima_actualizacion_gasolineras, trafico_datos_abiertos, ultima_actualizacion_trafico
+        global gasolineras_datos_abiertos, ultima_actualizacion_gasolineras #, trafico_datos_abiertos, ultima_actualizacion_trafico
         gasolineras_datos_abiertos = datos_abiertos.descargar_gasolineras() 
         ultima_actualizacion_gasolineras = datetime.now()
-        trafico_datos_abiertos = datos_abiertos.descargar_datos_trafico()
-        ultima_actualizacion_trafico = datetime.now()
+        #trafico_datos_abiertos = datos_abiertos.descargar_datos_trafico()
+        #ultima_actualizacion_trafico = datetime.now()
     super(FlaskApp, self).run(host=host, port=port, debug=debug, load_dotenv=load_dotenv, **options)
 app = FlaskApp(__name__)
 
@@ -91,7 +91,6 @@ def create_usuario():
             "permiso_conduccion": permiso_conduccion,
             "valoracion_media": valoracion_media
         }
-        
         return response
     else:
         return not_found("No se ha podido crear un usuario")
@@ -146,16 +145,16 @@ def get_usuario_ordered_by_name():
 #Devuelve un usuario a partir de (parte de) su correo electronico pasado por parametro
 @app.route('/usuario/by_email', methods=['POST'])
 def get_usuario_by_email():
-    try:
-        email = request.json['correo']
-    except:
-        print("Email no introducido")
-    usuarios = usuario_db.find( { 'correo': { "$regex": email + '.*', "$options" :'i' }} )
-    response = json_util.dumps(usuarios)
-    if response == '[]':
-        return not_found("No se ha encontrado ningún usuario con el email " + email)
-    else:     
-        return Response(response, mimetype='application/json')
+    email = request.json['correo']
+    if email:
+        usuarios = usuario_db.find( { 'correo': { "$regex": email + '.*', "$options" :'i' }} )
+        response = json_util.dumps(usuarios)
+        if response == '[]':
+            return not_found("No se ha encontrado ningún usuario con el email " + email)
+        else:     
+            return Response(response, mimetype='application/json')
+    else:
+        return not_found("No se ha introducido ningun email")
 
 
 # ---------------------------------------------FIN USUARIO-----------------------------------------------------------
@@ -199,7 +198,7 @@ def create_trayecto():
 
     if creador and destino and fecha and hora and precio and plazas_totales and vehiculo:
         id=trayecto_db.insert_one({
-            "creador": creador,
+            "creador": ObjectId(creador),
             "destino":destino,
             "duracion":duracion,
             "fecha":fecha,
@@ -252,8 +251,12 @@ def update_trayecto(id):
     plazas_totales= int(request.json['plazas_totales'])
     vehiculo = request.json['vehiculo']
     pasajeros = request.json['pasajeros']
-    
+
+    lista_pasajeros = []
     if destino and fecha and hora and precio and plazas_totales and vehiculo:
+        if pasajeros:
+            for pasajero in pasajeros:
+                lista_pasajeros.append(ObjectId(pasajero))
         filter = {"_id": ObjectId(id)}
         new_values = {"$set":{
             "destino": destino,
@@ -266,7 +269,7 @@ def update_trayecto(id):
             "fotos_opcionales": fotos_opcionales,
             "plazas_totales": plazas_totales,
             "vehiculo": vehiculo, 
-            "pasajeros": pasajeros
+            "pasajeros": lista_pasajeros
         }}
         
         trayecto_db.update_one(filter, new_values) 
@@ -280,49 +283,45 @@ def update_trayecto(id):
 #Devuelve los trayectos cuyo destino coincide con el que se pasa por parámetro 
 @app.route('/trayecto/by_destino', methods=['POST'])
 def get_trayecto_destino():
-    
-    try : 
-        destino = request.json['destino']
-    except :
-        print("destino no introducido")
-    
-    trayecto = trayecto_db.find({'destino': destino})
-    response = json_util.dumps(trayecto)
-    if response == '[]':
-        return not_found("No se han encontrado trayectos con destino " + destino)
-    else:     
-        return Response(response, mimetype='application/json')
+    destino = request.json['destino']
+    if destino:
+        trayecto = trayecto_db.find({'destino': destino})
+        response = json_util.dumps(trayecto)
+        if response == '[]':
+            return not_found("No se han encontrado trayectos con destino " + destino)
+        else:     
+            return Response(response, mimetype='application/json')
+    else:
+        return not_found("No se ha indicado un destino")
     
 #Devuelve los trayectos cuyos origenes y destinos coinciden con los pasados por parámetro 
 @app.route('/trayecto/by_origen_destino', methods=['POST'])
 def get_trayecto_origen_destino():
-    try : 
-        origen = request.json['origen']
-        destino = request.json['destino']
-    except :
-        print("destino u origen no introducidos")
-    
-    trayecto = trayecto_db.find({'origen': origen, 'destino': destino})
-    response = json_util.dumps(trayecto)
-    if response == '[]':
-        return not_found("No se han encontrado trayectos con origen " + origen + " y destino " + destino)
-    else:     
-        return Response(response, mimetype='application/json')
+    origen = request.json['origen']
+    destino = request.json['destino']
+    if origen and destino:
+        trayecto = trayecto_db.find({'origen': origen, 'destino': destino})
+        response = json_util.dumps(trayecto)
+        if response == '[]':
+            return not_found("No se han encontrado trayectos con origen " + origen + " y destino " + destino)
+        else:     
+            return Response(response, mimetype='application/json')
+    else:
+        return not_found("No se han indicado trayectos con origen " + origen + " y destino " + destino)
 
 #Devuelve los trayectos cuyo precio es menor que la cantidad indicada por parametro
 @app.route('/trayecto/by_precio', methods=['POST'])
 def get_trayecto_precio():
-    try : 
-        precio = request.json['precio']
-    except :
-        print("precio no introducido")
-    
-    trayecto = trayecto_db.find({'precio': { "$lt" : precio }})
-    response = json_util.dumps(trayecto)
-    if response == '[]':
-        return not_found("Trayectos con precio menor a " + str(precio) + " no encontrados")
-    else:     
-        return Response(response, mimetype='application/json')
+    precio = request.json['precio']
+    if precio:
+        trayecto = trayecto_db.find({'precio': { "$lt" : precio }})
+        response = json_util.dumps(trayecto)
+        if response == '[]':
+            return not_found("Trayectos con precio menor a " + str(precio) + " no encontrados")
+        else:     
+            return Response(response, mimetype='application/json')
+    else:
+        return not_found("No se ha indicado un precio")
 
 #Devuelve los usuarios de un trayecto a partir del id del trayecto indicado por parametro
 @app.route('/usuario/by_trayecto/<id>', methods=['GET'])
@@ -339,11 +338,11 @@ def get_usuario_trayecto(id):
 
 # --------------------------------------------- DATOS ABIERTOS - TRAFICO -----------------------------------------------------------
 def get_datos_trafico_actualizados():
-    global ultima_actualizacion_trafico, trafico_datos_abiertos #Llamada a la vbles globales para obtener y actualizar su valor
-    proxima_actualizacion_trafico = ultima_actualizacion_trafico + timedelta(minutes = 2) #Comprobamos que los datos se actualizan cada 2 min
-    if ultima_actualizacion_trafico > proxima_actualizacion_trafico: #Descargar los datos y actualizar en caso de que este desactualizado
-        ultima_actualizacion_trafico = proxima_actualizacion_trafico
-        trafico_datos_abiertos = datos_abiertos.descargar_datos_trafico()
+    #global ultima_actualizacion_trafico , trafico_datos_abiertos Llamada a la vbles globales para obtener y actualizar su valor
+    #proxima_actualizacion_trafico = ultima_actualizacion_trafico + timedelta(minutes = 2) Comprobamos que los datos se actualizan cada 2 min
+    #if ultima_actualizacion_trafico > proxima_actualizacion_trafico: #Descargar los datos y actualizar en caso de que este desactualizado
+    #    ultima_actualizacion_trafico = proxima_actualizacion_trafico
+    trafico_datos_abiertos = datos_abiertos.descargar_datos_trafico()
     return trafico_datos_abiertos
 
 #Devuelve una lista con las incidencias de trafico del conjunto de datos abiertos
@@ -545,7 +544,7 @@ def server_error(error):
 # --------------------------------------------- DATOS ABIERTOS - GASOLINERA -----------------------------------------------------------
 def get_datos_gasolineras_actualizadas():
     global ultima_actualizacion_gasolineras, gasolineras_datos_abiertos #Llamada a la vbles globales para obtener y actualizar su valor
-    proxima_actualizacion = ultima_actualizacion_gasolineras + timedelta(hours = 1) #Comprobamos que los datos se actualizan cada hora
+    proxima_actualizacion = ultima_actualizacion_gasolineras + timedelta(hours = 24) #Comprobamos que los datos se actualizan cada 24 horas
     if ultima_actualizacion_gasolineras > proxima_actualizacion: #Descargar los datos y actualizar en caso de que este desactualizado
         ultima_actualizacion_gasolineras = proxima_actualizacion
         gasolineras_datos_abiertos = datos_abiertos.descargar_gasolineras()
@@ -562,18 +561,17 @@ def get_gasolineras():
 #Las gasolineras estan ordenadas segun el precio de la gasolina 95 (de mas barata a mas cara)
 @app.route('/gasolineras/gasolina95_low_cost', methods=['POST'])
 def get_gasolineras_gasolina95_lowcost():
-    try : 
-         localidad = request.json["localidad"]
-    except :
-        print("Latitud y longitud no introducidas")
-   
-    datos_actualizados = get_datos_gasolineras_actualizadas()
-    gasolineras_lowcost = datos_abiertos.get_gasolineras_gasolina95_lowcost_localidad(localidad, datos_actualizados)
-    response = json_util.dumps(gasolineras_lowcost) 
-    if response == '[]':
-        not_found("No se han encontrado gasolineras en " + localidad)
-    else:     
-        return Response(response, mimetype='application/json')
+    localidad = request.json["localidad"]
+    if localidad:
+        datos_actualizados = get_datos_gasolineras_actualizadas()
+        gasolineras_lowcost = datos_abiertos.get_gasolineras_gasolina95_lowcost_localidad(localidad, datos_actualizados)
+        response = json_util.dumps(gasolineras_lowcost) 
+        if response == '[]':
+            not_found("No se han encontrado gasolineras en " + localidad)
+        else:     
+            return Response(response, mimetype='application/json')
+    else:
+        return not_found("No se ha especificado una localidad")
     
 
 @app.route('/gasolineras/rango', methods=['POST'])
@@ -626,19 +624,18 @@ def get_gasolineras_provincia_24horas():
         "Provincia" : "Málaga"
     }
     '''
-    try : 
-         provincia = request.json["Provincia"]
-    except :
-        print("Latitud y longitud no introducidas")
-   
-    gasolineras_actualizadas = get_datos_gasolineras_actualizadas()
-    consulta = datos_abiertos.get_gasolineras_24horas(gasolineras_actualizadas, provincia)
-    response = json_util.dumps(consulta)
-    
-    if response == '[]':
-        not_found("No se han encontrado gasolineras abiertas 24 horas en " + provincia)
+    provincia = request.json["Provincia"]
+    if provincia:
+        gasolineras_actualizadas = get_datos_gasolineras_actualizadas()
+        consulta = datos_abiertos.get_gasolineras_24horas(gasolineras_actualizadas, provincia)
+        response = json_util.dumps(consulta)
+        
+        if response == '[]':
+            not_found("No se han encontrado gasolineras abiertas 24 horas en " + provincia)
+        else:
+            return Response(response, mimetype='application/json')  
     else:
-        return Response(response, mimetype='application/json')    
+        return not_found("No se ha indicado una provincia")  
     
 # ---------------------------------------------FIN DATOS ABIERTOS-----------------------------------------------------------
 
