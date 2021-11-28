@@ -1,0 +1,1841 @@
+{
+	"info": {
+		"_postman_id": "2aee6958-538b-4df6-9d60-5a1c7020bd90",
+		"name": "B2_API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Usuario",
+			"item": [
+				{
+					"name": "Lista con los usuarios de la base de datos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/usuario",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"usuario"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con los usuarios de la base de datos ordenados alfabéticamente (A-Z)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/usuario/by_name",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"usuario",
+								"by_name"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Usuario cuyo id coincide con el que se pasa por parámetro",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/usuario/:id",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"usuario",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "6194e511c76e95c373d80509"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando obtiene un usuario cuyo id no coincide con el del parámetro",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/usuario/:id",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"usuario",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "6194e511c76e95c373d80510"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crea un nuevo usuario y lo añade a la base de datos",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre_completo\":\"Andres Velasco Garcia\",\r\n    \"correo\":\"andresvelasc@gmail.com\",\r\n    \"dni\":\"87553245L\",\r\n    \"fecha_nacimiento\":\"11/11/1970\",\r\n    \"antiguedad_permiso\":\"12/02/1989\",\r\n    \"foto_perfil\":\"www.drive.google.com/andresvelasco\"\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/usuario/create",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"usuario",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Elimina un usuario cuyo id coincide con el que se pasa por parámetro",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/usuario/delete/:id",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"usuario",
+								"delete",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "61a1f458d626b2b05c12b717"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando crea un nuevo usuario y no contiene la información imprescindible",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre_completo\":\"Andres Velasco Garcia\",\r\n    \"correo\":\"\",\r\n    \"dni\":\"87553245L\",\r\n    \"fecha_nacimiento\":\"11/11/1970\",\r\n    \"antiguedad_permiso\":\"12/02/1989\",\r\n    \"foto_perfil\":\"www.drive.google.com/andresvelasco\"\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/usuario/create",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"usuario",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualiza la información del usuario cuyo id coincide con el que se pasa por parámetro",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre_completo\":\"Javier Blanco Navarro\",\r\n    \"correo\":\"javiblanco@gmail.com\",\r\n    \"dni\":\"30955893D\",\r\n    \"fecha_nacimiento\":\"01/01/1999\",\r\n    \"antiguedad_permiso\":\"30/12/2018\",\r\n    \"foto_perfil\":\"www.drive.google.com/javiperfil\",\r\n    \"valoracion_media\":9\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/usuario/update/:id",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"usuario",
+								"update",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "619a1f1d059ad9461dc34a31"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando actualiza la información del usuario y no contiene la información imprescindible",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre_completo\":\"Javier Blanco Navarro\",\r\n    \"correo\":\"\",\r\n    \"dni\":\"30955893D\",\r\n    \"fecha_nacimiento\":\"01/01/1999\",\r\n    \"antiguedad_permiso\":\"30/12/2018\",\r\n    \"foto_perfil\":\"www.drive.google.com/javiperfil\",\r\n    \"valoracion_media\":8\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/usuario/update/:id",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"usuario",
+								"update",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "619a1f1d059ad9461dc34a31"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Usuario a partir de parte de su correo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"correo\":\"javi\"\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/usuario/by_email",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"usuario",
+								"by_email"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando obtiene usuario a partir de (parte de) su correo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"correo\":\"anto\"\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/usuario/by_email",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"usuario",
+								"by_email"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Usuario a partir de su correo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"correo\":\"javiblanco@gmail.com\"\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/usuario/by_email",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"usuario",
+								"by_email"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Trayecto",
+			"item": [
+				{
+					"name": "Lista con los trayectos de la base de datos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trayecto",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trayecto"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Trayecto cuyo id coincide con el que se pasa por parámetro",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trayecto/:id",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trayecto",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "61a108f1221d43f91b08cb40"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando obtiene un trayecto cuyo id no coincide con el que se pasa por parámetro",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trayecto/:id",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trayecto",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "619621442b275f52c64ad899"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crea un nuevo trayecto y lo añade a la base de datos",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"destino\":\"Cartama\",\r\n    \"duracion\":20,\r\n    \"fecha\":\"01/12/2021\",\r\n    \"hora\":\"09:00\",\r\n    \"origen\":\"Malaga\",\r\n    \"periodicidad\":\"0\",\r\n    \"precio\":3,\r\n    \"fotos_opcionales\":\"\",\r\n    \"plazas_totales\":7,\r\n    \"vehiculo\":\"4\",\r\n    \"creador\":\"61952be630765b96bbfda30c\",\r\n    \"pasajeros\":[]\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trayecto/create",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trayecto",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Trayecto/s cuyo destino coincide con el que se indica en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"destino\":\"Madrid\"\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trayecto/by_destino",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trayecto",
+								"by_destino"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Trayecto/s cuyo origen y destino coinciden con los que se indican en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"origen\":\"Malaga\",\r\n    \"destino\":\"Madrid\"\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trayecto/by_origen_destino",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trayecto",
+								"by_origen_destino"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Trayecto/s cuyo precio es menor que el que se indica en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"precio\":10\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trayecto/by_precio",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trayecto",
+								"by_precio"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no obtiene trayecto/s cuyo precio es menor que el que se indica en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"precio\":2\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trayecto/by_precio",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trayecto",
+								"by_precio"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no obtiene trayecto/s cuyo precio no se indica en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"precio\":\"\"\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trayecto/by_precio",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trayecto",
+								"by_precio"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando obtiene trayecto/s cuyo origen y destino no coinciden con los que se indican en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"origen\":\"Malaga\",\r\n    \"destino\":\"Almeria\"\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trayecto/by_origen_destino",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trayecto",
+								"by_origen_destino"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando obtiene trayecto/s cuyo destino no coincide con el que se indica en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"destino\":\"Kabul\"\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trayecto/by_destino",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trayecto",
+								"by_destino"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando obtiene trayecto/s cuyo destino no se indica en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"destino\":\"\"\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trayecto/by_destino",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trayecto",
+								"by_destino"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando obtiene trayecto/s cuyos origen y destino no se indican en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"origen\":\"\",\r\n    \"destino\":\"\"\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trayecto/by_origen_destino",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trayecto",
+								"by_origen_destino"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando crea un nuevo trayecto y no contiene la información imprescindible",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"destino\":\"\",\r\n    \"duracion\":50,\r\n    \"fecha\":\"02/12/2021\",\r\n    \"hora\":\"10:00\",\r\n    \"origen\":\"Malaga\",\r\n    \"periodicidad\":\"0\",\r\n    \"precio\":15,\r\n    \"fotos_opcionales\":\"\",\r\n    \"plazas_totales\":7,\r\n    \"vehiculo\":\"4\",\r\n    \"creador\":\"6194e4dbc76e95c373d80508\",\r\n    \"pasajeros\":[]\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trayecto/create",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trayecto",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Elimina un trayecto cuyo id coincide con el que se pasa por parámetro",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trayecto/delete/:id",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trayecto",
+								"delete",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "61a108f1221d43f91b08cb40"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando actualiza la información del trayecto y no contiene la información imprescindible",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"destino\":\"\",\r\n    \"duracion\":630,\r\n    \"fecha\":\"31/12/2021\",\r\n    \"hora\":\"06:00\",\r\n    \"origen\":\"Malaga\",\r\n    \"periodicidad\":\"0\",\r\n    \"precio\":20,\r\n    \"fotos_opcionales\":\"\",\r\n    \"plazas_totales\":7,\r\n    \"vehiculo\":\"4\",\r\n    \"creador\":\"61952be630765b96bbfda30c\",\r\n    \"pasajeros\":[\"6194e511c76e95c373d80509\"]\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trayecto/update/:id",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trayecto",
+								"update",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "61a1f613d626b2b05c12b718"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Usuarios de un trayecto a partir del id del trayecto que se pasa por parámetro",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/usuario/by_trayecto/:id",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"usuario",
+								"by_trayecto",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "61a1099dabd8c68178c50240"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando obtiene usuarios de un trayecto que no tiene usuarios a partir del id del trayecto",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/usuario/by_trayecto/:id",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"usuario",
+								"by_trayecto",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "61a1f613d626b2b05c12b718"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualiza la información del trayecto cuyo id coincide con el que se pasa por parámetro",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"destino\":\"Cartama\",\r\n    \"duracion\":20,\r\n    \"fecha\":\"02/12/2021\",\r\n    \"hora\":\"16:00\",\r\n    \"origen\":\"Malaga\",\r\n    \"periodicidad\":\"0\",\r\n    \"precio\":3,\r\n    \"fotos_opcionales\":\"\",\r\n    \"plazas_totales\":6,\r\n    \"vehiculo\":\"4\",\r\n    \"creador\":\"61952be630765b96bbfda30c\",\r\n    \"pasajeros\":[\"6194e4dbc76e95c373d80508\", \"619a1f1d059ad9461dc34a31\"]\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trayecto/update/:id",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trayecto",
+								"update",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "61a1f613d626b2b05c12b718"
+								}
+							]
+						},
+						"description": "Updatea un trayecto"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Datos abiertos tráfico",
+			"item": [
+				{
+					"name": "Lista con las incidencias de tráfico del conjunto de datos abiertos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trafico",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trafico"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las incidencias de tráfico de la provincia que se indica en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"provincia\":\"MALAGA\"\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trafico/by_provincia",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trafico",
+								"by_provincia"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no hay incidencias de tráfico en la provincia que se indica en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"provincia\":\"Alicante\"\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trafico/by_provincia",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trafico",
+								"by_provincia"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error obtiene incidencias de tráfico y no contiene la provincia",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"provincia\":\"\"\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trafico/by_provincia",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trafico",
+								"by_provincia"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las incidencias de tráfico en el rango y la latitud y longitud proporcionadas en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"latitude\": 36.73428,\r\n    \"longitude\": -4.56591,\r\n    \"rango\": 50\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trafico/rango",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trafico",
+								"rango"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las incidencias de tráfico a partir de la ubicación en tiempo real en el rango proporcionado en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rango\": 50\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trafico/rango",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trafico",
+								"rango"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no hay incidencias de tráfico a partir de la ubicación en tiempo real en el rango proporcionado en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rango\": 5\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trafico/rango",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trafico",
+								"rango"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no hay incidencias de tráfico en el rango y la latitud y longitud proporcionados en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"latitude\": 36.73428,\r\n    \"longitude\": -4.56591,\r\n    \"rango\": 5\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trafico/rango",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trafico",
+								"rango"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las incidencias de tráfico causadas por la nieve en la latitud, longitud y rango proporcionados en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"latitude\": 36.73428,\r\n    \"longitude\": -4.56591,\r\n    \"rango\": 500\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trafico/nieve",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trafico",
+								"nieve"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las incidencias de tráfico causadas por la nieve a partir de la ubicación en tiempo real en el rango proporcionado en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rango\": 500\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trafico/nieve",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trafico",
+								"nieve"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no hay incidencias de tráfico causadas por la nieve en la latitud, longitud y rango proporcionados en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"latitude\": 36.73428,\r\n    \"longitude\": -4.56591,\r\n    \"rango\": 5\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trafico/nieve",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trafico",
+								"nieve"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no hay incidencias de tráfico causadas por la nieve a partir de la ubicación en tiempo real en el rango proporcionado en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rango\": 5\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trafico/nieve",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trafico",
+								"nieve"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las incidencias de tráfico causadas por obras en la latitud, longitud y rango proporcionados en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"latitude\": 36.73428,\r\n    \"longitude\": -4.56591,\r\n    \"rango\": 50\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trafico/obras",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trafico",
+								"obras"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las incidencias de tráfico causadas por obras a partir de la ubicación en tiempo real en el rango proporcionado en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rango\": 50\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trafico/obras",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trafico",
+								"obras"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no hay incidencias de tráfico causadas por obras en la latitud, longitud y rango proporcionados en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"latitude\": 36.73428,\r\n    \"longitude\": -4.56591,\r\n    \"rango\": 5\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trafico/obras",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trafico",
+								"obras"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no hay incidencias de tráfico causadas por obras a partir de la ubicación en tiempo real en el rango proporcionado en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rango\": 5\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trafico/obras",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trafico",
+								"obras"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las incidencias de tráfico causadas por cortes de carreteras en la latitud, longitud y rango proporcionados en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"latitude\": 36.73428,\r\n    \"longitude\": -4.56591,\r\n    \"rango\": 500\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trafico/cortes",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trafico",
+								"cortes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las incidencias de tráfico causadas por cortes de carreteras a partir de la ubicación en tiempo real en el rango proporcionado en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rango\": 500\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trafico/cortes",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trafico",
+								"cortes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no hay incidencias de tráfico causadas por cortes en carreteras en la latitud, longitud y rango proporcionados en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"latitude\": 36.73428,\r\n    \"longitude\": -4.56591,\r\n    \"rango\": 5\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trafico/cortes",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trafico",
+								"cortes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no hay incidencias de tráfico causadas por cortes de carretera a partir de la ubicación en tiempo real en el rango proporcionado en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rango\": 5\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trafico/cortes",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trafico",
+								"cortes"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las incidencias de tráfico causadas por el clima en la latitud, longitud y rango proporcionados en el body Copy",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"latitude\": 36.73428,\r\n    \"longitude\": -4.56591,\r\n    \"rango\": 500\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trafico/clima",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trafico",
+								"clima"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las incidencias de tráfico causadas por el clima a partir de la ubicación en tiempo real en el rango proporcionado en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rango\": 500\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trafico/clima",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trafico",
+								"clima"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no hay incidencias de tráfico causadas por el clima en la latitud, longitud y rango proporcionados en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"latitude\": 36.73428,\r\n    \"longitude\": -4.56591,\r\n    \"rango\": 5\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trafico/clima",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trafico",
+								"clima"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no hay incidencias de tráfico causadas por el clima a partir de la ubicación en tiempo real en el rango proporcionado en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rango\": 5\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trafico/clima",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trafico",
+								"clima"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Datos abiertos gasolinera",
+			"item": [
+				{
+					"name": "Lista con las gasolineras del conjunto de datos abiertos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/gasolineras",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"gasolineras"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las gasolineras de una localidad (indicada en el body) ordenadas por el precio de gasolina 95 (de más barato a más caro)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"localidad\":\"CARTAMA\"\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/gasolineras/gasolina95_low_cost",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"gasolineras",
+								"gasolina95_low_cost"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando obtiene las gasolineras de una localidad ordenadas por el precio de gasolina 95 y no se indica localidad en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"localidad\":\"\"\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/gasolineras/gasolina95_low_cost",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"gasolineras",
+								"gasolina95_low_cost"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando obtiene las gasolineras de una localidad ordenadas por el precio de gasolina 95 y no hay gasolineras",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"localidad\":\"Alpandeire\"\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/gasolineras/gasolina95_low_cost",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"gasolineras",
+								"gasolina95_low_cost"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las gasolineras en el rango y latitud y longitud indicadas en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": " {\r\n    \"latitude\": 36.73428,\r\n    \"longitude\": -4.56591,\r\n    \"rango\": 5\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/gasolineras/rango",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"gasolineras",
+								"rango"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las gasolineras a partir de la ubicación en tiempo real en el rango indicado en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": " {\r\n    \"rango\": 5\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/gasolineras/rango",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"gasolineras",
+								"rango"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no hay gasolineras en el rango y latitud y longitud indicadas en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": " {\r\n    \"latitude\": 36.73428,\r\n    \"longitude\": -4.56591,\r\n    \"rango\": 1\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/gasolineras/rango",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"gasolineras",
+								"rango"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no hay gasolineras en el rango indicado a partir de la ubicación en tiempo real",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": " {\r\n    \"rango\": 0\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/gasolineras/rango",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"gasolineras",
+								"rango"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las gasolineras de una provincia (indicada en el body) que están abiertas 24h",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Provincia\" : \"Málaga\"\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/gasolineras/provincia_24_horas",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"gasolineras",
+								"provincia_24_horas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando obtiene las gasolineras abiertas 24h de una provincia que no se indica en el body",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"Provincia\" : \"\"\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/gasolineras/provincia_24_horas",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"gasolineras",
+								"provincia_24_horas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no encuentra gasolineras abiertas 24 horas en una provincia",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": " {\r\n    \"Provincia\":\"Alpandeire\"\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/gasolineras/provincia_24_horas",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"gasolineras",
+								"provincia_24_horas"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "LOCAL_SERVER",
+			"value": "http://127.0.0.1:5000"
+		}
+	]
+}

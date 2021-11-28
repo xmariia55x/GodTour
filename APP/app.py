@@ -16,11 +16,9 @@ class FlaskApp(Flask):
   def run(self, host=None, port=None, debug=None, load_dotenv=True, **options):
     if not self.debug or os.getenv('WERKZEUG_RUN_MAIN') == 'true':
       with self.app_context():
-        global gasolineras_datos_abiertos, ultima_actualizacion_gasolineras #, trafico_datos_abiertos, ultima_actualizacion_trafico
+        global gasolineras_datos_abiertos, ultima_actualizacion_gasolineras 
         gasolineras_datos_abiertos = datos_abiertos.descargar_gasolineras() 
         ultima_actualizacion_gasolineras = datetime.now()
-        #trafico_datos_abiertos = datos_abiertos.descargar_datos_trafico()
-        #ultima_actualizacion_trafico = datetime.now()
     super(FlaskApp, self).run(host=host, port=port, debug=debug, load_dotenv=load_dotenv, **options)
 app = FlaskApp(__name__)
 
@@ -57,7 +55,6 @@ def create_usuario():
     fecha_nacimiento = request.json['fecha_nacimiento']
     antiguedad_permiso = request.json['antiguedad_permiso']
     foto_perfil = request.json['foto_perfil']
-    permiso_conduccion = request.json['permiso_conduccion']
     valoracion_media = 0
 
     if nombre_completo and correo and dni and fecha_nacimiento:
@@ -69,7 +66,6 @@ def create_usuario():
              "fecha_nacimiento": fecha_nacimiento,
              "antiguedad_permiso": antiguedad_permiso,
              "foto_perfil": foto_perfil,
-             "permiso_conduccion": permiso_conduccion,
              "valoracion_media": valoracion_media
             }
         )
@@ -81,7 +77,6 @@ def create_usuario():
             "fecha_nacimiento": fecha_nacimiento,
             "antiguedad_permiso": antiguedad_permiso,
             "foto_perfil": foto_perfil,
-            "permiso_conduccion": permiso_conduccion,
             "valoracion_media": valoracion_media
         }
         return response
@@ -104,7 +99,6 @@ def update_usuario(id):
     fecha_nacimiento = request.json['fecha_nacimiento']
     antiguedad_permiso = request.json['antiguedad_permiso']
     foto_perfil = request.json['foto_perfil']
-    permiso_conduccion = request.json['permiso_conduccion']
     valoracion_media = request.json['valoracion_media']
 
     if nombre_completo and correo and dni and fecha_nacimiento:
@@ -116,7 +110,6 @@ def update_usuario(id):
             "fecha_nacimiento": fecha_nacimiento,
             "antiguedad_permiso": antiguedad_permiso,
             "foto_perfil": foto_perfil,
-            "permiso_conduccion": permiso_conduccion,
             "valoracion_media": valoracion_media
         }}
         
@@ -189,7 +182,7 @@ def create_trayecto():
     vehiculo= request.json['vehiculo']
     creador= request.json['creador']
 
-    if creador and destino and fecha and hora and precio and plazas_totales and vehiculo:
+    if creador and destino and origen and fecha and hora and precio and plazas_totales and vehiculo:
         id=trayecto_db.insert_one({
             "creador": ObjectId(creador),
             "destino":destino,
@@ -246,7 +239,7 @@ def update_trayecto(id):
     pasajeros = request.json['pasajeros']
 
     lista_pasajeros = []
-    if destino and fecha and hora and precio and plazas_totales and vehiculo:
+    if destino and origen and fecha and hora and precio and plazas_totales and vehiculo:
         if pasajeros:
             for pasajero in pasajeros:
                 lista_pasajeros.append(ObjectId(pasajero))
@@ -321,7 +314,11 @@ def get_trayecto_precio():
 def get_usuario_trayecto(id):
     trayecto = trayecto_db.find_one({'_id': ObjectId(id)})
     pasajeros = trayecto.get("pasajeros")
-    response = json_util.dumps(pasajeros)
+    lista_pasajeros = []
+    for pasajero in pasajeros:
+        usuario = usuario_db.find_one({'_id': pasajero})
+        lista_pasajeros.append(usuario)
+    response = json_util.dumps(lista_pasajeros)
     if response == '[]':
         return not_found("El trayecto con id: " + id + " no tiene usuarios")
     else:     
@@ -331,10 +328,6 @@ def get_usuario_trayecto(id):
 
 # --------------------------------------------- DATOS ABIERTOS - TRAFICO -----------------------------------------------------------
 def get_datos_trafico_actualizados():
-    #global ultima_actualizacion_trafico , trafico_datos_abiertos Llamada a la vbles globales para obtener y actualizar su valor
-    #proxima_actualizacion_trafico = ultima_actualizacion_trafico + timedelta(minutes = 2) Comprobamos que los datos se actualizan cada 2 min
-    #if ultima_actualizacion_trafico > proxima_actualizacion_trafico: #Descargar los datos y actualizar en caso de que este desactualizado
-    #    ultima_actualizacion_trafico = proxima_actualizacion_trafico
     trafico_datos_abiertos = datos_abiertos.descargar_datos_trafico()
     return trafico_datos_abiertos
 
@@ -348,20 +341,18 @@ def get_trafico():
 #Devuelve las incidencias de trafico de una provincia
 @app.route('/trafico/by_provincia', methods=['POST'])
 def get_incidencias_provincia():
-    try : 
-        provincia = request.json["provincia"]
-    except :
-        print("provincia no introducida")
-    
-    trafico_actualizado = get_datos_trafico_actualizados()
-    incidencias_trafico = datos_abiertos.get_incidencias_provincia(provincia, trafico_actualizado)
-    response = json_util.dumps(incidencias_trafico)    
-    if response == '[]':
-        not_found("No hay incidencias en " + provincia) 
-    else: 
-        Response(response, mimetype='application/json')
+    provincia = request.json["provincia"]
+    if provincia:
+        trafico_actualizado = get_datos_trafico_actualizados()
+        incidencias_trafico = datos_abiertos.get_incidencias_provincia(provincia, trafico_actualizado)
+        response = json_util.dumps(incidencias_trafico)    
+        if response == '[]':
+            return not_found("No hay incidencias en " + provincia) 
+        else: 
+            return Response(response, mimetype='application/json')
+    else:
+        return not_found("No se ha indicado provincia")
         
-
 @app.route('/trafico/rango', methods=['POST'])
 def get_trafico_in_rango():
     latitude = None
@@ -370,10 +361,10 @@ def get_trafico_in_rango():
     try : 
         latitude = float(request.json["latitude"])
         longitude = float(request.json["longitude"])
-        rango = float(request.json["rango"])
     except :
         print("Latitud, longitud o rango no introducidos")
     
+    rango = float(request.json["rango"])
     
     lista = None
     trafico_actualizado = get_datos_trafico_actualizados()
@@ -385,7 +376,7 @@ def get_trafico_in_rango():
     response = json_util.dumps(lista)
 
     if response == '[]':
-        return not_found("No se han encontrado incidencias de trafico a " + str(rango) + " kms de la ubicacion actual")
+        return not_found("No se han encontrado incidencias de trafico en un rango de " + str(rango) + " kms")
     else:
         return Response(response, mimetype='application/json')
 
@@ -411,7 +402,7 @@ def get_trafico_nieve():
     response = json_util.dumps(lista)
 
     if response == '[]':
-        return not_found("No se han encontrado incidencias de nieve trafico a " + str(rango) + " kms de la ubicacion actual")
+        return not_found("No se han encontrado incidencias de nieve trafico a " + str(rango) + " kms")
     else:
         return Response(response, mimetype='application/json')    
 
@@ -437,10 +428,9 @@ def get_trafico_obras():
     response = json_util.dumps(lista)
 
     if response == '[]':
-        return not_found("No se han encontrado incidencias de obras trafico a " + str(rango) + " kms de la ubicacion actual")
+        return not_found("No se han encontrado incidencias de obras trafico a " + str(rango) + " kms")
     else:
         return Response(response, mimetype='application/json')  
-
 
 @app.route('/trafico/cortes', methods=['POST'])
 def get_trafico_cortes():
@@ -464,7 +454,7 @@ def get_trafico_cortes():
     response = json_util.dumps(lista)
 
     if response == '[]':
-        return not_found("No se han encontrado incidencias de cortes de trafico a " + str(rango) + " kms de la ubicacion actual")
+        return not_found("No se han encontrado incidencias de cortes de trafico a " + str(rango) + " kms")
     else:
         return Response(response, mimetype='application/json')  
 
@@ -490,7 +480,7 @@ def get_trafico_clima():
     response = json_util.dumps(lista)
 
     if response == '[]':
-        return not_found("No se han encontrado incidencias climatologicas a " + str(rango) + " kms de la ubicacion actual")
+        return not_found("No se han encontrado incidencias climatologicas a " + str(rango) + " kms")
     else:
         return Response(response, mimetype='application/json')  
 
@@ -560,16 +550,15 @@ def get_gasolineras_gasolina95_lowcost():
         gasolineras_lowcost = datos_abiertos.get_gasolineras_gasolina95_lowcost_localidad(localidad, datos_actualizados)
         response = json_util.dumps(gasolineras_lowcost) 
         if response == '[]':
-            not_found("No se han encontrado gasolineras en " + localidad)
+            return not_found("No se han encontrado gasolineras en " + localidad)
         else:     
             return Response(response, mimetype='application/json')
     else:
         return not_found("No se ha especificado una localidad")
     
-
+# Devuelve una lista de gasolineras de un rango X en km de una ubicación pasada por parámetro o la ubicación real
 @app.route('/gasolineras/rango', methods=['POST'])
-def get_gasolineras_rango(): 
-    # Devuelve una lista de gasolineras de un rango X en km de una ubicación pasada por parámetro o la ubicación real
+def get_gasolineras_rango():  
     #PRUEBA
     '''
     {
@@ -603,14 +592,13 @@ def get_gasolineras_rango():
 
     # Controla los errores
     if response == '[]':
-        not_found("No hay gasolineras en el rango de " + str(rango_km) +" a partir de la ubicación actual")
+        return not_found("No hay gasolineras en el rango de " + str(rango_km) +" kms")
     else:
         return Response(response, mimetype='application/json')
     
-
+# Devuelve las gasolineras abiertas 24 horas de una provincia pasada por parametro
 @app.route('/gasolineras/provincia_24_horas', methods=['POST'])
 def get_gasolineras_provincia_24horas():
-    # Devuelve las gasolineras abiertas 24 horas de una provincia pasada por parametro
     # PRUEBA
     '''
     {
@@ -624,7 +612,7 @@ def get_gasolineras_provincia_24horas():
         response = json_util.dumps(consulta)
         
         if response == '[]':
-            not_found("No se han encontrado gasolineras abiertas 24 horas en " + provincia)
+            return not_found("No se han encontrado gasolineras abiertas 24 horas en " + provincia)
         else:
             return Response(response, mimetype='application/json')  
     else:

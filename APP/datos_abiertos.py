@@ -182,31 +182,6 @@ def get_gasolineras_gasolina95_lowcost_localidad(localidad, datos_gasolineras):
     gasolineras_json_ordenadas = sorted(gasolineras_json, key=lambda k: k['Precio Gasolina 95 E5'], reverse=False)
     return gasolineras_json_ordenadas
 
-def get_gasolineras_ubicacion(ubicacion):
-        # Esto devuelve todos los datos de esta/nuestra patria
-    link = 'https://sedeaplicaciones.minetur.gob.es/ServiciosRESTCarburantes/PreciosCarburantes/EstacionesTerrestres/'
-    f = request.urlopen(link)
-    myfile = f.read()
-    y=json.loads(myfile)
-
-    lista = []
-    for g in y["ListaEESSPrecio"]:
-        #print(g)
-        if g["Localidad"] == ubicacion:
-            lista.append(g)
-    cadena = "".join(lista)
-    data = json.loads(cadena)
-    # print(data)
-
-    # Esto intenta ordena con una función 
-   # data.sort(key=lambda x: x["Precio Gasolina 95 E5"])
-    return data
-
-# lines.sort() is more efficient than lines = lines.sorted()
-
-# Esta función calcula la latitud y longitud maxima dada un rango y la ubicación actual, lo devuelve en forma de diccionario
-
-
 def get_gasolineras_ubicacion(gasolineras_datos_abiertos, latitud, longitud, rango):
     #Si el parametro recibido es nulo, se actualiza con la ubicación actual
     if not latitud and not longitud:
@@ -229,7 +204,6 @@ def get_gasolineras_ubicacion(gasolineras_datos_abiertos, latitud, longitud, ran
     return gasolineras_json
 
 def get_gasolineras_24horas(gasolineras_datos_abiertos, provincia):
-    #Si el parametro recibido es nulo, se actualiza con la ubicación actual
     lista = []
     for g in gasolineras_datos_abiertos["ListaEESSPrecio"]:
         if g["Provincia"].upper() == provincia.upper() and g["Horario"].find("24H") != -1:
