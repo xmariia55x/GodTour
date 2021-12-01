@@ -177,46 +177,62 @@ def get_trayecto(id):
 #Crea un nuevo trayecto
 @app.route('/trayecto/create', methods=["POST"])
 def create_trayecto():
-    destino= request.json['destino']
+    '''
+    PRUEBA
+    {
+    "creador":"6194e4dbc76e95c373d80508",
+    "destino":{"nombre":"ZARAGOZA","latitud":-33.56,"longitud":41.9},
+    "duracion":500,
+    "fecha":"05/12/2021",
+    "hora":"16:00",
+    "origen":{"nombre":"SEVILLA","latitud":-141.9,"longitud":54.8},
+    "periodicidad":7,
+    "precio":20.5,
+    "fotos_opcionales":["http://www.google.drive.com/fotocoche.jpg"],
+    "plazas_totales":3,
+    "vehiculo":"61a6769c6df626e2acba5868"
+    }
+    '''
+    creador= request.json['creador']
+    destino= request.json['destino'] 
     duracion= int(request.json['duracion'])
     fecha= request.json['fecha']
     hora= request.json['hora']
     origen= request.json['origen']
-    periodicidad= request.json['periodicidad']
+    periodicidad= int(request.json['periodicidad'])
     precio= float(request.json['precio'])
     fotos_opcionales= request.json['fotos_opcionales']
     plazas_totales= int(request.json['plazas_totales'])
     vehiculo= request.json['vehiculo']
-    creador= request.json['creador']
 
     if creador and destino and origen and fecha and hora and precio and plazas_totales and vehiculo:
         id=trayecto_db.insert_one({
             "creador": ObjectId(creador),
-            "destino":destino,
-            "duracion":duracion,
-            "fecha":fecha,
-            "hora":hora,
-            "origen":origen,
-            "periodicidad":periodicidad,
-            "precio":precio,
-            "fotos_opcionales":fotos_opcionales,
-            "plazas_totales":plazas_totales,
-            "vehiculo":vehiculo, 
+            "destino": destino,
+            "duracion": duracion,
+            "fecha": fecha,
+            "hora": hora,
+            "origen": origen,
+            "periodicidad": periodicidad,
+            "precio": precio,
+            "fotos_opcionales": fotos_opcionales,
+            "plazas_totales": plazas_totales,
+            "vehiculo": ObjectId(vehiculo), 
             "pasajeros": []
         })
         response = {
-            "id":str(id),
-            "creador":creador,
-            "destino":destino,
-            "duracion":duracion,
-            "fecha":fecha,
-            "hora":hora,
-            "origen":origen,
-            "periodicidad":periodicidad,
-            "precio":precio,
-            "fotos_opcionales":fotos_opcionales,
-            "plazas_totales":plazas_totales,
-            "vehiculo":vehiculo, 
+            "id": str(id),
+            "creador": creador,
+            "destino": destino,
+            "duracion": duracion,
+            "fecha": fecha,
+            "hora": hora,
+            "origen": origen,
+            "periodicidad": periodicidad,
+            "precio": precio,
+            "fotos_opcionales": fotos_opcionales,
+            "plazas_totales": plazas_totales,
+            "vehiculo": vehiculo, 
             "pasajeros": []
         }
         return response
@@ -238,7 +254,7 @@ def update_trayecto(id):
     fecha = request.json['fecha']
     hora = request.json['hora']
     origen = request.json['origen']
-    periodicidad = request.json['periodicidad']
+    periodicidad = int(request.json['periodicidad'])
     precio= float(request.json['precio'])
     fotos_opcionales = request.json['fotos_opcionales']
     plazas_totales= int(request.json['plazas_totales'])
@@ -250,6 +266,7 @@ def update_trayecto(id):
         if pasajeros:
             for pasajero in pasajeros:
                 lista_pasajeros.append(ObjectId(pasajero))
+                
         filter = {"_id": ObjectId(id)}
         new_values = {"$set":{
             "destino": destino,
@@ -261,13 +278,16 @@ def update_trayecto(id):
             "precio": precio,
             "fotos_opcionales": fotos_opcionales,
             "plazas_totales": plazas_totales,
-            "vehiculo": vehiculo, 
+            "vehiculo": ObjectId(vehiculo), 
             "pasajeros": lista_pasajeros
         }}
         
-        trayecto_db.update_one(filter, new_values) 
+        result = trayecto_db.update_one(filter, new_values) 
 
-        response = jsonify({'message': 'El trayecto con id '+id+' se ha actualizado exitosamente'})
+        if result.matched_count == 0:
+            return not_found("No se ha encontrado el trayecto con id: " + id)
+        else:
+            response = jsonify({'message': 'El trayecto con id '+id+' se ha actualizado exitosamente'})
         
         return response
     else:
@@ -276,31 +296,62 @@ def update_trayecto(id):
 #Devuelve los trayectos cuyo destino coincide con el que se pasa por parámetro 
 @app.route('/trayecto/by_destino', methods=['POST'])
 def get_trayecto_destino():
-    destino = request.json['destino']
-    if destino:
-        trayecto = trayecto_db.find({'destino': destino})
+    destino_nombre = request.json['destino_nombre'].upper()
+    
+    if destino_nombre:
+        trayecto = trayecto_db.find({'destino.nombre': destino_nombre})
         response = json_util.dumps(trayecto)
         if response == '[]':
-            return not_found("No se han encontrado trayectos con destino " + destino)
+            return not_found("No se han encontrado trayectos con destino " + destino_nombre)
         else:     
             return Response(response, mimetype='application/json')
     else:
         return not_found("No se ha indicado un destino")
+
+#Devuelve los trayectos cuyo origen coincide con el que se pasa por parámetro 
+@app.route('/trayecto/by_origen', methods=['POST'])
+def get_trayecto_origen():
+    origen_nombre = request.json['origen.nombre'].upper()
+    
+    if origen_nombre:
+        trayecto = trayecto_db.find({'origen.nombre': origen_nombre})
+        response = json_util.dumps(trayecto)
+        if response == '[]':
+            return not_found("No se han encontrado trayectos con origen " + origen_nombre)
+        else:     
+            return Response(response, mimetype='application/json')
+    else:
+        return not_found("No se ha indicado un origen")
     
 #Devuelve los trayectos cuyos origenes y destinos coinciden con los pasados por parámetro 
 @app.route('/trayecto/by_origen_destino', methods=['POST'])
 def get_trayecto_origen_destino():
-    origen = request.json['origen']
-    destino = request.json['destino']
-    if origen and destino:
-        trayecto = trayecto_db.find({'origen': origen, 'destino': destino})
+    origen_nombre = request.json['origen'].upper()
+    destino_nombre = request.json['destino'].upper()
+    if origen_nombre and destino_nombre:
+        trayecto = trayecto_db.find({'origen.nombre': origen_nombre, 'destino.nombre': destino_nombre})
         response = json_util.dumps(trayecto)
         if response == '[]':
-            return not_found("No se han encontrado trayectos con origen " + origen + " y destino " + destino)
+            return not_found("No se han encontrado trayectos con origen " + origen_nombre + " y destino " + destino_nombre)
         else:     
             return Response(response, mimetype='application/json')
     else:
-        return not_found("No se han indicado trayectos con origen " + origen + " y destino " + destino)
+        return not_found("No se han indicado trayectos con origen " + origen_nombre + " y destino " + destino_nombre)
+
+#Devuelve los trayectos ordenados por la fecha y hora
+@app.route('/trayecto/by_fecha_hora', methods=['POST'])
+def get_trayecto_fecha_hora():
+    fecha = request.json['origen'].upper()
+    hora = request.json['destino'].upper()
+    if origen_nombre and destino_nombre:
+        trayecto = trayecto_db.find({'origen.nombre': origen_nombre, 'destino.nombre': destino_nombre})
+        response = json_util.dumps(trayecto)
+        if response == '[]':
+            return not_found("No se han encontrado trayectos con origen " + origen_nombre + " y destino " + destino_nombre)
+        else:     
+            return Response(response, mimetype='application/json')
+    else:
+        return not_found("No se han indicado trayectos con origen " + origen_nombre + " y destino " + destino_nombre)
 
 #Devuelve los trayectos cuyo precio es menor que la cantidad indicada por parametro
 @app.route('/trayecto/by_precio', methods=['POST'])
