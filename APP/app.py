@@ -384,6 +384,115 @@ def get_usuario_trayecto(id):
 
 # ---------------------------------------------FIN TRAYECTO-----------------------------------------------------------
 
+# --------------------------------------------- VEHICULO -----------------------------------------------------------
+vehiculo_db = db['Vehiculo']
+
+@app.route('/vehiculo', methods=['GET'])
+def get_vehiculos():
+    vehiculos = vehiculo_db.find()
+    #response = json_util.dumps(vehiculos)
+    #return Response(response, mimetype='application/json')
+    return render_template('vehiculo/vehiculos.html', vehiculos = list(vehiculos))
+
+#Si se quita esto y se ejecuta un GET, en la consola de python salta una excepcion aunque  muestra los vehiculos
+#NO TOCAR!!!!
+@app.route("/favicon.ico")
+def favicon():
+   return "", 200
+
+@app.route('/vehiculo/<id>', methods=['GET'])
+def get_vehiculo(id):
+    vehiculo = vehiculo_db.find_one({'_id': ObjectId(id)})
+    response = json_util.dumps(vehiculo)
+    if response == 'null':
+        return not_found("No se han encontrado vehiculos con el id: " + id)
+    else:     
+        return Response(response, mimetype='application/json')
+
+@app.route('/vehiculo/create', methods=["POST"])
+def create_vehiculo():
+    '''
+    PRUEBA
+    {
+    "marca":"Opel",
+    "modelo":"Astra",
+    "matricula":"5588CDF",
+    "color":"Negro",
+    "plazas":5,
+    "fotos_vehiculo":["http://www.google.drive.com/fotocoche.jpg"]
+    }
+    '''
+    marca= request.json['marca']
+    modelo= request.json['modelo'] 
+    matricula= request.json['matricula']
+    color= request.json['color']
+    plazas= int(request.json['plazas'])
+    fotos_vehiculo= request.json['fotos_vehiculo']
+
+    if marca and modelo and matricula and color and plazas:
+        id=vehiculo_db.insert_one({
+            "marca": marca,
+            "modelo": modelo,
+            "matricula": matricula,
+            "color": color,
+            "plazas": plazas,
+            "fotos_vehiculo": fotos_vehiculo
+        })
+        response = {
+            "id": str(id),
+            "marca": marca,
+            "modelo": modelo,
+            "matricula": matricula,
+            "color": color,
+            "plazas": plazas,
+            "fotos_vehiculo": fotos_vehiculo
+        }
+        return response
+    else:
+        return not_found("No se ha podido crear el vehiculo")
+
+@app.route('/vehiculo/update/<id>', methods=['PUT'])
+def update_vehiculo(id):
+    marca= request.json['marca']
+    modelo= request.json['modelo'] 
+    matricula= request.json['matricula']
+    color= request.json['color']
+    plazas= int(request.json['plazas'])
+    fotos_vehiculo= request.json['fotos_vehiculo']
+    lista_fotos_vehiculo = []
+    if marca and modelo and matricula and color and plazas:
+        if fotos_vehiculo:
+            for foto in fotos_vehiculo:
+                lista_fotos_vehiculo.append(foto)
+                
+        filter = {"_id": ObjectId(id)}
+        new_values = {"$set":{
+            "marca": marca,
+            "modelo": modelo,
+            "matricula": matricula,
+            "color": color,
+            "plazas": plazas,
+            "fotos_vehiculo": lista_fotos_vehiculo
+        }}
+        
+        result = vehiculo_db.update_one(filter, new_values) 
+
+        if result.matched_count == 0:
+            return not_found("No se ha encontrado el vehiculo con id: " + id)
+        else:
+            response = jsonify({'message': 'El vehiculo con id '+id+' se ha actualizado exitosamente'})
+        
+        return response
+    else:
+        return not_found("No se ha podido actualizar el vehiculo con id: " + id)
+
+@app.route('/vehiculo/delete/<id>', methods=['DELETE'])
+def delete_vehiculo(id):
+    vehiculo_db.delete_one({'_id': ObjectId(id)})
+    response = jsonify({'message': 'El vehiculo con id '+id+' se ha eliminado exitosamente'})
+    return response
+# ---------------------------------------------FIN VEHICULO -----------------------------------------------------------
+
 # --------------------------------------------- DATOS ABIERTOS - TRAFICO -----------------------------------------------------------
 def get_datos_trafico_actualizados():
     trafico_datos_abiertos = datos_abiertos.descargar_datos_trafico()
@@ -560,17 +669,21 @@ def not_found(error=None):
 @app.errorhandler(404)
 def not_found(error=None):
     if error is None : 
-        response = jsonify({
-        'message': 'Recurso no encontrado: ' + request.url,
-        'status': 404
-        })
+        #response = jsonify({
+        #'message': 'Recurso no encontrado: ' + request.url,
+        #'status': 404
+        #}<)
+        response = json.dumps({'message': 'Recurso no encontrado: ' + request.url})
+        return Response(response, status=404, mimetype='application/json')
     else: 
-        response = jsonify({
-        'message': error,
-        'status': 404
-        })
-    response.status_code = 404
-    return response
+        response = json.dumps({'message': error})
+        return Response(response, status=404, mimetype='application/json')
+       # response = jsonify({
+       # 'message': error,
+       # 'status': 404
+       # })
+    #response.status_code = 404
+    #return response
 
 #Error 500
 @app.errorhandler(500)
