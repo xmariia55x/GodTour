@@ -32,6 +32,13 @@ db = client.get_default_database()
 def prueba_Jinja():
     #return render_template("pruebaJinja.html",variable="soy una variable")
     return redirect("/usuario", code=302)
+
+#Si se quita esto y se ejecuta un GET, en la consola de python salta una excepcion aunque  muestra los vehiculos
+#NO TOCAR!!!!
+@app.route("/favicon.ico")
+def favicon():
+   return "", 200
+
 # -----------------------------------------------------USUARIO-------------------------------------------------------------
 # Obtengo la colección de usuarios
 usuario_db = db['Usuario']
@@ -175,15 +182,33 @@ def get_trayecto(id):
     else:     
         return Response(response, mimetype='application/json')
 
-@app.route('/trayecto/new', methods=["GET"])
+@app.route('/trayecto/new', methods=["GET", "POST"])
 def new_trayecto():
     usuario = usuario_db.find_one({'_id': ObjectId("6194e4dbc76e95c373d80508")})
-    vehiculos_id = usuario["vehiculos"]
-    lista_vehiculos = []
-    for v in vehiculos_id:
-        vehiculo = vehiculo_db.find_one({'_id': ObjectId(v)})
-        lista_vehiculos.append(vehiculo)
-    return render_template("trayecto/trayecto.html", usuario = usuario, vehiculos = lista_vehiculos)
+    if request.method == "GET":
+        vehiculos_id = usuario["vehiculos"]
+        lista_vehiculos = []
+        for v in vehiculos_id:
+            vehiculo = vehiculo_db.find_one({'_id': ObjectId(v)})
+            lista_vehiculos.append(vehiculo)
+        return render_template("trayecto/trayecto.html", usuario = usuario, vehiculos = lista_vehiculos)
+    else: #POST
+        origen_nombre = request.form.get("origen_nombre")
+        origen_latitud = request.form.get("origen_latitud")
+        origen_longitud = request.form.get("origen_longitud")
+        destino_nombre = request.form.get("destino_nombre")
+        destino_latitud = request.form.get("destino_latitud")
+        destino_longitud = request.form.get("destino_longitud")
+        fecha = request.form.get("fecha")
+        hora = request.form.get("hora")
+        duracion = request.form.get("duracion")
+        periodicidad = request.form.get("periodicidad")
+        precio = request.form.get("precio")
+        fotos_opcionales = [] #Modificar cuando se manejen las fotos
+        plazas_totales = request.form.get("plazas_totales")
+        vehiculo = request.form.get("vehiculo")
+        pasajeros = []  #Modificar para edit
+
 
 #Crea un nuevo trayecto
 @app.route('/trayecto/create', methods=["POST"])
@@ -404,12 +429,6 @@ def get_vehiculos():
     #response = json_util.dumps(vehiculos)
     #return Response(response, mimetype='application/json')
     return render_template('vehiculo/vehiculos.html', vehiculos = list(vehiculos))
-
-#Si se quita esto y se ejecuta un GET, en la consola de python salta una excepcion aunque  muestra los vehiculos
-#NO TOCAR!!!!
-@app.route("/favicon.ico")
-def favicon():
-   return "", 200
 
 @app.route('/vehiculo/<id>', methods=['GET'])
 def get_vehiculo(id):

@@ -8,7 +8,8 @@
 <body>
     <h1>Nuevo trayecto</h1><br>
 
-    <form action="trayecto/new" method="post">  
+    <form action="trayecto/new" method="post">
+        <input type="hidden" name="creador" value="{{usuario._id}}" />  
         Origen: 
         <label>Nombre: </label>
         <input type="text" name="origen_nombre" required>
@@ -37,8 +38,8 @@
         <input type="number" name="plazas_totales" required><br>
         <label>Veh&iacuteculo: </label>
         <select name="cars">
-        {% for v in vehiculos}
-            <option value="{{v.id}}">{{v.marca}} {{v.modelo}} - {{v.matricula}}</option>
+        {% for v in vehiculos %}
+            <option value="{{v._id}}">{{v.marca}} {{v.modelo}} - {{v.matricula}}</option>
         {% endfor %}
         </select>
         <input type="submit" value="Crear"/>
