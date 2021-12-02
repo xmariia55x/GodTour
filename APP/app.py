@@ -42,18 +42,18 @@ def get_usuarios():
     usuarios = usuario_db.find()
     # response = json_util.dumps(usuarios)
     #return Response(response, mimetype='application/json')
-    return render_template("/usuario/listaUsuarios.html",usuarios=list(usuarios)) 
+    return render_template("/usuario/listaUsuarios.html",usuarios = list(usuarios)) 
 
 #Devuelve un usuario cuyo id coincide con el que se pasa por parámetro
 @app.route('/usuario/<id>', methods=['GET'])
 def get_usuario(id):
     usuario = usuario_db.find_one({'_id': ObjectId(id)})
-    response = json_util.dumps(usuario)
-    if response == 'null':
-        return not_found("No se han encontrado usuarios con el id: " + id)
-    else:     
-        return Response(response, mimetype='application/json')
-
+    #response = json_util.dumps(usuario)
+    #if usuario == 'null':
+    #    return not_found("No se han encontrado usuarios con el id: " + id)
+    #else:     
+        #return Response(response, mimetype='application/json')
+    return render_template("/usuario/infoUsuario.html",usuario = usuario) 
 #Crea un nuevo usuario
 @app.route('/usuario/create', methods=['POST'])
 def create_usuario():
