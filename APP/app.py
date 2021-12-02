@@ -10,6 +10,12 @@ from pymongo import message
 from werkzeug.wrappers import response
 import datos_abiertos
 from datetime import datetime, timedelta
+# Importamos el patron singleton - Quizás no haga falta aquí, solo en las entidades (REVISAR DESPUES)
+from mongoDB import client, db, usuario_db, trayecto_db, vehiculo_db
+#Importamos las entidades
+import trayecto as trayecto_data
+import usuario as usuario_data
+import vehiculo as vehiculo_data
 
 ultima_actualizacion_gasolineras = 0
 ultima_actualizacion_trafico = 0
@@ -24,8 +30,9 @@ class FlaskApp(Flask):
 app = FlaskApp(__name__)
 app.secret_key = 'clave de cifrado lo más robusta posible'
 
-client = pymongo.MongoClient("mongodb+srv://Gestionpymongo:Gestionpymongo@cluster0.iixvr.mongodb.net/iweb?retryWrites=true&w=majority&ssl=true&ssl_cert_reqs=CERT_NONE")
-db = client.get_default_database()
+# Importado el singleton
+# client = pymongo.MongoClient("mongodb+srv://Gestionpymongo:Gestionpymongo@cluster0.iixvr.mongodb.net/iweb?retryWrites=true&w=majority&ssl=true&ssl_cert_reqs=CERT_NONE")
+# db = client.get_default_database()
 
 #PRUEBA JINJA
 @app.route('/')
@@ -168,14 +175,14 @@ trayecto_db = db['Trayecto']
 #Devuelve una lista de trayectos
 @app.route('/trayecto', methods=['GET'])
 def get_trayectos():
-    trayectos = trayecto_db.find()
+    trayectos = trayecto_data.find_trayectos()
     response = json_util.dumps(trayectos)
     return Response(response, mimetype='application/json')
 
 #Devuelve un trayecto cuyo id coincide con el que se pasa por parámetro
 @app.route('/trayecto/<id>', methods=['GET'])
 def get_trayecto(id):
-    trayecto = trayecto_db.find_one({'_id': ObjectId(id)})
+    trayecto = trayecto_data.find_trayecto(id)
     response = json_util.dumps(trayecto)
     if response == 'null':
         return not_found("No se han encontrado trayectos con el id: " + id)
@@ -184,7 +191,7 @@ def get_trayecto(id):
 
 @app.route('/trayecto/new', methods=["GET", "POST"])
 def new_trayecto():
-    usuario = usuario_db.find_one({'_id': ObjectId("6194e4dbc76e95c373d80508")})
+    usuario = usuario_data.find_usuario("6194e4dbc76e95c373d80508")
     if request.method == "GET":
         vehiculos_id = usuario["vehiculos"]
         lista_vehiculos = []
