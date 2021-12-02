@@ -191,6 +191,7 @@ def get_trayecto(id):
 
 @app.route('/trayecto/new', methods=["GET", "POST"])
 def new_trayecto():
+    print("UNOOOOOS")
     usuario = usuario_data.find_usuario("6194e4dbc76e95c373d80508")
     if request.method == "GET":
         vehiculos_id = usuario["vehiculos"]
@@ -200,21 +201,28 @@ def new_trayecto():
             lista_vehiculos.append(vehiculo)
         return render_template("trayecto/trayecto.html", usuario = usuario, vehiculos = lista_vehiculos)
     else: #POST
+        creador = request.form.get("creador")
         origen_nombre = request.form.get("origen_nombre")
-        origen_latitud = request.form.get("origen_latitud")
-        origen_longitud = request.form.get("origen_longitud")
+        origen_latitud = float(request.form.get("origen_latitud"))
+        origen_longitud = float(request.form.get("origen_longitud"))
         destino_nombre = request.form.get("destino_nombre")
-        destino_latitud = request.form.get("destino_latitud")
-        destino_longitud = request.form.get("destino_longitud")
-        fecha = request.form.get("fecha")
+        destino_latitud = float(request.form.get("destino_latitud"))
+        destino_longitud = float(request.form.get("destino_longitud"))
+        fecha = request.form.get("fecha") # formatear la fecha
         hora = request.form.get("hora")
-        duracion = request.form.get("duracion")
-        periodicidad = request.form.get("periodicidad")
-        precio = request.form.get("precio")
+        duracion = int(request.form.get("duracion"))
+        periodicidad = int(request.form.get("periodicidad"))
+        precio = float(request.form.get("precio"))
         fotos_opcionales = [] #Modificar cuando se manejen las fotos
-        plazas_totales = request.form.get("plazas_totales")
+        plazas_totales = int(request.form.get("plazas_totales"))
         vehiculo = request.form.get("vehiculo")
         pasajeros = []  #Modificar para edit
+
+        # Crea el nuevo trayecto
+        trayecto_data.create_trayecto(creador, origen_nombre, origen_latitud, origen_longitud, destino_nombre, destino_latitud, destino_longitud,
+                                      fecha, hora, duracion, periodicidad, precio, fotos_opcionales, plazas_totales, vehiculo, pasajeros)
+    
+    return redirect("/")
 
 
 #Crea un nuevo trayecto
