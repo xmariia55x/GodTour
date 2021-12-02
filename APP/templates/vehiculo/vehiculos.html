@@ -1,0 +1,30 @@
+{% block content %}
+
+<h1 style="text-align: center">Vehiculos</h1>
+        {%if vehiculos |count >0%}
+        <table class="table" border="1" style="margin: auto;">
+            <thead>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Matricula</th>
+            <th>Color</th>
+            <th>Plazas</th>
+            </thead>
+            
+            <tbody>
+            {% for i in vehiculos %}
+            <tr>
+                <td>{{i.marca}}</td>
+                <td>{{ i.modelo }}</td>
+                <td>{{ i.matricula}}</td>
+                <td>{{ i.color}}</td>
+                <td>{{ i.plazas}}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
+
+
+
+{% endblock content %}

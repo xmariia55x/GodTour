@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Lista usuarios </title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+</head>
+
+
+<body>
+    <h1 style="text-align: center">Usuarios</h1>
+        <table class="table" border="1" style="margin: auto;">
+            <thead>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>DNI</th>
+            <th>Fecha nacimiento</th>
+            <th>Antiguedad permiso</th>
+            <th>Foto perfil</th>
+            <th>Valoracion media</th>
+            </thead>
+            
+            <tbody>
+            <tr>
+                <td>{{ usuario.nombre_completo}}</td>
+                <td>{{ usuario.correo}}</td>
+                <td>{{ usuario.dni}}</td>
+                <td>{{ usuario.fecha_nacimiento}}</td>
+                <td>{{ usuario.antiguedad_permiso}}</td>
+                <td>{{ usuario.foto_perfil}}</td>
+                <td>{{ usuario.valoracion_media}}</td>
+            </tr>
+            </tbody>
+        </table>
+</body>
+
+</html>
