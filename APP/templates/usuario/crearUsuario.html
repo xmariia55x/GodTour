@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>
+        Nuevo Usuario
+    </title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+</head>
+
+<body>
+    <h1>Nuevo Usuario</h1><br>
+
+    <form action="usuario/create" method="post">
+        <label>Nombre: </label>
+        <input type="text" name="nombre_completo" required>
+        <br>
+        <label>Correo: </label>
+        <input type="text" name="correo" required>
+        <label>DNI: </label>
+        <input type="text" name="dni" required>
+        <br>
+
+        <label>Fecha: </label>
+        <input type="date" name="fecha_nacimiento" required><br>
+        <label>Antiguedad: </label>
+        <input type="date" name="antiguedad_permiso" required><br>
+
+        <label>Foto: </label>
+        <input type="text" name="foto_perfil" required>
+        <br>
+
+        <input type="submit" value="Crear" />
+    </form>
+
+</body>
+
+</html>

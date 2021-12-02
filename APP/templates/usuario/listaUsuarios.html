@@ -17,9 +17,9 @@
 
 <body>
     <h1 style="text-align: center">Usuarios</h1>
-        {%if usuarios |count >0%}
-        <table class="table" border="1" style="margin: auto;">
-            <thead>
+    {%if usuarios |count >0%}
+    <table class="table" border="1" style="margin: auto;">
+        <thead>
             <th>Nombre</th>
             <th>Correo</th>
             <th>DNI</th>
@@ -28,9 +28,9 @@
             <th>Foto perfil</th>
             <th>Valoracion media</th>
             <th>Info</th>
-            </thead>
-            
-            <tbody>
+        </thead>
+
+        <tbody>
             {% for i in usuarios %}
             <tr>
                 <td>{{ i.nombre_completo}}</td>
@@ -43,9 +43,17 @@
                 <td><a href="{{ url_for('get_usuario', id = i._id) }}"> Info </a></td>
             </tr>
             {% endfor %}
-            </tbody>
-        </table>
-    {% endif %}
-</body>
+        </tbody>
+    </table>
+
+
+
+    <form method="post" action="/usuario/crearUsuario.html">
+        <input type="submit" value="Crear" name="crearButton" />
+    </form>
+
+
+
+    {% endif %} </body>
 
 </html>

@@ -64,12 +64,12 @@ def get_usuario(id):
 #Crea un nuevo usuario
 @app.route('/usuario/create', methods=['POST'])
 def create_usuario():
-    nombre_completo = request.json['nombre_completo']
-    correo = request.json['correo']
-    dni = request.json['dni']
-    fecha_nacimiento = request.json['fecha_nacimiento']
-    antiguedad_permiso = request.json['antiguedad_permiso']
-    foto_perfil = request.json['foto_perfil']
+    nombre_completo = request.form.get('nombre_completo')
+    correo = request.form.get('correo')
+    dni = request.form.get('dni')
+    fecha_nacimiento = request.form.get('fecha_nacimiento')
+    antiguedad_permiso = request.form.get('antiguedad_permiso')
+    foto_perfil = request.form.get('foto_perfil')
     valoracion_media = 0
 
     if nombre_completo and correo and dni and fecha_nacimiento:
