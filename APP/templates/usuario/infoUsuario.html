@@ -17,7 +17,6 @@
 
 <body>
     <h1 style="text-align: center">Usuarios</h1>
-        {%if usuarios |count >0%}
         <table class="table" border="1" style="margin: auto;">
             <thead>
             <th>Nombre</th>
@@ -27,25 +26,20 @@
             <th>Antiguedad permiso</th>
             <th>Foto perfil</th>
             <th>Valoracion media</th>
-            <th>Info</th>
             </thead>
             
             <tbody>
-            {% for i in usuarios %}
             <tr>
-                <td>{{ i.nombre_completo}}</td>
-                <td>{{ i.correo}}</td>
-                <td>{{ i.dni}}</td>
-                <td>{{ i.fecha_nacimiento}}</td>
-                <td>{{ i.antiguedad_permiso}}</td>
-                <td>{{ i.foto_perfil}}</td>
-                <td>{{ i._id}}</td>
-                <td><a href="{{ url_for('get_usuario', id = i._id) }}"> Info </a></td>
+                <td>{{ usuario.nombre_completo}}</td>
+                <td>{{ usuario.correo}}</td>
+                <td>{{ usuario.dni}}</td>
+                <td>{{ usuario.fecha_nacimiento}}</td>
+                <td>{{ usuario.antiguedad_permiso}}</td>
+                <td>{{ usuario.foto_perfil}}</td>
+                <td>{{ usuario.valoracion_media}}</td>
             </tr>
-            {% endfor %}
             </tbody>
         </table>
-    {% endif %}
 </body>
 
 </html>
