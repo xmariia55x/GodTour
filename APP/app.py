@@ -92,11 +92,11 @@ def create_usuario():
         return not_found("No se ha podido crear un usuario")
 
 #Elimina un usuario cuyo id coincide con el que se pasa por parametro
-@app.route('/usuario/delete/<id>', methods=['DELETE'])
+@app.route('/usuario/delete/<id>', methods=['GET','DELETE'])
 def delete_usuario(id):
     usuario_db.delete_one({'_id': ObjectId(id)})
-    response = jsonify({'message': 'El usuario con id '+id+' se ha eliminado exitosamente'})
-    return response
+    #response = jsonify({'message': 'El usuario con id '+id+' se ha eliminado exitosamente'})
+    return redirect("/usuario",code = 302)
 
 #Actualiza la informacion del usuario cuyo id coincide con el que se pasa por parametro
 @app.route('/usuario/update/<id>', methods=['PUT'])
@@ -680,21 +680,23 @@ def not_found(error=None):
 @app.errorhandler(404)
 def not_found(error=None):
     if error is None : 
-        #response = jsonify({
-        #'message': 'Recurso no encontrado: ' + request.url,
-        #'status': 404
-        #}<)
-        response = json.dumps({'message': 'Recurso no encontrado: ' + request.url})
-        return Response(response, status=404, mimetype='application/json')
+        response = jsonify({
+        'message': 'Recurso no encontrado: ' + request.url,
+        'status': 404
+        })
+        #response = json.dumps({'message': 'Recurso no encontrado: ' + request.url})
+        #return Response(response, status=404, mimetype='application/json')
     else: 
-        response = json.dumps({'message': error})
-        return Response(response, status=404, mimetype='application/json')
-       # response = jsonify({
-       # 'message': error,
-       # 'status': 404
-       # })
-    #response.status_code = 404
-    #return response
+        #response = json_util.dumps({'message': error})
+        
+        response = jsonify({
+        'message': error,
+        'status': 404
+        })
+
+        #return Response(response, status=404, mimetype='application/json')
+    response.status_code = 404
+    return response
 
 #Error 500
 @app.errorhandler(500)

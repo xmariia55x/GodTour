@@ -28,6 +28,7 @@
             <th>Foto perfil</th>
             <th>Valoracion media</th>
             <th>Info</th>
+            <th>Eliminar</th>
             </thead>
             
             <tbody>
@@ -41,6 +42,7 @@
                 <td>{{ i.foto_perfil}}</td>
                 <td>{{ i._id}}</td>
                 <td><a href="{{ url_for('get_usuario', id = i._id) }}"> Info </a></td>
+                <td><a href="{{ url_for('delete_usuario', id = i._id) }}"> Borrar </a></td>
             </tr>
             {% endfor %}
             </tbody>
