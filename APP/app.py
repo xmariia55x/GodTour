@@ -1,5 +1,5 @@
 from logging import NullHandler
-from flask import Flask, request, jsonify, Response
+from flask import Flask, request, jsonify, Response, session
 from flask.templating import render_template
 from flask_pymongo import PyMongo
 import pymongo
@@ -22,10 +22,10 @@ class FlaskApp(Flask):
         ultima_actualizacion_gasolineras = datetime.now()
     super(FlaskApp, self).run(host=host, port=port, debug=debug, load_dotenv=load_dotenv, **options)
 app = FlaskApp(__name__)
+app.secret_key = 'clave de cifrado lo más robusta posible'
 
 client = pymongo.MongoClient("mongodb+srv://Gestionpymongo:Gestionpymongo@cluster0.iixvr.mongodb.net/iweb?retryWrites=true&w=majority&ssl=true&ssl_cert_reqs=CERT_NONE")
 db = client.get_default_database()
-
 
 #PRUEBA JINJA
 @app.route('/')
@@ -173,6 +173,16 @@ def get_trayecto(id):
         return not_found("No se han encontrado trayectos con el id: " + id)
     else:     
         return Response(response, mimetype='application/json')
+
+@app.route('/trayecto/new', methods=["GET"])
+def new_trayecto():
+    usuario = usuario_db.find_one({'_id': ObjectId("6194e4dbc76e95c373d80508")})
+    vehiculos_id = usuario["vehiculos"]
+    lista_vehiculos = []
+    for v in vehiculos_id:
+        vehiculo = vehiculo_db.find_one({'_id': ObjectId(v)})
+        lista_vehiculos.append(vehiculo)
+    return render_template("trayecto/trayecto.html", usuario = usuario, vehiculos = lista_vehiculos)
 
 #Crea un nuevo trayecto
 @app.route('/trayecto/create', methods=["POST"])

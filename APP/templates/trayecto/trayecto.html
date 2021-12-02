@@ -2,29 +2,46 @@
 <html>
 
 <head>
-    TRAYECTO
+    <title>Nuevo trayecto</title>
 </head>
 
 <body>
-    <form>
-        <label for="lUsuario">Usuario:</label><br>
-        Usuario: <input type="text" name="origen_nombre"><br>
+    <h1>Nuevo trayecto</h1><br>
 
-        <label for="lOrigen">Origen:</label><br>
-        Nombre: <input type="text" name="origen_nombre"><br>
-        Latitud: <input type="text" name="origen_latitud"><br>
-        Longitud: <input type="text" name="origen_longitud"><br>
-
-        <label for="lDestino">Destino:</label><br>
-        Nombre: <input type="text" name="destino_nombre"><br>
-        Latitud: <input type="text" name="destino_latitud"><br>
-        Longitud: <input type="text" name="destino_longitud"><br>
-
-        <label for="lFecha">Fecha:</label><br>
-        <input type="date" id="fecha" name="lname">
-
-        <label for="lHora">Hora:</label><br>
-        <input type="time" id="hora" name="lname">
+    <form action="trayecto/new" method="post">  
+        Origen: 
+        <label>Nombre: </label>
+        <input type="text" name="origen_nombre" required>
+        <label>Latitud: </label>
+        <input type="number" name="origen_latitud" step="any" required>
+        <label>Longitud: </label>
+        <input type="number" name="origen_longitud" step="any" required>
+        <br>
+        Destino: 
+        <label>Nombre: </label>
+        <input type="text" name="destino_nombre" required>
+        <label>Latitud: </label>
+        <input type="number" name="destino_latitud" step="any" required>
+        <label>Longitud: </label>
+        <input type="number" name="destino_longitud" step="any" required>
+        <br>
+        <label>Fecha: </label>
+        <input type="date" name="fecha" required><br>
+        <label>Hora: </label>
+        <input type="time" name="hora" required><br>
+        <label>Duraci&oacuten: </label>
+        <input type="number" name="duracion" required><br>
+        <label>Periodicidad: </label>
+        <input type="number" name="periodicidad" required><br>
+        <label>Plazas totales: </label>
+        <input type="number" name="plazas_totales" required><br>
+        <label>Veh&iacuteculo: </label>
+        <select name="cars">
+        {% for v in vehiculos}
+            <option value="{{v.id}}">{{v.marca}} {{v.modelo}} - {{v.matricula}}</option>
+        {% endfor %}
+        </select>
+        <input type="submit" value="Crear"/>
     </form>
 </body>
 
