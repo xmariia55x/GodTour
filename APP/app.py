@@ -40,8 +40,10 @@ usuario_db = db['Usuario']
 @app.route('/usuario', methods=['GET'])
 def get_usuarios():
     usuarios = usuario_db.find()
-    response = json_util.dumps(usuarios)
-    return Response(response, mimetype='application/json')
+    # response = json_util.dumps(usuarios)
+    print(type(usuarios))
+    #return Response(response, mimetype='application/json')
+    return render_template("/usuario/listaUsuarios.html",usuarios=list(usuarios)) 
 
 #Devuelve un usuario cuyo id coincide con el que se pasa por parámetro
 @app.route('/usuario/<id>', methods=['GET'])
