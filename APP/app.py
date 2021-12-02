@@ -1,5 +1,5 @@
 from logging import NullHandler
-from flask import Flask, request, jsonify, Response
+from flask import Flask, request, jsonify, Response, redirect
 from flask.templating import render_template
 from flask_pymongo import PyMongo
 import pymongo
@@ -30,8 +30,8 @@ db = client.get_default_database()
 #PRUEBA JINJA
 @app.route('/')
 def prueba_Jinja():
-    return render_template("pruebaJinja.html",variable="soy una variable")
-
+    #return render_template("pruebaJinja.html",variable="soy una variable")
+    return redirect("/usuario", code=302)
 # -----------------------------------------------------USUARIO-------------------------------------------------------------
 # Obtengo la colección de usuarios
 usuario_db = db['Usuario']
