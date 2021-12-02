@@ -14,16 +14,36 @@
     <link rel="stylesheet" href="">
 </head>
 
+
 <body>
-    <tr>
-        {%for i in usuarios %}
-
-        <td>Lo que pasan: {{i.correo}}</td>
-
-        {% endfor %}
-    </tr>
-
-
+    <h1 style="text-align: center">Usuarios</h1>
+        {%if usuarios |count >0%}
+        <table class="table" border="1" style="margin: auto;">
+            <thead>
+            <th>Nombre</th>
+            <th>Correo</th>
+            <th>DNI</th>
+            <th>Fecha nacimiento</th>
+            <th>Antiguedad permiso</th>
+            <th>Foto perfil</th>
+            <th>Valoracion media</th>
+            </thead>
+            
+            <tbody>
+            {% for i in usuarios %}
+            <tr>
+                <td>{{ i.nombre_completo}}</td>
+                <td>{{ i.correo}}</td>
+                <td>{{ i.dni}}</td>
+                <td>{{ i.fecha_nacimiento}}</td>
+                <td>{{ i.antiguedad_permiso}}</td>
+                <td>{{ i.foto_perfil}}</td>
+                <td>{{ i.valoracion_media}}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% endif %}
 </body>
 
 </html>

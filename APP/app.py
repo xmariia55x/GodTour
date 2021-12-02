@@ -41,7 +41,6 @@ usuario_db = db['Usuario']
 def get_usuarios():
     usuarios = usuario_db.find()
     # response = json_util.dumps(usuarios)
-    print(type(usuarios))
     #return Response(response, mimetype='application/json')
     return render_template("/usuario/listaUsuarios.html",usuarios=list(usuarios)) 
 
