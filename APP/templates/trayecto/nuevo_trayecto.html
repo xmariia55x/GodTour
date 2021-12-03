@@ -8,11 +8,11 @@
 <body>
     <h1>Nuevo trayecto</h1><br>
 
-    <form action="{{url_for('new_trayecto')}}" method="POST">
+    <form action="{{url_for('create_trayecto')}}" method="POST">
         <input type="hidden" name="creador" value="{{usuario._id}}" />  
         Origen: 
         <label>Nombre: </label>
-        <input type="text" name="origen_nombre" required>
+        <input type="text" name="origen_nombre" required max="50">
         <label>Latitud: </label>
         <input type="number" name="origen_latitud" step="any" required>
         <label>Longitud: </label>
@@ -20,7 +20,7 @@
         <br>
         Destino: 
         <label>Nombre: </label>
-        <input type="text" name="destino_nombre" required>
+        <input type="text" name="destino_nombre" required max="50">
         <label>Latitud: </label>
         <input type="number" name="destino_latitud" step="any" required>
         <label>Longitud: </label>
@@ -33,11 +33,11 @@
         <label>Duraci&oacuten: </label>
         <input type="number" name="duracion" required><br>
         <label>Periodicidad: </label>
-        <input type="number" name="periodicidad"><br>
+        <input type="number" name="periodicidad" required max="365"><br>
         <label>Plazas totales: </label>
         <input type="number" name="plazas_totales" required><br>
         <label>Precio: </label>
-        <input type="number" name="precio" required><br>
+        <input type="number" name="precio" step="any" required><br>
         <label>Veh&iacuteculo: </label>
         <select name="cars">
         {% for v in vehiculos %}
