@@ -7,3 +7,4 @@ trayecto_db = db['Trayecto']
 usuario_db = db['Usuario']
 vehiculo_db = db['Vehiculo']
 
+client.close()

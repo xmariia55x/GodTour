@@ -43,6 +43,7 @@ def create_trayecto(creador, origen_nombre, origen_latitud, origen_longitud, des
 def update_trayecto(id, origen_nombre, origen_latitud, origen_longitud, destino_nombre, destino_latitud, destino_longitud,
                     fecha, hora, duracion, periodicidad, precio, fotos_opcionales, plazas_totales, vehiculo):
     filter = {"_id": ObjectId(id)}
+
     new_values = {"$set":{
             "destino": 
                 {"nombre": destino_nombre, 
@@ -65,7 +66,7 @@ def update_trayecto(id, origen_nombre, origen_latitud, origen_longitud, destino_
         }}
         
     result = trayecto_db.update_one(filter, new_values)
-
+'''
 def update_restringido_trayecto(id, periodicidad, fotos_opcionales, plazas_totales, vehiculo):
     filter = {"_id": ObjectId(id)}
     new_values = {"$set":{
@@ -76,3 +77,4 @@ def update_restringido_trayecto(id, periodicidad, fotos_opcionales, plazas_total
         }}
         
     result = trayecto_db.update_one(filter, new_values)
+'''

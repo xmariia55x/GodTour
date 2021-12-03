@@ -8,7 +8,7 @@
 <body>
     <h1>Nuevo trayecto</h1><br>
 
-    <form action="{{url_for('create_trayecto')}}" method="POST">
+    <form action="{{url_for('app.create_trayecto')}}" method="POST">
         <input type="hidden" name="creador" value="{{usuario._id}}" />  
         Origen: 
         <label>Nombre: </label>
@@ -44,6 +44,8 @@
             <option value="{{v._id}}">{{v.marca}} {{v.modelo}} - {{v.matricula}}</option>
         {% endfor %}
         </select>
+        <br>
+        <br>
         <input type="submit" value="Crear"/>
     </form>
 </body>
