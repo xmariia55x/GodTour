@@ -72,7 +72,13 @@ def get_usuario(id):
     #    return not_found("No se han encontrado usuarios con el id: " + id)
     #else:     
         #return Response(response, mimetype='application/json')
-    return render_template("/usuario/infoUsuario.html",usuario = usuario) 
+    return render_template("/usuario/infoUsuario.html",usuario = usuario)
+
+#Metodo necesario para crear un usuario
+@app.route('/usuario/new', methods=['GET', 'POST'])
+def new_usuario():
+    return render_template("/usuario/crearUsuario.html")
+
 #Crea un nuevo usuario
 @app.route('/usuario/create', methods=['POST'])
 def create_usuario():
@@ -96,7 +102,7 @@ def create_usuario():
              "valoracion_media": valoracion_media
             }
         )
-        response = {
+        '''response = {
             "id": str(id),
             "nombre_completo": nombre_completo,
             "correo": correo,
@@ -105,8 +111,8 @@ def create_usuario():
             "antiguedad_permiso": antiguedad_permiso,
             "foto_perfil": foto_perfil,
             "valoracion_media": valoracion_media
-        }
-        return response
+        }'''
+        return redirect("/usuario")
     else:
         return not_found("No se ha podido crear un usuario")
 
@@ -491,61 +497,69 @@ vehiculo_db = db['Vehiculo']
 
 @app.route('/vehiculo', methods=['GET'])
 def get_vehiculos():
-    vehiculos = vehiculo_db.find()
+    vehiculos = vehiculo_data.find_vehiculos()
     #response = json_util.dumps(vehiculos)
     #return Response(response, mimetype='application/json')
     return render_template('vehiculo/vehiculos.html', vehiculos = list(vehiculos))
 
 @app.route('/vehiculo/<id>', methods=['GET'])
 def get_vehiculo(id):
-    vehiculo = vehiculo_db.find_one({'_id': ObjectId(id)})
+    vehiculo = vehiculo_data.find_vehiculo(id)
     response = json_util.dumps(vehiculo)
     if response == 'null':
-        return not_found("No se han encontrado vehiculos con el id: " + id)
-    else:     
-        return Response(response, mimetype='application/json')
+        return render_template('vehiculo/infoVehiculo.html', error="No se ha encontrado el vehiculo")
+        #return not_found("No se han encontrado vehiculos con el id: " + id)
+    else: 
+        return render_template('vehiculo/infoVehiculo.html', vehiculo=vehiculo)    
+        #return Response(response, mimetype='application/json')
 
-@app.route('/vehiculo/create', methods=["POST"])
+@app.route('/vehiculo/create', methods=["GET","POST"])
 def create_vehiculo():
-    '''
-    PRUEBA
-    {
-    "marca":"Opel",
-    "modelo":"Astra",
-    "matricula":"5588CDF",
-    "color":"Negro",
-    "plazas":5,
-    "fotos_vehiculo":["http://www.google.drive.com/fotocoche.jpg"]
-    }
-    '''
-    marca= request.json['marca']
-    modelo= request.json['modelo'] 
-    matricula= request.json['matricula']
-    color= request.json['color']
-    plazas= int(request.json['plazas'])
-    fotos_vehiculo= request.json['fotos_vehiculo']
-
-    if marca and modelo and matricula and color and plazas:
-        id=vehiculo_db.insert_one({
-            "marca": marca,
-            "modelo": modelo,
-            "matricula": matricula,
-            "color": color,
-            "plazas": plazas,
-            "fotos_vehiculo": fotos_vehiculo
-        })
-        response = {
-            "id": str(id),
-            "marca": marca,
-            "modelo": modelo,
-            "matricula": matricula,
-            "color": color,
-            "plazas": plazas,
-            "fotos_vehiculo": fotos_vehiculo
-        }
-        return response
+    if request.method == 'GET':
+        return render_template('vehiculo/nuevoVehiculo.html')
     else:
-        return not_found("No se ha podido crear el vehiculo")
+        '''
+        PRUEBA
+        {
+        "marca":"Opel",
+        "modelo":"Astra",
+        "matricula":"5588CDF",
+        "color":"Negro",
+        "plazas":5,
+        "fotos_vehiculo":["http://www.google.drive.com/fotocoche.jpg"]
+        }
+        '''
+        marca= request.form['marca']
+        modelo= request.form['modelo'] 
+        matricula= request.form['matricula']
+        color= request.form['color']
+        plazas= int(request.form['plazas'])
+        fotos_vehiculo= request.form['fotos_vehiculo']
+
+        if marca and modelo and matricula and color and plazas:
+            '''id=vehiculo_db.insert_one({
+                "marca": marca,
+                "modelo": modelo,
+                "matricula": matricula,
+                "color": color,
+                "plazas": plazas,
+                "fotos_vehiculo": fotos_vehiculo
+            })
+            response = {
+                "id": str(id),
+                "marca": marca,
+                "modelo": modelo,
+                "matricula": matricula,
+                "color": color,
+                "plazas": plazas,
+                "fotos_vehiculo": fotos_vehiculo
+            }
+            return response'''
+            vehiculo_data.create_vehiculo(marca, modelo, matricula, color, plazas, fotos_vehiculo)
+            return redirect('/vehiculo')
+        else:
+            return render_template('vehiculo/nuevoVehiculo.html', error="No se ha podido crear el vehiculo, faltan campos")
+            #return not_found("No se ha podido crear el vehiculo")
 
 @app.route('/vehiculo/update/<id>', methods=['PUT'])
 def update_vehiculo(id):

@@ -23,8 +23,12 @@
             {% endfor %}
             </tbody>
         </table>
+    {%else%}
+        <h2>No hay vehiculos todavia</h2>
     {% endif %}
-
+    <form action="{{url_for('create_vehiculo')}}" method="GET">
+        <input type="submit" value="Crear nuevo vehiculo">
+    </form>
 
 
 {% endblock content %}
