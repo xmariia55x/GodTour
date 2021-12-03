@@ -184,8 +184,6 @@ def get_trayecto(id):
     else:     
         return Response(response, mimetype='application/json')
 
-print("hola")
-
 @app.route('/trayecto/create', methods=["GET", "POST"])
 def create_trayecto():
     usuario = usuario_data.find_usuario("6194e4dbc76e95c373d80508")
@@ -288,7 +286,7 @@ def create_trayecto():
 '''
 
 #Elimina un trayecto cuyo id coincide con el que se pasa por parametro
-@app.route('/trayecto/delete/<id>', methods=['DELETE'])
+@app.route('/trayecto/delete/<id>', methods=['GET'])
 def delete_trayecto(id):
     trayecto_db.delete_one({'_id': ObjectId(id)})
     response = jsonify({'message': 'El trayecto con id '+id+' se ha eliminado exitosamente'})
