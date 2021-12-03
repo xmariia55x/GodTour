@@ -30,14 +30,9 @@ class FlaskApp(Flask):
 app = FlaskApp(__name__)
 app.secret_key = 'clave de cifrado lo más robusta posible'
 
-# Importado el singleton esto no hace falta
+# Importado el singleton
 # client = pymongo.MongoClient("mongodb+srv://Gestionpymongo:Gestionpymongo@cluster0.iixvr.mongodb.net/iweb?retryWrites=true&w=majority&ssl=true&ssl_cert_reqs=CERT_NONE")
 # db = client.get_default_database()
-
-# Para formatear fechas con un formato de entrada y formato salida
-def formatear_fecha(str_fecha, formatoEntrada, formatoSalida):
-    date_obj = datetime.strptime(str_fecha, formatoEntrada)
-    return datetime.strftime(date_obj, formatoSalida)
 
 #PRUEBA JINJA
 @app.route('/')
@@ -75,9 +70,15 @@ def get_usuario(id):
     return render_template("/usuario/infoUsuario.html",usuario = usuario)
 
 #Metodo necesario para crear un usuario
-@app.route('/usuario/new', methods=['GET', 'POST'])
-def new_usuario():
+@app.route('/usuario/link_create/', methods=['GET'])
+def link_create_usuario():
     return render_template("/usuario/crearUsuario.html")
+
+#Metodo necesario para actualizar un usuario
+@app.route('/usuario/link_update/<id>', methods=['GET'])
+def link_update_usuario(id):
+    usuario = usuario_db.find_one({'_id': ObjectId(id)})
+    return render_template("/usuario/actualizarUsuario.html", usuario = usuario)
 
 #Crea un nuevo usuario
 @app.route('/usuario/create', methods=['POST'])
@@ -124,15 +125,15 @@ def delete_usuario(id):
     return redirect("/usuario",code = 302)
 
 #Actualiza la informacion del usuario cuyo id coincide con el que se pasa por parametro
-@app.route('/usuario/update/<id>', methods=['PUT'])
+@app.route('/usuario/update/<id>', methods=['POST'])
 def update_usuario(id):
-    nombre_completo = request.json['nombre_completo']
-    correo = request.json['correo']
-    dni = request.json['dni']
-    fecha_nacimiento = request.json['fecha_nacimiento']
-    antiguedad_permiso = request.json['antiguedad_permiso']
-    foto_perfil = request.json['foto_perfil']
-    valoracion_media = request.json['valoracion_media']
+    nombre_completo = request.form.get('nombre_completo')
+    correo = request.form.get('correo')
+    dni = request.form.get('dni')
+    fecha_nacimiento = request.form.get('fecha_nacimiento')
+    antiguedad_permiso = request.form.get('antiguedad_permiso')
+    foto_perfil = request.form.get('foto_perfil')
+    valoracion_media = request.form.get('valoracion_media')
 
     if nombre_completo and correo and dni and fecha_nacimiento:
         filter = {"_id": ObjectId(id)}
@@ -148,9 +149,9 @@ def update_usuario(id):
         
         usuario_db.update_one(filter, new_values) 
 
-        response = jsonify({'message': 'El usuario con id '+id+' se ha actualizado exitosamente'})
+        #response = jsonify({'message': 'El usuario con id '+id+' se ha actualizado exitosamente'})
         
-        return response
+        return redirect("/usuario")
     else:
         return not_found("No se ha podido actualizar el usuario con el id: " + id)
 
@@ -190,6 +191,14 @@ def get_trayectos():
     response = json_util.dumps(trayectos)
     return Response(response, mimetype='application/json')
 
+#Devuelve los trayectos de un creador
+@app.route('/trayecto/creador/<id>', methods=['GET'])
+def get_trayectos_creador(id):
+    trayectos_creador = trayecto_data.find_trayectos_creador(id)
+    #response = json_util.dumps(trayectos_creador)
+    #return Response(response, mimetype='application/json')
+    return render_template("trayecto/misTrayectos.html", trayectos_creador = list(trayectos_creador))
+
 #Devuelve un trayecto cuyo id coincide con el que se pasa por parámetro
 @app.route('/trayecto/<id>', methods=['GET'])
 def get_trayecto(id):
@@ -211,7 +220,7 @@ def create_trayecto():
         for v in vehiculos_id:
             vehiculo = vehiculo_db.find_one({'_id': ObjectId(v)})
             lista_vehiculos.append(vehiculo)
-        return render_template("trayecto/nuevo_trayecto.html", usuario = usuario, vehiculos = lista_vehiculos)
+        return render_template("trayecto/trayecto.html", usuario = usuario, vehiculos = lista_vehiculos)
     else: #POST
         creador = request.form.get("creador")
         origen_nombre = request.form.get("origen_nombre")
@@ -220,7 +229,7 @@ def create_trayecto():
         destino_nombre = request.form.get("destino_nombre")
         destino_latitud = float(request.form.get("destino_latitud"))
         destino_longitud = float(request.form.get("destino_longitud"))
-        fecha = formatear_fecha(request.form.get("fecha")) #datetime.strptime(request.form.get("fecha"), '%Y-%m-%d') 
+        fecha = request.form.get("fecha") # formatear la fecha
         hora = request.form.get("hora")
         duracion = int(request.form.get("duracion"))
         periodicidad = int(request.form.get("periodicidad"))
@@ -230,19 +239,17 @@ def create_trayecto():
         vehiculo = request.form.get("vehiculo")
         pasajeros = []  #Modificar para edit
 
-        if periodicidad: 
-            periodicidad = int(periodicidad)
-
         # Crea el nuevo trayecto
         trayecto_data.create_trayecto(creador, origen_nombre, origen_latitud, origen_longitud, destino_nombre, destino_latitud, destino_longitud,
                                       fecha, hora, duracion, periodicidad, precio, fotos_opcionales, plazas_totales, vehiculo, pasajeros)
     
     return redirect("/")
 
-'''
+
 #Crea un nuevo trayecto
 @app.route('/trayecto/create', methods=["POST"])
 def create_trayecto():
+    '''
     PRUEBA
     {
     "creador":"6194e4dbc76e95c373d80508",
@@ -257,6 +264,7 @@ def create_trayecto():
     "plazas_totales":3,
     "vehiculo":"61a6769c6df626e2acba5868"
     }
+    '''
     creador= request.json['creador']
     destino= request.json['destino'] 
     duracion= int(request.json['duracion'])
@@ -302,7 +310,6 @@ def create_trayecto():
         return response
     else:
         return not_found("No se ha podido crear el trayecto")
-'''
 
 #Elimina un trayecto cuyo id coincide con el que se pasa por parametro
 @app.route('/trayecto/delete/<id>', methods=['DELETE'])
@@ -311,50 +318,6 @@ def delete_trayecto(id):
     response = jsonify({'message': 'El trayecto con id '+id+' se ha eliminado exitosamente'})
     return response
 
-#Actualiza la informacion del trayecto cuyo id coincide con el que se pasa por parametro
-@app.route('/trayecto/update/<id>', methods=['GET'])
-def update_trayecto(id):
-    trayecto = trayecto_data.find_trayecto(id)
-    usuario = usuario_data.find_usuario(trayecto["creador"])
-    # Si hay pasajeros ya apuntados al trayecto no se puede modificar información delicada - origne, destino, precio...
-    hayPasajeros = True if len(trayecto["pasajeros"]) > 0 else False
-    if request.method == "GET":
-        vehiculos_id = usuario["vehiculos"]
-        fecha_format = formatear_fecha(trayecto["fecha"], '%d/%m/%Y', '%Y-%m-%d')
-        lista_vehiculos = []
-        for v in vehiculos_id:
-            vehiculo = vehiculo_db.find_one({'_id': ObjectId(v)})
-            lista_vehiculos.append(vehiculo)
-        return render_template("trayecto/editar_trayecto.html", trayecto = trayecto, usuario = usuario, vehiculos = lista_vehiculos, 
-                                hayPasajeros = hayPasajeros, fecha = fecha_format)
-    else: #POST
-        # creador = request.form.get("creador")
-        origen_nombre = request.form.get("origen_nombre")
-        origen_latitud = float(request.form.get("origen_latitud"))
-        origen_longitud = float(request.form.get("origen_longitud"))
-        destino_nombre = request.form.get("destino_nombre")
-        destino_latitud = float(request.form.get("destino_latitud"))
-        destino_longitud = float(request.form.get("destino_longitud"))
-        fecha = formatear_fecha(request.form.get("fecha"), '%Y-%m-%d', '%d/%m/%Y')
-        hora = request.form.get("hora")
-        duracion = int(request.form.get("duracion"))
-        periodicidad = int(request.form.get("periodicidad"))
-        precio = float(request.form.get("precio"))
-        fotos_opcionales = [] #Modificar cuando se manejen las fotos
-        plazas_totales = int(request.form.get("plazas_totales"))
-        vehiculo = request.form.get("vehiculo")
-        pasajeros = []  #Modificar para edit
-
-        if periodicidad: 
-            periodicidad = int(periodicidad)
-
-        # Crea el nuevo trayecto
-        trayecto_data.create_trayecto(creador, origen_nombre, origen_latitud, origen_longitud, destino_nombre, destino_latitud, destino_longitud,
-                                      fecha, hora, duracion, periodicidad, precio, fotos_opcionales, plazas_totales, vehiculo, pasajeros)
-    
-    return redirect("/")
-
-'''
 #Actualiza la informacion del trayecto cuyo id coincide con el que se pasa por parametro
 @app.route('/trayecto/update/<id>', methods=['PUT'])
 def update_trayecto(id):
@@ -401,7 +364,6 @@ def update_trayecto(id):
         return response
     else:
         return not_found("No se ha podido actualizar el trayecto con id: " + id)
-'''
 
 #Devuelve los trayectos cuyo destino coincide con el que se pasa por parámetro 
 @app.route('/trayecto/by_destino', methods=['POST'])
@@ -563,46 +525,34 @@ def create_vehiculo():
             return render_template('vehiculo/nuevoVehiculo.html', error="No se ha podido crear el vehiculo, faltan campos")
             #return not_found("No se ha podido crear el vehiculo")
 
-@app.route('/vehiculo/update/<id>', methods=['PUT'])
+@app.route('/vehiculo/update/<id>', methods=['GET', 'POST'])
 def update_vehiculo(id):
-    marca= request.json['marca']
-    modelo= request.json['modelo'] 
-    matricula= request.json['matricula']
-    color= request.json['color']
-    plazas= int(request.json['plazas'])
-    fotos_vehiculo= request.json['fotos_vehiculo']
-    lista_fotos_vehiculo = []
-    if marca and modelo and matricula and color and plazas:
-        if fotos_vehiculo:
-            for foto in fotos_vehiculo:
-                lista_fotos_vehiculo.append(foto)
-                
-        filter = {"_id": ObjectId(id)}
-        new_values = {"$set":{
-            "marca": marca,
-            "modelo": modelo,
-            "matricula": matricula,
-            "color": color,
-            "plazas": plazas,
-            "fotos_vehiculo": lista_fotos_vehiculo
-        }}
-        
-        result = vehiculo_db.update_one(filter, new_values) 
-
-        if result.matched_count == 0:
-            return not_found("No se ha encontrado el vehiculo con id: " + id)
+    if request.method == 'GET':
+        vehiculo = vehiculo_data.find_vehiculo(id)
+        response = json_util.dumps(vehiculo)
+        return render_template('vehiculo/editarVehiculo.html', vehiculo=vehiculo)    
+        #return Response(response, mimetype='application/json')
+    else:    
+        marca= request.form['marca']
+        modelo= request.form['modelo'] 
+        matricula= request.form['matricula']
+        color= request.form['color']
+        plazas= request.form['plazas']
+        fotos_vehiculo= request.form['fotos_vehiculo']
+       
+        if marca and modelo and matricula and color and plazas:
+            response = vehiculo_data.update_vehiculo(id, marca, modelo, matricula, color, int(plazas), fotos_vehiculo)
+            if response == "Acierto":
+                return redirect('/vehiculo')
         else:
-            response = jsonify({'message': 'El vehiculo con id '+id+' se ha actualizado exitosamente'})
-        
-        return response
-    else:
-        return not_found("No se ha podido actualizar el vehiculo con id: " + id)
+            return render_template('vehiculo/editarVehiculo.html', error="El vehiculo no se ha podido actualizar, faltan campos") 
 
-@app.route('/vehiculo/delete/<id>', methods=['DELETE'])
+@app.route('/vehiculo/delete/<id>', methods=['GET'])
 def delete_vehiculo(id):
-    vehiculo_db.delete_one({'_id': ObjectId(id)})
-    response = jsonify({'message': 'El vehiculo con id '+id+' se ha eliminado exitosamente'})
-    return response
+    vehiculo_data.delete_vehiculo(id)
+    return redirect("/vehiculo",code = 302)
+    #response = jsonify({'message': 'El vehiculo con id '+id+' se ha eliminado exitosamente'})
+    #return response
 # ---------------------------------------------FIN VEHICULO -----------------------------------------------------------
 
 # --------------------------------------------- DATOS ABIERTOS - TRAFICO -----------------------------------------------------------

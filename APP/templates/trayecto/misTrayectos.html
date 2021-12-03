@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Mis Trayectos </title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+</head>
+
+
+<body>
+    <h1 style="text-align: center">Mis Trayectos</h1>
+    
+    <table class="table" border="1" style="margin: auto;">
+        <thead>
+            <th>Creador</th>
+            <th>Destino</th>
+            <th>Duracion</th>
+            <th>Fecha</th>
+            <th>Hora</th>
+            <th>Origen</th>
+            <th>Periodicidad</th>
+            <th>Precio</th>
+            <th>Fotos Opcionales</th>
+            <th>Plazas totales</th>
+            <th>vehiculo</th>
+            <th>Pasajeros</th>
+        </thead>
+
+        <tbody>
+            {% for i in trayectos_creador %}
+            <tr>
+                <td>{{ i.creador}}</td>
+                <td>{{ i.destino}}</td>
+                <td>{{ i.duracion}}</td>
+                <td>{{ i.fecha}}</td>
+                <td>{{ i.hora}}</td>
+                <td>{{ i.origen}}</td>
+                <td>{{ i.periodicidad}}</td>
+                <td>{{ i.precio}}</td>
+                <td>{{ i.fotos_opcionales}}</td>
+                <td>{{ i.plazas_totales}}</td>
+                <td>{{ i.vehiculo}}</td>
+                <td>{{ i.pasajeros}}</td>
+                <td><a href="{{ url_for('delete_trayecto', id = i._id) }}"> Borrar </a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+ </body>
+
+</html>

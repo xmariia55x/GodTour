@@ -10,6 +10,10 @@ def find_trayecto(id):
     trayecto = trayecto_db.find_one({'_id': ObjectId(id)})
     return trayecto
 
+def find_trayectos_creador(id):
+    trayectos_creador = trayecto_db.find({'creador': ObjectId(id)})
+    return trayectos_creador
+
 def create_trayecto(creador, origen_nombre, origen_latitud, origen_longitud, destino_nombre, destino_latitud, destino_longitud,
                     fecha, hora, duracion, periodicidad, precio, fotos_opcionales, plazas_totales, vehiculo, pasajeros):
     trayecto_db.insert_one(
