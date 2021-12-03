@@ -185,6 +185,14 @@ def get_trayectos():
     response = json_util.dumps(trayectos)
     return Response(response, mimetype='application/json')
 
+#Devuelve los trayectos de un creador
+@app.route('/trayecto/creador/<id>', methods=['GET'])
+def get_trayectos_creador(id):
+    trayectos_creador = trayecto_data.find_trayectos_creador(id)
+    #response = json_util.dumps(trayectos_creador)
+    #return Response(response, mimetype='application/json')
+    return render_template("trayecto/misTrayectos.html", trayectos_creador = list(trayectos_creador))
+
 #Devuelve un trayecto cuyo id coincide con el que se pasa por parámetro
 @app.route('/trayecto/<id>', methods=['GET'])
 def get_trayecto(id):
