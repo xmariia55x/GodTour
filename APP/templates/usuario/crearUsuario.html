@@ -19,26 +19,20 @@
 <body>
     <h1>Nuevo Usuario</h1><br>
 
-    <form action="usuario/create" method="post">
+    <form action="{{url_for('create_usuario')}}" method="POST">
         <label>Nombre: </label>
-        <input type="text" name="nombre_completo" required>
-        <br>
+        <input type="text" name="nombre_completo" required><br>
         <label>Correo: </label>
-        <input type="text" name="correo" required>
+        <input type="text" name="correo" required><br>
         <label>DNI: </label>
-        <input type="text" name="dni" required>
-        <br>
-
+        <input type="text" name="dni" required><br>
         <label>Fecha: </label>
         <input type="date" name="fecha_nacimiento" required><br>
         <label>Antiguedad: </label>
-        <input type="date" name="antiguedad_permiso" required><br>
-
+        <input type="date" name="antiguedad_permiso"><br>
         <label>Foto: </label>
-        <input type="text" name="foto_perfil" required>
-        <br>
-
-        <input type="submit" value="Crear" />
+        <input type="text" name="foto_perfil" ><br>
+        <input type="submit" value="Crear"/>
     </form>
 
 </body>
