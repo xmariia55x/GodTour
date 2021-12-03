@@ -53,7 +53,7 @@ usuario_db = db['Usuario']
 #Devuelve una lista con los usuarios
 @app.route('/usuario', methods=['GET'])
 def get_usuarios():
-    usuarios = usuario_db.find()
+    usuarios = usuario_data.find_usuarios()
     # response = json_util.dumps(usuarios)
     #return Response(response, mimetype='application/json')
     return render_template("/usuario/listaUsuarios.html",usuarios = list(usuarios)) 
@@ -61,7 +61,7 @@ def get_usuarios():
 #Devuelve un usuario cuyo id coincide con el que se pasa por parámetro
 @app.route('/usuario/<id>', methods=['GET'])
 def get_usuario(id):
-    usuario = usuario_db.find_one({'_id': ObjectId(id)})
+    usuario = usuario_data.find_usuario(id)
     #response = json_util.dumps(usuario)
     #if usuario == 'null':
     #    return not_found("No se han encontrado usuarios con el id: " + id)
@@ -77,7 +77,7 @@ def link_create_usuario():
 #Metodo necesario para actualizar un usuario
 @app.route('/usuario/link_update/<id>', methods=['GET'])
 def link_update_usuario(id):
-    usuario = usuario_db.find_one({'_id': ObjectId(id)})
+    usuario = usuario_data.find_usuario(id)
     return render_template("/usuario/actualizarUsuario.html", usuario = usuario)
 
 #Crea un nuevo usuario
@@ -92,27 +92,8 @@ def create_usuario():
     valoracion_media = 0
 
     if nombre_completo and correo and dni and fecha_nacimiento:
-        id = usuario_db.insert_one(
-            {
-             "nombre_completo": nombre_completo,
-             "correo": correo,
-             "dni": dni,
-             "fecha_nacimiento": fecha_nacimiento,
-             "antiguedad_permiso": antiguedad_permiso,
-             "foto_perfil": foto_perfil,
-             "valoracion_media": valoracion_media
-            }
-        )
-        '''response = {
-            "id": str(id),
-            "nombre_completo": nombre_completo,
-            "correo": correo,
-            "dni": dni,
-            "fecha_nacimiento": fecha_nacimiento,
-            "antiguedad_permiso": antiguedad_permiso,
-            "foto_perfil": foto_perfil,
-            "valoracion_media": valoracion_media
-        }'''
+        usuario_data.create_usuario(nombre_completo,correo,dni,fecha_nacimiento,
+        antiguedad_permiso,foto_perfil,valoracion_media)
         return redirect("/usuario")
     else:
         return not_found("No se ha podido crear un usuario")
