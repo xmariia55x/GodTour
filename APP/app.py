@@ -67,7 +67,13 @@ def get_usuario(id):
     #    return not_found("No se han encontrado usuarios con el id: " + id)
     #else:     
         #return Response(response, mimetype='application/json')
-    return render_template("/usuario/infoUsuario.html",usuario = usuario) 
+    return render_template("/usuario/infoUsuario.html",usuario = usuario)
+
+#Metodo necesario para crear un usuario
+@app.route('/usuario/new', methods=['GET', 'POST'])
+def new_usuario():
+    return render_template("/usuario/crearUsuario.html")
+
 #Crea un nuevo usuario
 @app.route('/usuario/create', methods=['POST'])
 def create_usuario():
@@ -91,7 +97,7 @@ def create_usuario():
              "valoracion_media": valoracion_media
             }
         )
-        response = {
+        '''response = {
             "id": str(id),
             "nombre_completo": nombre_completo,
             "correo": correo,
@@ -100,8 +106,8 @@ def create_usuario():
             "antiguedad_permiso": antiguedad_permiso,
             "foto_perfil": foto_perfil,
             "valoracion_media": valoracion_media
-        }
-        return response
+        }'''
+        return redirect("/usuario")
     else:
         return not_found("No se ha podido crear un usuario")
 
