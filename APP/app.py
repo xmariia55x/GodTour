@@ -75,13 +75,15 @@ def get_usuario(id):
     return render_template("/usuario/infoUsuario.html",usuario = usuario)
 
 #Metodo necesario para crear un usuario
-@app.route('/usuario/new/<id>', methods=['GET', 'POST'])
-def new_usuario(id):
-    #if id is None: 
-        return render_template("/usuario/crearUsuario.html")
-    #else:
-    #    usuario = usuario_db.find_one({'_id': ObjectId(id)})
-    #    return render_template("/usuario/crearUsuario.html",usuario = usuario)
+@app.route('/usuario/link_create/', methods=['GET'])
+def link_create_usuario():
+    return render_template("/usuario/crearUsuario.html")
+
+#Metodo necesario para actualizar un usuario
+@app.route('/usuario/link_update/<id>', methods=['GET'])
+def link_update_usuario(id):
+    usuario = usuario_db.find_one({'_id': ObjectId(id)})
+    return render_template("/usuario/actualizarUsuario.html", usuario = usuario)
 
 #Crea un nuevo usuario
 @app.route('/usuario/create', methods=['POST'])
@@ -128,15 +130,15 @@ def delete_usuario(id):
     return redirect("/usuario",code = 302)
 
 #Actualiza la informacion del usuario cuyo id coincide con el que se pasa por parametro
-@app.route('/usuario/update/<id>', methods=['PUT'])
+@app.route('/usuario/update/<id>', methods=['POST'])
 def update_usuario(id):
-    nombre_completo = request.json['nombre_completo']
-    correo = request.json['correo']
-    dni = request.json['dni']
-    fecha_nacimiento = request.json['fecha_nacimiento']
-    antiguedad_permiso = request.json['antiguedad_permiso']
-    foto_perfil = request.json['foto_perfil']
-    valoracion_media = request.json['valoracion_media']
+    nombre_completo = request.form.get('nombre_completo')
+    correo = request.form.get('correo')
+    dni = request.form.get('dni')
+    fecha_nacimiento = request.form.get('fecha_nacimiento')
+    antiguedad_permiso = request.form.get('antiguedad_permiso')
+    foto_perfil = request.form.get('foto_perfil')
+    valoracion_media = request.form.get('valoracion_media')
 
     if nombre_completo and correo and dni and fecha_nacimiento:
         filter = {"_id": ObjectId(id)}
@@ -152,9 +154,9 @@ def update_usuario(id):
         
         usuario_db.update_one(filter, new_values) 
 
-        response = jsonify({'message': 'El usuario con id '+id+' se ha actualizado exitosamente'})
+        #response = jsonify({'message': 'El usuario con id '+id+' se ha actualizado exitosamente'})
         
-        return response
+        return redirect("/usuario")
     else:
         return not_found("No se ha podido actualizar el usuario con el id: " + id)
 

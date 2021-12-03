@@ -29,6 +29,7 @@
             <th>Valoracion media</th>
             <th>Info</th>
             <th>Eliminar</th>
+            <th>Actualizar</th>
         </thead>
 
         <tbody>
@@ -43,13 +44,13 @@
                 <td>{{ i._id}}</td>
                 <td><a href="{{ url_for('get_usuario', id = i._id) }}"> Info </a></td>
                 <td><a href="{{ url_for('delete_usuario', id = i._id) }}"> Borrar </a></td>
-                <td><a href="{{ url_for('update_usuario', id = i._id) }}"> Actualizar </a></td>
+                <td><a href="{{ url_for('link_update_usuario', id = i._id) }}"> Actualizar </a></td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 
-    <form action="{{ url_for('new_usuario') }}" methods="GET">
+    <form action="{{ url_for('link_create_usuario') }}" methods="GET">
         <input type="submit" value="Crear"/>
     </form>
 
