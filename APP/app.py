@@ -200,6 +200,8 @@ def get_trayecto(id):
     else:     
         return Response(response, mimetype='application/json')
 
+print("hola")
+
 @app.route('/trayecto/create', methods=["GET", "POST"])
 def create_trayecto():
     usuario = usuario_data.find_usuario("6194e4dbc76e95c373d80508")
