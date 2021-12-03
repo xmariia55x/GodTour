@@ -538,11 +538,12 @@ def update_vehiculo(id):
         else:
             return render_template('vehiculo/editarVehiculo.html', error="El vehiculo no se ha podido actualizar, faltan campos") 
 
-@app.route('/vehiculo/delete/<id>', methods=['DELETE'])
+@app.route('/vehiculo/delete/<id>', methods=['GET'])
 def delete_vehiculo(id):
-    vehiculo_db.delete_one({'_id': ObjectId(id)})
-    response = jsonify({'message': 'El vehiculo con id '+id+' se ha eliminado exitosamente'})
-    return response
+    vehiculo_data.delete_vehiculo(id)
+    return redirect("/vehiculo",code = 302)
+    #response = jsonify({'message': 'El vehiculo con id '+id+' se ha eliminado exitosamente'})
+    #return response
 # ---------------------------------------------FIN VEHICULO -----------------------------------------------------------
 
 # --------------------------------------------- DATOS ABIERTOS - TRAFICO -----------------------------------------------------------

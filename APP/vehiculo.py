@@ -35,3 +35,6 @@ def update_vehiculo(id, marca, modelo, matricula, color, plazas, fotos_vehiculo)
         return "Fallo"
     else:
         return "Acierto"
+
+def delete_vehiculo(id):
+    vehiculo_db.delete_one({'_id': ObjectId(id)})
