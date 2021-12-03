@@ -70,9 +70,13 @@ def get_usuario(id):
     return render_template("/usuario/infoUsuario.html",usuario = usuario)
 
 #Metodo necesario para crear un usuario
-@app.route('/usuario/new', methods=['GET', 'POST'])
-def new_usuario():
-    return render_template("/usuario/crearUsuario.html")
+@app.route('/usuario/new/<id>', methods=['GET', 'POST'])
+def new_usuario(id):
+    #if id is None: 
+        return render_template("/usuario/crearUsuario.html")
+    #else:
+    #    usuario = usuario_db.find_one({'_id': ObjectId(id)})
+    #    return render_template("/usuario/crearUsuario.html",usuario = usuario)
 
 #Crea un nuevo usuario
 @app.route('/usuario/create', methods=['POST'])
