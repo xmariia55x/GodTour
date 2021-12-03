@@ -120,26 +120,15 @@ def update_usuario(id):
     antiguedad_permiso = request.form.get('antiguedad_permiso')
     foto_perfil = request.form.get('foto_perfil')
     valoracion_media = request.form.get('valoracion_media')
-
+    
     if nombre_completo and correo and dni and fecha_nacimiento:
-        filter = {"_id": ObjectId(id)}
-        new_values = {"$set":{
-            "nombre_completo": nombre_completo,
-            "correo": correo,
-            "dni": dni,
-            "fecha_nacimiento": fecha_nacimiento,
-            "antiguedad_permiso": antiguedad_permiso,
-            "foto_perfil": foto_perfil,
-            "valoracion_media": valoracion_media
-        }}
-        
-        usuario_db.update_one(filter, new_values) 
-
+        response = usuario_data.update_usuario(id, nombre_completo, correo, dni, fecha_nacimiento, antiguedad_permiso, foto_perfil, valoracion_media)
         #response = jsonify({'message': 'El usuario con id '+id+' se ha actualizado exitosamente'})
         
-        return redirect("/usuario")
-    else:
-        return not_found("No se ha podido actualizar el usuario con el id: " + id)
+        if response == "Acierto":
+            return redirect('/usuario')
+        else:
+            return render_template('usuario/actualizarUsuario.html', error="El usuario no se ha podido actualizar, faltan campos")
 
 #Devuelve una lista de usuarios ordenados alfabeticamente, orden ascendente -> python.ASCENDING , orden descendente -> python.DESCENDING
 @app.route('/usuario/by_name', methods=['GET'])
