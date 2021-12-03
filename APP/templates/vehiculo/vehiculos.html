@@ -19,6 +19,9 @@
                 <td>{{ i.matricula}}</td>
                 <td>{{ i.color}}</td>
                 <td>{{ i.plazas}}</td>
+                <td><a href="{{ url_for('get_vehiculo', id = i._id) }}"> Informacion del vehiculo </a></td>
+                <td><a href="{{ url_for('delete_vehiculo', id = i._id) }}"> Eliminar vehiculo </a></td>
+                <td><a href="{{ url_for('update_vehiculo', id = i._id) }}"> Actualizar vehiculo </a></td>
             </tr>
             {% endfor %}
             </tbody>
