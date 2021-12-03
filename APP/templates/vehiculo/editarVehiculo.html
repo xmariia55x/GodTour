@@ -16,20 +16,20 @@
 
 
 <body>
-    <form action="{{url_for('update_vehiculo')}}" method="PUT">
+    <form action="{{url_for('update_vehiculo', id = vehiculo._id)}}" method="POST">
         <label for="marca">Marca:</label><br>
-        <input type="text" id="marca" name="marca"><br>
+        <input type="text" id="marca" name="marca" value="{{vehiculo.marca}}" required><br>
         <label for="modelo">Modelo:</label><br>
-        <input type="text" id="modelo" name="modelo"><br>
+        <input type="text" id="modelo" name="modelo" value="{{vehiculo.modelo}}" required><br>
         <label for="matricula">Matricula:</label><br>
-        <input type="text" id="matricula" name="matricula"><br>
+        <input type="text" id="matricula" name="matricula" value="{{vehiculo.matricula}}" required><br>
         <label for="color">Color:</label><br>
-        <input type="text" id="color" name="color"><br>
+        <input type="text" id="color" name="color" value="{{vehiculo.color}}" required><br>
         <label for="plazas">Plazas:</label><br>
-        <input type="text" id="plazas" name="plazas"><br>
+        <input type="text" id="plazas" name="plazas" value="{{vehiculo.plazas}}" required><br>
         <label for="fotos_vehiculo">Fotos del vehiculo:</label><br>
-        <input type="text" id="fotos_vehiculo" name="fotos_vehiculo"><br><br>
-        <input type="submit" value="Crear">
+        <input type="text" id="fotos_vehiculo" name="fotos_vehiculo" value="{{vehiculo.fotos_vehiculo}}"><br><br>
+        <input type="submit" value="Guardar cambios ">
       </form>
       <br>
     {%if error%}
