@@ -10,8 +10,6 @@ from pymongo import message
 from werkzeug.wrappers import response
 import datos.datos_abiertos
 from datetime import datetime, timedelta
-# Importamos el patron singleton - Quizás no haga falta aquí, solo en las entidades (REVISAR DESPUES)
-from mongoDB import client, db, usuario_db, trayecto_db, vehiculo_db
 #Importamos las entidades
 import datos.trayecto as trayecto_data
 import datos.usuario as usuario_data
