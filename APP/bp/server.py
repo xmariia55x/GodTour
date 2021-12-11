@@ -353,22 +353,10 @@ def get_trafico():
 
     if provincia:
         datos_trafico = datos_abiertos.get_incidencias_provincia(provincia)
-    elif causa == "nieve" and latitude and longitude and rango:
-        datos_trafico = datos_abiertos.get_incidencias_nieve(latitude, longitude, rango)
-    elif causa == "nieve" and rango:
-        datos_trafico =  datos_abiertos.get_incidencias_nieve(None, None, rango)
-    elif causa == "obras" and latitude and longitude and rango:
-        datos_trafico = datos_abiertos.get_incidencias_obras(latitude, longitude, rango)
-    elif causa == "nieve" and rango:
-        datos_trafico = datos_abiertos.get_incidencias_obras(None, None, rango)
-    elif causa == "cortes" and latitude and longitude and rango:
-        datos_trafico = datos_abiertos.get_incidencias_cortes(latitude, longitude, rango)
-    elif causa == "cortes" and rango:
-        datos_trafico = datos_abiertos.get_incidencias_cortes(None, None, rango)
-    elif causa == "clima" and latitude and longitude and rango:
-        datos_trafico = datos_abiertos.get_incidencias_clima(latitude, longitude, rango)
-    elif causa == "clima" and rango:
-        datos_trafico = datos_abiertos.get_incidencias_clima(None, None, rango)
+    elif causa and latitude and longitude and rango:
+        datos_trafico = datos_abiertos.get_incidencias_causa(latitude, longitude, rango, causa)
+    elif causa and rango:
+        datos_trafico =  datos_abiertos.get_incidencias_causa(None, None, rango, causa)
     elif latitude and longitude and rango:
         datos_trafico = datos_abiertos.get_incidencias_rango(latitude, longitude, rango)
     elif rango:
@@ -381,6 +369,19 @@ def get_trafico():
     else:    
         response = json_util.dumps(datos_trafico)
         return Response(response, mimetype='application/json')
+    '''elif causa == "obras" and latitude and longitude and rango:
+        datos_trafico = datos_abiertos.get_incidencias_obras(latitude, longitude, rango)
+    elif causa == "nieve" and rango:
+        datos_trafico = datos_abiertos.get_incidencias_obras(None, None, rango)
+    elif causa == "cortes" and latitude and longitude and rango:
+        datos_trafico = datos_abiertos.get_incidencias_cortes(latitude, longitude, rango)
+    elif causa == "cortes" and rango:
+        datos_trafico = datos_abiertos.get_incidencias_cortes(None, None, rango)
+    elif causa == "clima" and latitude and longitude and rango:
+        datos_trafico = datos_abiertos.get_incidencias_clima(latitude, longitude, rango)
+    elif causa == "clima" and rango:
+        datos_trafico = datos_abiertos.get_incidencias_clima(None, None, rango)
+    '''
 
 #Devuelve las incidencias de trafico de una provincia
 '''@bpserver.route('/api/incidencias/by_provincia', methods=['GET'])
