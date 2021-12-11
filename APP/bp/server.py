@@ -156,57 +156,63 @@ def get_usuario_by_email():
 
 # ---------------------------------------------INICIO TRAYECTO-----------------------------------------------------------
 #Devuelve una lista de trayectos
-@bpserver.route('/trayecto', methods=['GET'])
+@bpserver.route('/trayectos', methods=['GET'])
 def get_trayectos():
-    trayectos = trayecto_data.find_trayectos()
+    origen = request.args.get("origen")
+    destino = request.args.get("destino")
+    precio = request.args.get("precio")
+    
+    if origen and destino:
+        trayectos = trayecto_data.get_trayectos_by_origen_destino(origen, destino)
+    elif origen:
+        trayectos = trayecto_data.get_trayectos_by_origen(origen)
+    elif destino:
+        trayectos = trayecto_data.get_trayectos_by_destino(destino)
+    elif precio:
+        precio = trayecto_data.get_trayectos_by_precio(precio)
+    else:
+        trayectos = trayecto_data.find_trayectos()
 
     if trayectos is None:
-        response = {"message: No se han encontrado trayectos"}
-        return response
+        return not_found("No se han encontrado trayectos")
     else:
         response = json_util.dumps(trayectos)
         return Response(response, mimetype='application/json')
 
 #Devuelve un trayecto cuyo id coincide con el que se pasa por parámetro
-@bpserver.route('/trayecto/<id>', methods=['GET'])
+@bpserver.route('/trayectos/<id>', methods=['GET'])
 def get_trayecto(id):
-    trayecto = trayecto_db.find_one({'_id': ObjectId(id)})
-    response = json_util.dumps(trayecto)
-    if response == 'null':
+    trayecto = trayecto_data.find_trayecto(id)
+
+    if trayecto is None:
         return not_found("No se han encontrado trayectos con el id: " + id)
-    else:     
+    else:
+        response = json_util.dumps(trayecto)
         return Response(response, mimetype='application/json')
 
 #Crea un nuevo trayecto
-@bpserver.route('/trayecto/create', methods=["POST"])
+@bpserver.route('/trayectos/create', methods=["POST"])
 def create_trayecto():
-    destino= request.json['destino']
-    duracion= int(request.json['duracion'])
-    fecha= request.json['fecha']
-    hora= request.json['hora']
-    origen= request.json['origen']
-    periodicidad= request.json['periodicidad']
-    precio= float(request.json['precio'])
-    fotos_opcionales= request.json['fotos_opcionales']
-    plazas_totales= int(request.json['plazas_totales'])
-    vehiculo= request.json['vehiculo']
-    creador= request.json['creador']
+    creador = request.json.get('creador')
+    destino_nombre = request.json.get('destino_nombre')
+    destino_latitud = request.json.get('destino_latitud')
+    destino_longitud = request.json.get('destino_longitud')
+    duracion = request.json.get('duracion')
+    fecha = request.json.get('fecha')
+    hora = request.json.get('hora')
+    origen_nombre = request.json.get('origen_nombre')
+    origen_latitud = request.json.get('origen_longitud')
+    origen_longitud = request.json.get('origen_nombre')
+    periodicidad = request.json.get('periodicidad')
+    precio = request.json.get('precio')
+    fotos_opcionales = request.json.get('fotos_opcionales')
+    plazas_totales = request.json.get('plazas_totales')
+    vehiculo = request.json.get('vehiculo')
 
     if creador and destino and origen and fecha and hora and precio and plazas_totales and vehiculo:
-        id=trayecto_db.insert_one({
-            "creador": ObjectId(creador),
-            "destino":destino,
-            "duracion":duracion,
-            "fecha":fecha,
-            "hora":hora,
-            "origen":origen,
-            "periodicidad":periodicidad,
-            "precio":precio,
-            "fotos_opcionales":fotos_opcionales,
-            "plazas_totales":plazas_totales,
-            "vehiculo":vehiculo, 
-            "pasajeros": []
-        })
+        id = trayecto_data.create_trayecto(creador, origen_nombre, origen_latitud, origen_longitud, destino_nombre, 
+                                               destino_latitud, destino_longitud, fecha, hora, duracion, periodicidad, precio, 
+                                               fotos_opcionales, plazas_totales, vehiculo)
         response = {
             "id":str(id),
             "creador":creador,
@@ -227,55 +233,51 @@ def create_trayecto():
         return not_found("No se ha podido crear el trayecto")
 
 #Elimina un trayecto cuyo id coincide con el que se pasa por parametro
-@bpserver.route('/trayecto/delete/<id>', methods=['DELETE'])
+@bpserver.route('/trayectos/delete/<id>', methods=['DELETE'])
 def delete_trayecto(id):
-    trayecto_db.delete_one({'_id': ObjectId(id)})
-    response = jsonify({'message': 'El trayecto con id '+id+' se ha eliminado exitosamente'})
-    return response
+    result = trayecto_data.delete_trayecto(id)
+
+    if result.deleted_count == 0:
+        return not_found("No se ha encontrado el fichero con id "+ id)
+    else:
+        response = jsonify({'message': 'El trayecto con id '+id+' se ha eliminado exitosamente'})
+        return response
 
 #Actualiza la informacion del trayecto cuyo id coincide con el que se pasa por parametro
-@bpserver.route('/trayecto/update/<id>', methods=['PUT'])
+@bpserver.route('/trayectos/update/<id>', methods=['PUT'])
 def update_trayecto(id):
-    destino = request.json['destino']
-    duracion= int(request.json['duracion'])
-    fecha = request.json['fecha']
-    hora = request.json['hora']
-    origen = request.json['origen']
-    periodicidad = request.json['periodicidad']
-    precio= float(request.json['precio'])
-    fotos_opcionales = request.json['fotos_opcionales']
-    plazas_totales= int(request.json['plazas_totales'])
-    vehiculo = request.json['vehiculo']
-    pasajeros = request.json['pasajeros']
+    destino_nombre = request.json.get('destino_nombre')
+    destino_latitud = request.json.get('destino_latitud')
+    destino_longitud = request.json.get('destino_longitud')
+    duracion= request.json.get('duracion')
+    fecha = request.json.get('fecha')
+    hora = request.json.get('hora')
+    origen_nombre = request.json.get('origen_nombre')
+    origen_latitud = request.json.get('origen_longitud')
+    origen_longitud = request.json.get('origen_nombre')
+    periodicidad = request.json.get('periodicidad')
+    precio= request.json.get('precio')
+    fotos_opcionales = request.json.get('fotos_opcionales')
+    plazas_totales= request.json.get('plazas_totales')
+    vehiculo = request.json.get('vehiculo')
+    pasajeros = request.json.get('pasajeros')
 
     lista_pasajeros = []
     if destino and origen and fecha and hora and precio and plazas_totales and vehiculo:
         if pasajeros:
             for pasajero in pasajeros:
                 lista_pasajeros.append(ObjectId(pasajero))
-        filter = {"_id": ObjectId(id)}
-        new_values = {"$set":{
-            "destino": destino,
-            "duracion": duracion,
-            "fecha": fecha,
-            "hora": hora,
-            "origen": origen,
-            "periodicidad": periodicidad,
-            "precio": precio,
-            "fotos_opcionales": fotos_opcionales,
-            "plazas_totales": plazas_totales,
-            "vehiculo": vehiculo, 
-            "pasajeros": lista_pasajeros
-        }}
         
-        trayecto_db.update_one(filter, new_values) 
+        result = trayecto_data.update_trayecto(id, origen_nombre, origen_latitud, origen_longitud, destino_nombre, destino_latitud, destino_longitud, fecha, hora, duracion, periodicidad, precio, fotos_opcionales, plazas_totales, vehiculo)
 
-        response = jsonify({'message': 'El trayecto con id '+id+' se ha actualizado exitosamente'})
-        
-        return response
+        if result.matched_count == 0:
+            return not_found("No se ha encontrado el trayecto con id " +id)
+        else:
+            response = jsonify({'message': 'El trayecto con id '+id+' se ha actualizado exitosamente'})
+            return response
     else:
         return not_found("No se ha podido actualizar el trayecto con id: " + id)
-
+''''
 #Devuelve los trayectos cuyo destino coincide con el que se pasa por parámetro 
 @bpserver.route('/trayecto/by_destino', methods=['POST'])
 def get_trayecto_destino():
@@ -318,20 +320,23 @@ def get_trayecto_precio():
             return Response(response, mimetype='application/json')
     else:
         return not_found("No se ha indicado un precio")
-
+'''
 #Devuelve los usuarios de un trayecto a partir del id del trayecto indicado por parametro
-@bpserver.route('/usuario/by_trayecto/<id>', methods=['GET'])
+@bpserver.route('/trayectos/<id>/usuarios', methods=['GET'])
 def get_usuario_trayecto(id):
+    '''
     trayecto = trayecto_db.find_one({'_id': ObjectId(id)})
     pasajeros = trayecto.get("pasajeros")
     lista_pasajeros = []
     for pasajero in pasajeros:
         usuario = usuario_db.find_one({'_id': pasajero})
         lista_pasajeros.append(usuario)
-    response = json_util.dumps(lista_pasajeros)
-    if response == '[]':
+    '''
+    lista_pasajeros = trayecto_data.get_usuarios_by_trayecto(id)
+    if lista_pasajeros is None:
         return not_found("El trayecto con id: " + id + " no tiene usuarios")
-    else:     
+    else:
+        response = json_util.dumps(lista_pasajeros)
         return Response(response, mimetype='application/json')
 
 # ---------------------------------------------FIN TRAYECTO-----------------------------------------------------------
