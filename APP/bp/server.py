@@ -1,5 +1,5 @@
 from logging import NullHandler
-from flask import Flask, request, jsonify, Response
+from flask import Flask, request, jsonify, Response, Blueprint
 from flask_pymongo import PyMongo
 import pymongo
 import sys
@@ -155,14 +155,10 @@ def get_usuario_by_email():
 # ---------------------------------------------FIN USUARIO-----------------------------------------------------------
 
 # ---------------------------------------------INICIO TRAYECTO-----------------------------------------------------------
-
-# Obtengo la colección de trayectos
-trayecto_db = db['Trayecto']
-
 #Devuelve una lista de trayectos
 @bpserver.route('/trayecto', methods=['GET'])
 def get_trayectos():
-    trayectos = trayecto_db.find()
+    trayectos = trayecto_data
     response = json_util.dumps(trayectos)
     return Response(response, mimetype='application/json')
 
