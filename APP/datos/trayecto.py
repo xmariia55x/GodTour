@@ -2,6 +2,7 @@ from mongoDB import trayecto_db
 from mongoDB import usuario_db
 from bson import json_util
 from bson.objectid import ObjectId
+import fechas as date_converter
 
 def find_trayectos():
     trayectos = trayecto_db.find()
@@ -26,8 +27,7 @@ def create_trayecto(creador, origen_nombre, origen_latitud, origen_longitud, des
                  "longitud": destino_longitud
                 },
             "duracion": duracion,
-            "fecha": fecha,
-            "hora": hora,
+            "timestamp": date_converter.date_to_timestamp(fecha, hora),
             "origen":
                 {"nombre": origen_nombre, 
                  "latitud": origen_latitud,
@@ -52,8 +52,7 @@ def update_trayecto(id, origen_nombre, origen_latitud, origen_longitud, destino_
                  "longitud": destino_longitud
                 },
             "duracion": duracion,
-            "fecha": fecha,
-            "hora": hora,
+            "timestamp": date_converter.date_to_timestamp(fecha, hora),
             "origen": 
                 {"nombre": origen_nombre, 
                  "latitud": origen_latitud,
