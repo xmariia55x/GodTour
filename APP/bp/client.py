@@ -33,7 +33,7 @@ def favicon():
 
 # -----------------------------------------------------USUARIO-------------------------------------------------------------
 # Obtengo la colección de usuarios
-'''usuario_db = db['Usuario']
+usuario_db = db['Usuario']
 
 #Devuelve una lista con los usuarios
 @bpclient.route('/usuario', methods=['GET'])
@@ -197,10 +197,9 @@ def create_trayecto():
                                       fecha, hora, duracion, periodicidad, precio, fotos_opcionales, plazas_totales, vehiculo, pasajeros)
     
     return redirect("/")
-'''
-'''
+
 #Crea un nuevo trayecto
-@app.route('/trayecto/create', methods=["POST"])
+@bpclient.route('/trayecto/create', methods=["POST"])
 def create_trayecto():
     
     PRUEBA
@@ -263,8 +262,7 @@ def create_trayecto():
         return response
     else:
         return not_found("No se ha podido crear el trayecto")
-'''
-'''
+
 #Elimina un trayecto cuyo id coincide con el que se pasa por parametro
 @bpclient.route('/trayecto/delete/<id>', methods=['GET'])
 def delete_trayecto(id):
@@ -310,10 +308,9 @@ def update_trayecto(id):
 
     return redirect("/")
 
-'''
-'''
+
 #Actualiza la informacion del trayecto cuyo id coincide con el que se pasa por parametro
-@app.route('/trayecto/update/<id>', methods=['PUT'])
+@bpclient.route('/trayecto/update/<id>', methods=['PUT'])
 def update_trayecto(id):
     destino = request.json['destino']
     duracion= int(request.json['duracion'])
@@ -358,8 +355,7 @@ def update_trayecto(id):
         return response
     else:
         return not_found("No se ha podido actualizar el trayecto con id: " + id)
-'''
-'''
+
 #Devuelve los trayectos cuyo destino coincide con el que se pasa por parámetro 
 @bpclient.route('/trayecto/by_destino', methods=['POST'])
 def get_trayecto_destino():
@@ -448,7 +444,7 @@ def get_usuario_trayecto(id):
         return not_found("El trayecto con id: " + id + " no tiene usuarios")
     else:     
         return Response(response, mimetype='application/json')
-'''
+
 # ---------------------------------------------FIN TRAYECTO-----------------------------------------------------------
 
 # --------------------------------------------- VEHICULO -----------------------------------------------------------

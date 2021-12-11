@@ -4,55 +4,55 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Informacion del vehiculo</title>
+    <title>Informaci&oacute;n del veh&iacute;culo</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css" rel="stylesheet"
+        crossorigin="anonymous">
     <link rel="stylesheet" href="">
-    <link rel="stylesheet" href="{{ url_for('static', filename='/css/vehiculoStyles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/vehiculoStyles.css') }}">
 </head>
 
 
 <body>
-    <h1 style="text-align: center">Informacion del vehiculo</h1>
+    <h1 style="text-align: center">Informaci&oacute;n del veh&iacute;culo</h1>
     {%if error%}
-        <h2>{{error}}</h2>
+    <h2>{{error}}</h2>
     {%endif%}
     {%if vehiculo %}
-        <table class="table" border="1" style="margin: auto;">
-            <thead>
-                <th>Marca</th>
-                <th>Modelo</th>
-                <th>Matricula</th>
-                <th>Color</th>
-                <th>Plazas</th>
-            </thead>
-            
-            <tbody>
-                <tr>
-                    <td>{{ vehiculo.marca  }}</td>
-                    <td>{{ vehiculo.modelo }}</td>
-                    <td>{{ vehiculo.matricula}}</td>
-                    <td>{{ vehiculo.color}}</td>
-                    <td>{{ vehiculo.plazas}}</td>
-                </tr>
-            </tbody>
-        </table>
-    {%endif%}
-    <div class="col-xl-4 col-sm-6 mb-5">
-        <div class="bg-white rounded shadow-sm py-5 px-4"><img src="https://img.icons8.com/bubbles/100/000000/user-female.png" alt="" width="100" class="img-fluid rounded mb-3 img-thumbnail shadow-sm">
-            <h5 class="mb-0">Hola</h5>
-            <span class="small text-muted">Hola</span><br>
-            <span class="small text-muted">Hola</span><br>
-            <span class="small text-muted">Hola</span><br>
+    <div style="padding: 2% 15%">
 
-            <ul class="social mb-0 list-inline mt-3">
-                <li class="list-inline-item"><img src="https://img.icons8.com/bubbles/75/000000/edit.png" onclick=""/></li>
-                <li class="list-inline-item"><img src="https://img.icons8.com/bubbles/75/000000/delete-sign.png" onclick=""/></li>
-            </ul>
+        <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for( 'bpclient.get_vehiculos' ) }}';">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                class="bi bi-arrow-left-circle" viewBox="0 0 16 16">
+                <path fill-rule="evenodd"
+                    d="M1 8a7 7 0 1 0 14 0A7 7 0 0 0 1 8zm15 0A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.5-.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z">
+                </path>
+            </svg>
+        </button>
+        <div class="d-flex justify-content-center">
+            <div class="row text-center container">
+                <div class="col-md-4 col-sm-6 mb-5">
+                    <div class="bg-white rounded shadow-sm py-5 px-4">
+                        <img src="https://img.icons8.com/bubbles/100/000000/car.png" alt="" width="100"
+                            class="img-fluid mb-3 img-thumbnail shadow-sm">
+                        <h5 class="mb-0">{{ vehiculo.marca }} {{ vehiculo.modelo }}</h5>
+                        <span class="small text-muted">Color {{ vehiculo.color}}</span><br>
+                        <span class="small text-muted">Matricula {{ vehiculo.matricula}}</span><br>
+                        <span class="small text-muted">{{ vehiculo.plazas}} plazas</span><br>
+
+                        <ul class="social mb-0 list-inline mt-3">
+                            <li class="list-inline-item"><img src="https://img.icons8.com/bubbles/75/000000/edit.png"
+                                onclick="window.location.href='{{ url_for( 'bpclient.update_vehiculo', id = vehiculo._id ) }}';" /></li>
+                            <li class="list-inline-item"><img src="https://img.icons8.com/bubbles/75/000000/delete-sign.png" 
+                                onclick="window.location.href='{{ url_for( 'bpclient.delete_vehiculo', id = vehiculo._id ) }}';" /></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
-   </div>
-
+    </div>
+    {%endif%}
 </body>
 
 </html>
