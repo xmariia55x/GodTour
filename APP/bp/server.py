@@ -11,6 +11,8 @@ import datos.datos_abiertos as datos_abiertos
 from datetime import datetime, timedelta
 # from app import ultima_actualizacion_gasolineras
 
+#Importamos los metodos para las fechas
+import fechas as date_converter
 #Importamos las entidades
 import datos.trayecto as trayecto_data
 import datos.usuario as usuario_data
@@ -135,6 +137,8 @@ def get_usuario_by_email():
     else:
         return not_found("No se ha introducido ningun email")
 
+# ESTA QUERY COMENTADA TIENE QUE IR EN api/usuarios
+'''
 @bpserver.route('/api/usuarios', methods=['GET'])
 def get_usuarios():
     email = request.args.get('correo')
@@ -146,7 +150,7 @@ def get_usuarios():
     else:
         response = json_util.dumps(usuarios)
         return Response(response, mimetype='application/json')
-
+'''
 # ---------------------------------------------FIN USUARIO-----------------------------------------------------------
 
 # ---------------------------------------------INICIO TRAYECTO-----------------------------------------------------------
@@ -156,22 +160,25 @@ def get_trayectos():
     origen = request.args.get("origen")
     destino = request.args.get("destino")
     precio = request.args.get("precio")
-    
-    if origen and destino:
-        trayectos = trayecto_data.get_trayectos_by_origen_destino(origen, destino)
-    elif origen:
-        trayectos = trayecto_data.get_trayectos_by_origen(origen)
-    elif destino:
-        trayectos = trayecto_data.get_trayectos_by_destino(destino)
-    elif precio:
-        precio = trayecto_data.get_trayectos_by_precio(precio)
-    else:
-        trayectos = trayecto_data.find_trayectos()
 
-    if trayectos is None:
+    if len(request.args) == 0:
+        trayectos = trayecto_data.find_trayectos()
+    else:
+        if origen and destino and origen!="" and destino!="":
+            trayectos = trayecto_data.get_trayectos_by_origen_destino(origen, destino)
+        elif origen and origen != "":
+            trayectos = trayecto_data.get_trayectos_by_origen(origen)
+        elif destino and destino != "":
+            trayectos = trayecto_data.get_trayectos_by_destino(destino)
+        elif precio and precio != "":
+            trayectos = trayecto_data.get_trayectos_by_precio(precio)
+        else:
+            return not_found("Parámetros introducidos no válidos")
+
+    response = json_util.dumps(trayectos)
+    if response == "[]":
         return not_found("No se han encontrado trayectos")
     else:
-        response = json_util.dumps(trayectos)
         return Response(response, mimetype='application/json')
 
 #Devuelve un trayecto cuyo id coincide con el que se pasa por parámetro
@@ -186,14 +193,14 @@ def get_trayecto(id):
         return Response(response, mimetype='application/json')
 
 #Crea un nuevo trayecto
-@bpserver.route('/api/trayectos/create', methods=["POST"])
+@bpserver.route('/api/trayectos', methods=["POST"])
 def create_trayecto():
     creador = request.json.get('creador')
     destino_nombre = request.json.get('destino_nombre')
     destino_latitud = request.json.get('destino_latitud')
     destino_longitud = request.json.get('destino_longitud')
     duracion = request.json.get('duracion')
-    fecha = request.json.get('fecha')
+    fecha = date_converter.formatear_fecha(request.json.get('fecha'), "%d/%m/%Y", "%Y-%m-%d")
     hora = request.json.get('hora')
     origen_nombre = request.json.get('origen_nombre')
     origen_latitud = request.json.get('origen_longitud')
@@ -204,18 +211,28 @@ def create_trayecto():
     plazas_totales = request.json.get('plazas_totales')
     vehiculo = request.json.get('vehiculo')
     #Cuidado con destino y origen que ya no se llaman asi 
-    if creador and destino and origen and fecha and hora and precio and plazas_totales and vehiculo:
+    if creador and destino_nombre and destino_latitud and destino_longitud and origen_nombre and origen_latitud and origen_longitud and fecha and hora and precio and plazas_totales and vehiculo:
         id = trayecto_data.create_trayecto(creador, origen_nombre, origen_latitud, origen_longitud, destino_nombre, 
                                                destino_latitud, destino_longitud, fecha, hora, duracion, periodicidad, precio, 
                                                fotos_opcionales, plazas_totales, vehiculo)
         response = {
             "id":str(id),
             "creador":creador,
-            "destino":destino,
+            "destino": 
+                {
+                 "nombre": destino_nombre,
+                 "latitud": destino_latitud,
+                 "longitud": destino_longitud
+                },
             "duracion":duracion,
             "fecha":fecha,
             "hora":hora,
-            "origen":origen,
+            "origen":
+                {
+                 "nombre": origen_nombre,
+                 "latitud": origen_latitud,
+                 "longitud": origen_longitud
+                },
             "periodicidad":periodicidad,
             "precio":precio,
             "fotos_opcionales":fotos_opcionales,
@@ -228,24 +245,24 @@ def create_trayecto():
         return not_found("No se ha podido crear el trayecto")
 
 #Elimina un trayecto cuyo id coincide con el que se pasa por parametro
-@bpserver.route('/api/trayectos/delete/<id>', methods=['DELETE'])
+@bpserver.route('/api/trayectos/<id>', methods=['DELETE'])
 def delete_trayecto(id):
     result = trayecto_data.delete_trayecto(id)
 
     if result.deleted_count == 0:
-        return not_found("No se ha encontrado el fichero con id "+ id)
+        return not_found("No se han encontrado trayectos con id "+ id)
     else:
         response = jsonify({'message': 'El trayecto con id '+id+' se ha eliminado exitosamente'})
         return response
 
 #Actualiza la informacion del trayecto cuyo id coincide con el que se pasa por parametro
-@bpserver.route('/api/trayectos/update/<id>', methods=['PUT'])
+@bpserver.route('/api/trayectos/<id>', methods=['PUT'])
 def update_trayecto(id):
     destino_nombre = request.json.get('destino_nombre')
     destino_latitud = request.json.get('destino_latitud')
     destino_longitud = request.json.get('destino_longitud')
     duracion= request.json.get('duracion')
-    fecha = request.json.get('fecha')
+    fecha = date_converter.formatear_fecha(request.json.get('fecha'), "%d/%m/%Y", "%Y-%m-%d")
     hora = request.json.get('hora')
     origen_nombre = request.json.get('origen_nombre')
     origen_latitud = request.json.get('origen_longitud')
@@ -259,12 +276,13 @@ def update_trayecto(id):
 
     lista_pasajeros = []
     #Cuidado con destino y origen que ya no se llaman asi 
-    if destino and origen and fecha and hora and precio and plazas_totales and vehiculo:
+    if destino_nombre and destino_latitud and destino_longitud and origen_nombre and origen_latitud and origen_longitud and fecha and hora and precio and plazas_totales and vehiculo:
         if pasajeros:
             for pasajero in pasajeros:
                 lista_pasajeros.append(ObjectId(pasajero))
         
-        result = trayecto_data.update_trayecto(id, origen_nombre, origen_latitud, origen_longitud, destino_nombre, destino_latitud, destino_longitud, fecha, hora, duracion, periodicidad, precio, fotos_opcionales, plazas_totales, vehiculo)
+        result = trayecto_data.update_trayecto(id, origen_nombre, origen_latitud, origen_longitud, destino_nombre, destino_latitud, destino_longitud, 
+                                               fecha, hora, duracion, periodicidad, precio, fotos_opcionales, plazas_totales, vehiculo, pasajeros)
 
         if result.matched_count == 0:
             return not_found("No se ha encontrado el trayecto con id " +id)

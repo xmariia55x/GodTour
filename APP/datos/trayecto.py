@@ -17,7 +17,7 @@ def find_trayectos_creador(id):
     return trayectos_creador
 
 def create_trayecto(creador, origen_nombre, origen_latitud, origen_longitud, destino_nombre, destino_latitud, destino_longitud,
-                    fecha, hora, duracion, periodicidad, precio, fotos_opcionales, plazas_totales, vehiculo, pasajeros):
+                    fecha, hora, duracion, periodicidad, precio, fotos_opcionales, plazas_totales, vehiculo):
     trayecto_db.insert_one(
         {
             "creador": ObjectId(creador),
@@ -42,7 +42,7 @@ def create_trayecto(creador, origen_nombre, origen_latitud, origen_longitud, des
         })
 
 def update_trayecto(id, origen_nombre, origen_latitud, origen_longitud, destino_nombre, destino_latitud, destino_longitud,
-                    fecha, hora, duracion, periodicidad, precio, fotos_opcionales, plazas_totales, vehiculo):
+                    fecha, hora, duracion, periodicidad, precio, fotos_opcionales, plazas_totales, vehiculo, pasajeros):
     filter = {"_id": ObjectId(id)}
 
     new_values = {"$set":{
@@ -63,13 +63,16 @@ def update_trayecto(id, origen_nombre, origen_latitud, origen_longitud, destino_
             "fotos_opcionales": fotos_opcionales,
             "plazas_totales": plazas_totales,
             "vehiculo": ObjectId(vehiculo), 
-        }}
+            "pasajeros": pasajeros
+    }}
         
     result = trayecto_db.update_one(filter, new_values)
+    return result
 
 
 def delete_trayecto(id):
-    trayecto_db.delete_one({'_id': ObjectId(id)})
+    result = trayecto_db.delete_one({'_id': ObjectId(id)})
+    return result
 
 '''
 def update_restringido_trayecto(id, periodicidad, fotos_opcionales, plazas_totales, vehiculo):
@@ -88,24 +91,30 @@ def update_restringido_trayecto(id, periodicidad, fotos_opcionales, plazas_total
 # QUERIES
 ###################################################################################################################################
 def get_trayectos_by_destino(destino):
-    trayectos = trayecto_db.find({'destino': destino})
+    trayectos = trayecto_db.find({'destino.nombre': destino})
     return trayectos
 
 def get_trayectos_by_origen(origen):
-    trayectos = trayecto_db.find({'origen': origen})
+    trayectos = trayecto_db.find({'origen.nombre': origen})
     return trayectos
 
 def get_trayectos_by_origen_destino(origen, destino):
-    trayectos = trayecto_db.find({'origen': origen, 'destino': destino})
+    trayectos = trayecto_db.find({'origen.nombre': origen, 'destino.nombre': destino})
     return trayectos
 
 def get_trayectos_by_precio(precio):
-    trayectos = trayecto_db.find({'precio': { "$lt" : precio }})
+    try:
+        trayectos = trayecto_db.find({'precio': {"$lte": float(precio) }})
+    except:
+        trayectos = None
     return trayectos
 
 def get_usuarios_by_trayecto(id):
     trayecto = find_trayecto(id)
     # Alomejor habrá que castear a ObjectId
     lista_usuarios = trayecto.get("pasajeros")
-    usuarios = usuario_db.find({'_id': {"$in" : lista_usuarios}})
-    
+    lista_oid = []
+    for x in lista_usuarios:
+        lista_oid.append(ObjectId(x))
+    usuarios = usuario_db.find({'_id': {"$in" : lista_oid}})
+    return usuarios
