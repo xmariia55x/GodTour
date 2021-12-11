@@ -38,7 +38,7 @@ db = client.get_default_database()
 # Obtengo la colección de usuarios
 
 #Devuelve una lista con los usuarios
-@bpserver.route('/usuarios', methods=['GET'])
+@bpserver.route('/api/usuarios', methods=['GET'])
 def get_usuarios():
     usuarios = usuario_data.find_usuarios
     if usuarios is None:
@@ -47,7 +47,7 @@ def get_usuarios():
     return Response(response, mimetype='application/json')
 
 #Devuelve un usuario cuyo id coincide con el que se pasa por parámetro
-@bpserver.route('/usuarios/<id>', methods=['GET'])
+@bpserver.route('/api/usuarios/<id>', methods=['GET'])
 def get_usuario(id):
     usuario = usuario_data.find_usuario(id)
     
@@ -58,7 +58,7 @@ def get_usuario(id):
         return Response(response, mimetype='application/json')
 
 #Crea un nuevo usuario
-@bpserver.route('/usuarios/create', methods=['POST'])
+@bpserver.route('/api/usuarios/create', methods=['POST'])
 def create_usuario():
     nombre_completo = request.json.get('nombre_completo')
     correo = request.json.get('correo')
@@ -89,14 +89,14 @@ def create_usuario():
         return not_found("No se ha podido crear el usuario")
 
 #Elimina un usuario cuyo id coincide con el que se pasa por parametro
-@bpserver.route('/usuarios/delete/<id>', methods=['DELETE'])
+@bpserver.route('/api/usuarios/delete/<id>', methods=['DELETE'])
 def delete_usuario(id):
     usuario_data.delete_usuario(id)
     response = jsonify({'message': 'El usuario con id '+id+' se ha eliminado exitosamente'})
     return response
 
 #Actualiza la informacion del usuario cuyo id coincide con el que se pasa por parametro
-@bpserver.route('/usuarios/update/<id>', methods=['PUT'])
+@bpserver.route('/api/usuarios/update/<id>', methods=['PUT'])
 def update_usuario(id):
     nombre_completo = request.json.get('nombre_completo')
     correo = request.json.get('correo')
@@ -115,14 +115,14 @@ def update_usuario(id):
         return not_found("No se ha podido actualizar el usuario con el id: " + id)
 
 #Devuelve una lista de usuarios ordenados alfabeticamente, orden ascendente -> python.ASCENDING , orden descendente -> python.DESCENDING
-@bpserver.route('/usuarios/by_name', methods=['GET'])
+@bpserver.route('/api/usuarios/by_name', methods=['GET'])
 def get_usuario_ordered_by_name():
     usuarios = usuario_data.find_usuarios.sort("nombre_completo", pymongo.ASCENDING)
     response = json_util.dumps(usuarios)
     return Response(response, mimetype='application/json')
 
 #Devuelve un usuario a partir de (parte de) su correo electronico pasado por parametro
-@bpserver.route('/usuarios/by_email', methods=['GET'])
+@bpserver.route('/api/usuarios', methods=['GET'])
 def get_usuario_by_email():
     email = request.args.get('correo')
     if email:
@@ -135,6 +135,17 @@ def get_usuario_by_email():
     else:
         return not_found("No se ha introducido ningun email")
 
+@bpserver.route('/api/usuarios', methods=['GET'])
+def get_usuarios():
+    email = request.args.get('correo')
+    if email:
+        usuarios = usuario_data.find_usuario_by_email(email)
+    
+    if usuarios is None:
+        return not_found("No se han encontrado usuarios")
+    else:
+        response = json_util.dumps(usuarios)
+        return Response(response, mimetype='application/json')
 
 # ---------------------------------------------FIN USUARIO-----------------------------------------------------------
 
