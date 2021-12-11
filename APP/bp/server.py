@@ -40,7 +40,7 @@ db = client.get_default_database()
 #Devuelve una lista con los usuarios
 @bpserver.route('/api/usuarios', methods=['GET'])
 def get_usuarios():
-    usuarios = usuario_data.find_usuarios
+    usuarios = usuario_data.find_usuarios()
     if usuarios is None:
         return not_found("No se han encontrado usuarios")
     response = json_util.dumps(usuarios)
@@ -151,7 +151,7 @@ def get_usuarios():
 
 # ---------------------------------------------INICIO TRAYECTO-----------------------------------------------------------
 #Devuelve una lista de trayectos
-@bpserver.route('/trayectos', methods=['GET'])
+@bpserver.route('/api/trayectos', methods=['GET'])
 def get_trayectos():
     origen = request.args.get("origen")
     destino = request.args.get("destino")
@@ -175,7 +175,7 @@ def get_trayectos():
         return Response(response, mimetype='application/json')
 
 #Devuelve un trayecto cuyo id coincide con el que se pasa por parámetro
-@bpserver.route('/trayectos/<id>', methods=['GET'])
+@bpserver.route('/api/trayectos/<id>', methods=['GET'])
 def get_trayecto(id):
     trayecto = trayecto_data.find_trayecto(id)
 
@@ -186,7 +186,7 @@ def get_trayecto(id):
         return Response(response, mimetype='application/json')
 
 #Crea un nuevo trayecto
-@bpserver.route('/trayectos/create', methods=["POST"])
+@bpserver.route('/api/trayectos/create', methods=["POST"])
 def create_trayecto():
     creador = request.json.get('creador')
     destino_nombre = request.json.get('destino_nombre')
@@ -228,7 +228,7 @@ def create_trayecto():
         return not_found("No se ha podido crear el trayecto")
 
 #Elimina un trayecto cuyo id coincide con el que se pasa por parametro
-@bpserver.route('/trayectos/delete/<id>', methods=['DELETE'])
+@bpserver.route('/api/trayectos/delete/<id>', methods=['DELETE'])
 def delete_trayecto(id):
     result = trayecto_data.delete_trayecto(id)
 
@@ -239,7 +239,7 @@ def delete_trayecto(id):
         return response
 
 #Actualiza la informacion del trayecto cuyo id coincide con el que se pasa por parametro
-@bpserver.route('/trayectos/update/<id>', methods=['PUT'])
+@bpserver.route('/api/trayectos/update/<id>', methods=['PUT'])
 def update_trayecto(id):
     destino_nombre = request.json.get('destino_nombre')
     destino_latitud = request.json.get('destino_latitud')
@@ -317,7 +317,7 @@ def get_trayecto_precio():
         return not_found("No se ha indicado un precio")
 '''
 #Devuelve los usuarios de un trayecto a partir del id del trayecto indicado por parametro
-@bpserver.route('/trayectos/<id>/usuarios', methods=['GET'])
+@bpserver.route('/api/trayectos/<id>/usuarios', methods=['GET'])
 def get_usuario_trayecto(id):
     '''
     trayecto = trayecto_db.find_one({'_id': ObjectId(id)})
@@ -344,14 +344,14 @@ def get_usuario_trayecto(id):
 
 
 #Devuelve una lista con las incidencias de trafico del conjunto de datos abiertos
-@bpserver.route('/incidencias', methods=['GET'])
+@bpserver.route('/api/incidencias', methods=['GET'])
 def get_trafico():
     datos_trafico = datos_abiertos.descargar_datos_trafico()
     response = json_util.dumps(datos_trafico)
     return Response(response, mimetype='application/json')
 
 #Devuelve las incidencias de trafico de una provincia
-@bpserver.route('/incidencias/by_provincia', methods=['GET'])
+@bpserver.route('/api/incidencias/by_provincia', methods=['GET'])
 def get_incidencias_provincia():
     provincia = request.args.get("provincia")
     if provincia:
@@ -364,7 +364,7 @@ def get_incidencias_provincia():
     else:
         return not_found("No se ha indicado provincia")
         
-@bpserver.route('/incidencias/rango', methods=['GET'])
+@bpserver.route('/api/incidencias/rango', methods=['GET'])
 def get_trafico_in_rango():
     latitude = None
     longitude = None
@@ -390,7 +390,7 @@ def get_trafico_in_rango():
     else:
         return Response(response, mimetype='application/json')
 
-@bpserver.route('/incidencias/nieve', methods=['GET'])
+@bpserver.route('/api/incidencias/nieve', methods=['GET'])
 def get_trafico_nieve():
     latitude = None
     longitude = None
@@ -415,7 +415,7 @@ def get_trafico_nieve():
     else:
         return Response(response, mimetype='application/json')    
 
-@bpserver.route('/incidencias/obras', methods=['GET'])
+@bpserver.route('/api/incidencias/obras', methods=['GET'])
 def get_trafico_obras():
     latitude = None
     longitude = None
@@ -440,7 +440,7 @@ def get_trafico_obras():
     else:
         return Response(response, mimetype='application/json')  
 
-@bpserver.route('/incidencias/cortes', methods=['GET'])
+@bpserver.route('/api/incidencias/cortes', methods=['GET'])
 def get_trafico_cortes():
     latitude = None
     longitude = None
@@ -465,7 +465,7 @@ def get_trafico_cortes():
     else:
         return Response(response, mimetype='application/json')  
 
-@bpserver.route('/incidencias/clima', methods=['GET'])
+@bpserver.route('/api/incidencias/clima', methods=['GET'])
 def get_trafico_clima():
     latitude = None
     longitude = None
@@ -494,7 +494,7 @@ def get_trafico_clima():
 
 # --------------------------------------------- DATOS ABIERTOS - GASOLINERA -----------------------------------------------------------
 #Devuelve una lista con todas las gasolineras del conjunto de datos abiertos
-@bpserver.route('/gasolineras', methods=['GET'])
+@bpserver.route('/api/gasolineras', methods=['GET'])
 def get_gasolineras():
     datos_actualizados = datos_abiertos.get_datos_gasolineras_actualizadas()
     response = json_util.dumps(datos_actualizados)    
@@ -502,7 +502,7 @@ def get_gasolineras():
 
 #Devuelve una lista con las gasolineras de una localidad pasada por parametro
 #Las gasolineras estan ordenadas segun el precio de la gasolina 95 (de mas barata a mas cara)
-@bpserver.route('/gasolineras/gasolina95_low_cost', methods=['GET'])
+@bpserver.route('/api/gasolineras/gasolina95_low_cost', methods=['GET'])
 def get_gasolineras_gasolina95_lowcost(): 
     localidad = request.args.get("localidad")
     if localidad:
@@ -516,7 +516,7 @@ def get_gasolineras_gasolina95_lowcost():
         return not_found("No se ha especificado una localidad")
     
 # Devuelve una lista de gasolineras de un rango X en km de una ubicación pasada por parámetro o la ubicación real
-@bpserver.route('/gasolineras/rango', methods=['GET'])
+@bpserver.route('/api/gasolineras/rango', methods=['GET'])
 def get_gasolineras_rango():  
     #PRUEBA
     '''
@@ -555,7 +555,7 @@ def get_gasolineras_rango():
         return Response(response, mimetype='application/json')
     
 # Devuelve las gasolineras abiertas 24 horas de una provincia pasada por parametro
-@bpserver.route('/gasolineras/provincia_24_horas', methods=['GET'])
+@bpserver.route('/api/gasolineras/provincia_24_horas', methods=['GET'])
 def get_gasolineras_provincia_24horas():
     # PRUEBA
     '''
