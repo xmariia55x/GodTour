@@ -95,7 +95,9 @@ def get_incidencias_rango(latitud, longitud, rango):
     return incidencias_json
 
 def get_incidencias_causa(latitud, longitud, rango, causa_solicitada):
-    trafico_actualizado = descargar_datos_trafico()
+    # trafico_actualizado = descargar_datos_trafico()
+    trafico_actualizado = get_incidencias_rango(latitud, longitud, rango)
+    '''
     if not latitud and not longitud:
         latitud, longitud = calcula_ubicacion()
 
@@ -104,14 +106,18 @@ def get_incidencias_causa(latitud, longitud, rango, causa_solicitada):
     latitud_max = latitud + rangoGrados
     longitud_min = longitud - rangoGrados
     longitud_max = longitud + rangoGrados
+    '''
     lista_incidencias = []
     for incidencia in trafico_actualizado["features"]:
         if incidencia["geometry"] is not None: 
             causa = incidencia["properties"]["tipo"]
+            '''
             cords = incidencia["geometry"]["coordinates"]
             lon = float(cords[0])
             lat = float(cords[1])
-            if (latitud_min < lat < latitud_max) and (longitud_min < lon < longitud_max) and causa == causa_solicitada:
+            '''
+            # if (latitud_min < lat < latitud_max) and (longitud_min < lon < longitud_max) and causa == causa_solicitada:
+            if causa == causa_solicitada:
                 lista_incidencias.append(incidencia)
     incidencias_json_string = json.dumps(lista_incidencias)
     incidencias_json = json.loads(incidencias_json_string)
