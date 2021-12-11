@@ -10,6 +10,11 @@ def find_usuario(id):
     usuario = usuario_db.find_one({'_id': ObjectId(id)})
     return usuario
 
+def find_usuario_by_email(email):
+    usuario = usuario_db.find_one({ 'correo': { "$regex": email + '.*', "$options" :'i' }})
+    return usuario
+    
+
 def create_usuario(nombre_completo,correo,dni,fecha_nacimiento,antiguedad_permiso,
 foto_perfil,valoracion_media):
         id = usuario_db.insert_one(

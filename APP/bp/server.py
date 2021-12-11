@@ -36,48 +36,44 @@ db = client.get_default_database()
 '''
 # -----------------------------------------------------USUARIO-------------------------------------------------------------
 # Obtengo la colección de usuarios
-usuario_db = db['Usuario']
 
 #Devuelve una lista con los usuarios
-@bpserver.route('/usuario', methods=['GET'])
+@bpserver.route('/usuarios', methods=['GET'])
 def get_usuarios():
-    usuarios = usuario_db.find()
+    usuarios = usuario_data.find_usuarios
+    if usuarios is None:
+        return not_found("No se han encontrado usuarios")
     response = json_util.dumps(usuarios)
     return Response(response, mimetype='application/json')
 
 #Devuelve un usuario cuyo id coincide con el que se pasa por parámetro
-@bpserver.route('/usuario/<id>', methods=['GET'])
+@bpserver.route('/usuarios/<id>', methods=['GET'])
 def get_usuario(id):
-    usuario = usuario_db.find_one({'_id': ObjectId(id)})
-    response = json_util.dumps(usuario)
-    if response == 'null':
+    usuario = usuario_data.find_usuario(id)
+    
+    if usuario is None:
         return not_found("No se han encontrado usuarios con el id: " + id)
-    else:     
+    else: 
+        response = json_util.dumps(usuario)    
         return Response(response, mimetype='application/json')
 
 #Crea un nuevo usuario
-@bpserver.route('/usuario/create', methods=['POST'])
+@bpserver.route('/usuarios/create', methods=['POST'])
 def create_usuario():
-    nombre_completo = request.json['nombre_completo']
-    correo = request.json['correo']
-    dni = request.json['dni']
-    fecha_nacimiento = request.json['fecha_nacimiento']
-    antiguedad_permiso = request.json['antiguedad_permiso']
-    foto_perfil = request.json['foto_perfil']
+    nombre_completo = request.json.get('nombre_completo')
+    correo = request.json.get('correo')
+    dni = request.json.get('dni')
+    fecha_nacimiento = request.json.get('fecha_nacimiento')
+    antiguedad_permiso = request.json.get('antiguedad_permiso')
+    foto_perfil = request.json.get('foto_perfil')
     valoracion_media = 0
 
     if nombre_completo and correo and dni and fecha_nacimiento:
-        id = usuario_db.insert_one(
-            {
-             "nombre_completo": nombre_completo,
-             "correo": correo,
-             "dni": dni,
-             "fecha_nacimiento": fecha_nacimiento,
-             "antiguedad_permiso": antiguedad_permiso,
-             "foto_perfil": foto_perfil,
-             "valoracion_media": valoracion_media
-            }
-        )
+        id = usuario_data.create_usuario(nombre_completo,correo,dni,fecha_nacimiento,antiguedad_permiso,foto_perfil,valoracion_media) 
+
+        if id is None:
+             return not_found("No se hapodido crear el usuario")
+
         response = {
             "id": str(id),
             "nombre_completo": nombre_completo,
@@ -90,40 +86,28 @@ def create_usuario():
         }
         return response
     else:
-        return not_found("No se ha podido crear un usuario")
+        return not_found("No se ha podido crear el usuario")
 
 #Elimina un usuario cuyo id coincide con el que se pasa por parametro
-@bpserver.route('/usuario/delete/<id>', methods=['DELETE'])
+@bpserver.route('/usuarios/delete/<id>', methods=['DELETE'])
 def delete_usuario(id):
-    usuario_db.delete_one({'_id': ObjectId(id)})
+    usuario_data.delete_usuario(id)
     response = jsonify({'message': 'El usuario con id '+id+' se ha eliminado exitosamente'})
     return response
 
 #Actualiza la informacion del usuario cuyo id coincide con el que se pasa por parametro
-@bpserver.route('/usuario/update/<id>', methods=['PUT'])
+@bpserver.route('/usuarios/update/<id>', methods=['PUT'])
 def update_usuario(id):
-    nombre_completo = request.json['nombre_completo']
-    correo = request.json['correo']
-    dni = request.json['dni']
-    fecha_nacimiento = request.json['fecha_nacimiento']
-    antiguedad_permiso = request.json['antiguedad_permiso']
-    foto_perfil = request.json['foto_perfil']
-    valoracion_media = request.json['valoracion_media']
+    nombre_completo = request.json.get('nombre_completo')
+    correo = request.json.get('correo')
+    dni = request.json.get('dni')
+    fecha_nacimiento = request.json.get('fecha_nacimiento')
+    antiguedad_permiso = request.json.get('antiguedad_permiso')
+    foto_perfil = request.json.get('foto_perfil')
+    valoracion_media = request.json.get('valoracion_media')
 
-    if nombre_completo and correo and dni and fecha_nacimiento:
-        filter = {"_id": ObjectId(id)}
-        new_values = {"$set":{
-            "nombre_completo": nombre_completo,
-            "correo": correo,
-            "dni": dni,
-            "fecha_nacimiento": fecha_nacimiento,
-            "antiguedad_permiso": antiguedad_permiso,
-            "foto_perfil": foto_perfil,
-            "valoracion_media": valoracion_media
-        }}
-        
-        usuario_db.update_one(filter, new_values) 
-
+    if nombre_completo and correo and dni and fecha_nacimiento:     
+        usuario_data.update_usuario(nombre_completo,correo,dni,fecha_nacimiento,antiguedad_permiso,foto_perfil,valoracion_media)
         response = jsonify({'message': 'El usuario con id '+id+' se ha actualizado exitosamente'})
         
         return response
@@ -131,18 +115,18 @@ def update_usuario(id):
         return not_found("No se ha podido actualizar el usuario con el id: " + id)
 
 #Devuelve una lista de usuarios ordenados alfabeticamente, orden ascendente -> python.ASCENDING , orden descendente -> python.DESCENDING
-@bpserver.route('/usuario/by_name', methods=['GET'])
+@bpserver.route('/usuarios/by_name', methods=['GET'])
 def get_usuario_ordered_by_name():
-    usuarios = usuario_db.find().sort("nombre_completo", pymongo.ASCENDING)
+    usuarios = usuario_data.find_usuarios.sort("nombre_completo", pymongo.ASCENDING)
     response = json_util.dumps(usuarios)
     return Response(response, mimetype='application/json')
 
 #Devuelve un usuario a partir de (parte de) su correo electronico pasado por parametro
-@bpserver.route('/usuario/by_email', methods=['POST'])
+@bpserver.route('/usuarios/by_email', methods=['GET'])
 def get_usuario_by_email():
-    email = request.json['correo']
+    email = request.args.get('correo')
     if email:
-        usuarios = usuario_db.find( { 'correo': { "$regex": email + '.*', "$options" :'i' }} )
+        usuarios = usuario_data.find_usuario_by_email(email)
         response = json_util.dumps(usuarios)
         if response == '[]':
             return not_found("No se ha encontrado ningún usuario con el email " + email)
