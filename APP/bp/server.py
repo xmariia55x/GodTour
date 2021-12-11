@@ -203,7 +203,7 @@ def create_trayecto():
     fotos_opcionales = request.json.get('fotos_opcionales')
     plazas_totales = request.json.get('plazas_totales')
     vehiculo = request.json.get('vehiculo')
-
+    #Cuidado con destino y origen que ya no se llaman asi 
     if creador and destino and origen and fecha and hora and precio and plazas_totales and vehiculo:
         id = trayecto_data.create_trayecto(creador, origen_nombre, origen_latitud, origen_longitud, destino_nombre, 
                                                destino_latitud, destino_longitud, fecha, hora, duracion, periodicidad, precio, 
@@ -258,6 +258,7 @@ def update_trayecto(id):
     pasajeros = request.json.get('pasajeros')
 
     lista_pasajeros = []
+    #Cuidado con destino y origen que ya no se llaman asi 
     if destino and origen and fecha and hora and precio and plazas_totales and vehiculo:
         if pasajeros:
             for pasajero in pasajeros:
@@ -341,17 +342,48 @@ def get_usuario_trayecto(id):
 
 # ---------------------------------------------FIN VEHICULO-----------------------------------------------------------
 # --------------------------------------------- DATOS ABIERTOS - TRAFICO ---------------------------------------------------------
-
-
 #Devuelve una lista con las incidencias de trafico del conjunto de datos abiertos
 @bpserver.route('/api/incidencias', methods=['GET'])
 def get_trafico():
-    datos_trafico = datos_abiertos.descargar_datos_trafico()
-    response = json_util.dumps(datos_trafico)
-    return Response(response, mimetype='application/json')
+    provincia = request.args.get("provincia")
+    latitude = float(request.args.get("latitude"))
+    longitude = float(request.args.get("longitude"))
+    rango = float(request.args.get("rango"))
+    causa = request.args.get("causa")
+
+    if provincia:
+        datos_trafico = datos_abiertos.get_incidencias_provincia(provincia)
+    elif causa == "nieve" and latitude and longitude and rango:
+        datos_trafico = datos_abiertos.get_incidencias_nieve(latitude, longitude, rango)
+    elif causa == "nieve" and rango:
+        datos_trafico =  datos_abiertos.get_incidencias_nieve(None, None, rango)
+    elif causa == "obras" and latitude and longitude and rango:
+        datos_trafico = datos_abiertos.get_incidencias_obras(latitude, longitude, rango)
+    elif causa == "nieve" and rango:
+        datos_trafico = datos_abiertos.get_incidencias_obras(None, None, rango)
+    elif causa == "cortes" and latitude and longitude and rango:
+        datos_trafico = datos_abiertos.get_incidencias_cortes(latitude, longitude, rango)
+    elif causa == "cortes" and rango:
+        datos_trafico = datos_abiertos.get_incidencias_cortes(None, None, rango)
+    elif causa == "clima" and latitude and longitude and rango:
+        datos_trafico = datos_abiertos.get_incidencias_clima(latitude, longitude, rango)
+    elif causa == "clima" and rango:
+        datos_trafico = datos_abiertos.get_incidencias_clima(None, None, rango)
+    elif latitude and longitude and rango:
+        datos_trafico = datos_abiertos.get_incidencias_rango(latitude, longitude, rango)
+    elif rango:
+        datos_trafico = datos_abiertos.get_incidencias_rango(None, None, rango)
+    else:
+        datos_trafico = datos_abiertos.descargar_datos_trafico()
+
+    if datos_trafico is None:
+        return not_found("No se han encontrado incidencias de trafico")
+    else:    
+        response = json_util.dumps(datos_trafico)
+        return Response(response, mimetype='application/json')
 
 #Devuelve las incidencias de trafico de una provincia
-@bpserver.route('/api/incidencias/by_provincia', methods=['GET'])
+'''@bpserver.route('/api/incidencias/by_provincia', methods=['GET'])
 def get_incidencias_provincia():
     provincia = request.args.get("provincia")
     if provincia:
@@ -363,7 +395,7 @@ def get_incidencias_provincia():
             return Response(response, mimetype='application/json')
     else:
         return not_found("No se ha indicado provincia")
-        
+       
 @bpserver.route('/api/incidencias/rango', methods=['GET'])
 def get_trafico_in_rango():
     latitude = None
@@ -489,20 +521,38 @@ def get_trafico_clima():
         return not_found("No se han encontrado incidencias climatologicas a " + str(rango) + " kms")
     else:
         return Response(response, mimetype='application/json')  
-
+'''
 # --------------------------------------------- FIN DATOS ABIERTOS - TRAFICO -------------------------------------------------------
 
 # --------------------------------------------- DATOS ABIERTOS - GASOLINERA -----------------------------------------------------------
 #Devuelve una lista con todas las gasolineras del conjunto de datos abiertos
 @bpserver.route('/api/gasolineras', methods=['GET'])
 def get_gasolineras():
-    datos_actualizados = datos_abiertos.get_datos_gasolineras_actualizadas()
-    response = json_util.dumps(datos_actualizados)    
-    return Response(response, mimetype='application/json')
+    localidad = request.args.get("localidad")
+    latitude = float(request.args.get("latitude"))
+    longitude = float(request.args.get("longitude"))
+    rango = float(request.args.get("rango"))
+    provincia = request.args.get("provincia")
+    if localidad:
+        gasolineras = datos_abiertos.get_gasolineras_gasolina95_lowcost_localidad(localidad)
+    elif provincia:
+        gasolineras = datos_abiertos.get_gasolineras_24horas(provincia)
+    elif latitude and longitude and rango:
+        gasolineras = datos_abiertos.get_gasolineras_ubicacion(latitude, longitude, rango)
+    elif rango:
+        gasolineras = datos_abiertos.get_gasolineras_ubicacion(None, None, rango)
+    else:
+        gasolineras = datos_abiertos.get_datos_gasolineras_actualizadas()
+        
+    if gasolineras is None:    
+        return not_found("No se han encontrado gasolineras") 
+    else:
+        response = json_util.dumps(gasolineras)    
+        return Response(response, mimetype='application/json')
 
 #Devuelve una lista con las gasolineras de una localidad pasada por parametro
 #Las gasolineras estan ordenadas segun el precio de la gasolina 95 (de mas barata a mas cara)
-@bpserver.route('/api/gasolineras/gasolina95_low_cost', methods=['GET'])
+'''@bpserver.route('/api/gasolineras/gasolina95_low_cost', methods=['GET'])
 def get_gasolineras_gasolina95_lowcost(): 
     localidad = request.args.get("localidad")
     if localidad:
@@ -514,18 +564,18 @@ def get_gasolineras_gasolina95_lowcost():
             return Response(response, mimetype='application/json')
     else:
         return not_found("No se ha especificado una localidad")
-    
+  
 # Devuelve una lista de gasolineras de un rango X en km de una ubicación pasada por parámetro o la ubicación real
 @bpserver.route('/api/gasolineras/rango', methods=['GET'])
 def get_gasolineras_rango():  
     #PRUEBA
-    '''
-    {
+    
+    
         "latitude": 36.73428,
         "longitude": -4.56591,
         "rango": 5
-    }
-    '''
+    
+    
     latitude = None
     longitude = None
 
@@ -553,16 +603,15 @@ def get_gasolineras_rango():
         return not_found("No hay gasolineras en el rango de " + str(rango_km) +" kms")
     else:
         return Response(response, mimetype='application/json')
-    
+   
 # Devuelve las gasolineras abiertas 24 horas de una provincia pasada por parametro
 @bpserver.route('/api/gasolineras/provincia_24_horas', methods=['GET'])
 def get_gasolineras_provincia_24horas():
     # PRUEBA
-    '''
-    {
+    
+    
         "Provincia" : "Málaga"
-    }
-    '''
+    
     provincia = request.args.get("Provincia")
     if provincia:
         consulta = datos_abiertos.get_gasolineras_24horas(provincia)
@@ -574,7 +623,7 @@ def get_gasolineras_provincia_24horas():
             return Response(response, mimetype='application/json')  
     else:
         return not_found("No se ha indicado una provincia")  
-    
+'''    
 # ---------------------------------------------FIN DATOS ABIERTOS-----------------------------------------------------------
 
 # ---------------------------------------------MANEJO DE ERRORES------------------------------------------------------------
