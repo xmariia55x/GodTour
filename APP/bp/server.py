@@ -40,7 +40,7 @@ db = client.get_default_database()
 #Devuelve una lista con los usuarios
 @bpserver.route('/usuarios', methods=['GET'])
 def get_usuarios():
-    usuarios = usuario_data.find_usuarios
+    usuarios = usuario_data.find_usuarios()
     if usuarios is None:
         return not_found("No se han encontrado usuarios")
     response = json_util.dumps(usuarios)
@@ -140,7 +140,7 @@ def get_usuario_by_email():
 
 # ---------------------------------------------INICIO TRAYECTO-----------------------------------------------------------
 #Devuelve una lista de trayectos
-@bpserver.route('/trayectos', methods=['GET'])
+@bpserver.route('/api/trayectos', methods=['GET'])
 def get_trayectos():
     origen = request.args.get("origen")
     destino = request.args.get("destino")
@@ -164,7 +164,7 @@ def get_trayectos():
         return Response(response, mimetype='application/json')
 
 #Devuelve un trayecto cuyo id coincide con el que se pasa por parámetro
-@bpserver.route('/trayectos/<id>', methods=['GET'])
+@bpserver.route('/api/trayectos/<id>', methods=['GET'])
 def get_trayecto(id):
     trayecto = trayecto_data.find_trayecto(id)
 
@@ -175,7 +175,7 @@ def get_trayecto(id):
         return Response(response, mimetype='application/json')
 
 #Crea un nuevo trayecto
-@bpserver.route('/trayectos/create', methods=["POST"])
+@bpserver.route('/api/trayectos/create', methods=["POST"])
 def create_trayecto():
     creador = request.json.get('creador')
     destino_nombre = request.json.get('destino_nombre')
@@ -217,7 +217,7 @@ def create_trayecto():
         return not_found("No se ha podido crear el trayecto")
 
 #Elimina un trayecto cuyo id coincide con el que se pasa por parametro
-@bpserver.route('/trayectos/delete/<id>', methods=['DELETE'])
+@bpserver.route('/api/trayectos/delete/<id>', methods=['DELETE'])
 def delete_trayecto(id):
     result = trayecto_data.delete_trayecto(id)
 
@@ -228,7 +228,7 @@ def delete_trayecto(id):
         return response
 
 #Actualiza la informacion del trayecto cuyo id coincide con el que se pasa por parametro
-@bpserver.route('/trayectos/update/<id>', methods=['PUT'])
+@bpserver.route('/api/trayectos/update/<id>', methods=['PUT'])
 def update_trayecto(id):
     destino_nombre = request.json.get('destino_nombre')
     destino_latitud = request.json.get('destino_latitud')
@@ -306,7 +306,7 @@ def get_trayecto_precio():
         return not_found("No se ha indicado un precio")
 '''
 #Devuelve los usuarios de un trayecto a partir del id del trayecto indicado por parametro
-@bpserver.route('/trayectos/<id>/usuarios', methods=['GET'])
+@bpserver.route('/api/trayectos/<id>/usuarios', methods=['GET'])
 def get_usuario_trayecto(id):
     '''
     trayecto = trayecto_db.find_one({'_id': ObjectId(id)})
