@@ -33,7 +33,7 @@ def favicon():
 
 # -----------------------------------------------------USUARIO-------------------------------------------------------------
 # Obtengo la colección de usuarios
-usuario_db = db['Usuario']
+'''usuario_db = db['Usuario']
 
 #Devuelve una lista con los usuarios
 @bpclient.route('/usuario', methods=['GET'])
@@ -86,7 +86,7 @@ def create_usuario():
 #Elimina un usuario cuyo id coincide con el que se pasa por parametro
 @bpclient.route('/usuario/delete/<id>', methods=['GET','DELETE'])
 def delete_usuario(id):
-    usuario_db.delete_one({'_id': ObjectId(id)})
+    usuario_data.delete_usuario(id)
     #response = jsonify({'message': 'El usuario con id '+id+' se ha eliminado exitosamente'})
     return redirect("/usuario",code = 302)
 
@@ -197,7 +197,7 @@ def create_trayecto():
                                       fecha, hora, duracion, periodicidad, precio, fotos_opcionales, plazas_totales, vehiculo, pasajeros)
     
     return redirect("/")
-
+'''
 '''
 #Crea un nuevo trayecto
 @app.route('/trayecto/create', methods=["POST"])
@@ -264,7 +264,7 @@ def create_trayecto():
     else:
         return not_found("No se ha podido crear el trayecto")
 '''
-
+'''
 #Elimina un trayecto cuyo id coincide con el que se pasa por parametro
 @bpclient.route('/trayecto/delete/<id>', methods=['GET'])
 def delete_trayecto(id):
@@ -311,7 +311,7 @@ def update_trayecto(id):
     return redirect("/")
 
 '''
-
+'''
 #Actualiza la informacion del trayecto cuyo id coincide con el que se pasa por parametro
 @app.route('/trayecto/update/<id>', methods=['PUT'])
 def update_trayecto(id):
@@ -359,7 +359,7 @@ def update_trayecto(id):
     else:
         return not_found("No se ha podido actualizar el trayecto con id: " + id)
 '''
-
+'''
 #Devuelve los trayectos cuyo destino coincide con el que se pasa por parámetro 
 @bpclient.route('/trayecto/by_destino', methods=['POST'])
 def get_trayecto_destino():
@@ -448,31 +448,24 @@ def get_usuario_trayecto(id):
         return not_found("El trayecto con id: " + id + " no tiene usuarios")
     else:     
         return Response(response, mimetype='application/json')
-
+'''
 # ---------------------------------------------FIN TRAYECTO-----------------------------------------------------------
 
 # --------------------------------------------- VEHICULO -----------------------------------------------------------
-vehiculo_db = db['Vehiculo']
-
-@bpclient.route('/vehiculo', methods=['GET'])
+@bpclient.route('/app/vehiculos', methods=['GET'])
 def get_vehiculos():
     vehiculos = vehiculo_data.find_vehiculos()
-    #response = json_util.dumps(vehiculos)
-    #return Response(response, mimetype='application/json')
     return render_template('vehiculo/vehiculos.html', vehiculos = list(vehiculos))
 
-@bpclient.route('/vehiculo/<id>', methods=['GET'])
+@bpclient.route('/app/vehiculos/<id>', methods=['GET'])
 def get_vehiculo(id):
     vehiculo = vehiculo_data.find_vehiculo(id)
-    response = json_util.dumps(vehiculo)
-    if response == 'null':
+    if vehiculo is None:
         return render_template('vehiculo/infoVehiculo.html', error="No se ha encontrado el vehiculo")
-        #return not_found("No se han encontrado vehiculos con el id: " + id)
     else: 
         return render_template('vehiculo/infoVehiculo.html', vehiculo=vehiculo)    
-        #return Response(response, mimetype='application/json')
 
-@bpclient.route('/vehiculo/create', methods=["GET","POST"])
+@bpclient.route('/app/vehiculos/create', methods=["GET","POST"])
 def create_vehiculo():
     if request.method == 'GET':
         return render_template('vehiculo/nuevoVehiculo.html')
@@ -488,64 +481,45 @@ def create_vehiculo():
         "fotos_vehiculo":["http://www.google.drive.com/fotocoche.jpg"]
         }
         '''
-        marca= request.form['marca']
-        modelo= request.form['modelo'] 
-        matricula= request.form['matricula']
-        color= request.form['color']
-        plazas= int(request.form['plazas'])
-        fotos_vehiculo= request.form['fotos_vehiculo']
+        marca= request.form.get('marca')
+        modelo= request.form.get('modelo')
+        matricula= request.form.get('matricula')
+        color= request.form.get('color')
+        plazas= int(request.form.get('plazas'))
+        fotos_vehiculo= request.form.get('fotos_vehiculo')
 
         if marca and modelo and matricula and color and plazas:
-            '''id=vehiculo_db.insert_one({
-                "marca": marca,
-                "modelo": modelo,
-                "matricula": matricula,
-                "color": color,
-                "plazas": plazas,
-                "fotos_vehiculo": fotos_vehiculo
-            })
-            response = {
-                "id": str(id),
-                "marca": marca,
-                "modelo": modelo,
-                "matricula": matricula,
-                "color": color,
-                "plazas": plazas,
-                "fotos_vehiculo": fotos_vehiculo
-            }
-            return response'''
             vehiculo_data.create_vehiculo(marca, modelo, matricula, color, plazas, fotos_vehiculo)
-            return redirect('/vehiculo')
+            return redirect('/app/vehiculos')
         else:
             return render_template('vehiculo/nuevoVehiculo.html', error="No se ha podido crear el vehiculo, faltan campos")
-            #return not_found("No se ha podido crear el vehiculo")
 
-@bpclient.route('/vehiculo/update/<id>', methods=['GET', 'POST'])
+@bpclient.route('/app/vehiculos/update/<id>', methods=['GET', 'POST'])
 def update_vehiculo(id):
     if request.method == 'GET':
         vehiculo = vehiculo_data.find_vehiculo(id)
-        response = json_util.dumps(vehiculo)
+        #response = json_util.dumps(vehiculo)
         return render_template('vehiculo/editarVehiculo.html', vehiculo=vehiculo)    
         #return Response(response, mimetype='application/json')
     else:    
-        marca= request.form['marca']
-        modelo= request.form['modelo'] 
-        matricula= request.form['matricula']
-        color= request.form['color']
-        plazas= request.form['plazas']
-        fotos_vehiculo= request.form['fotos_vehiculo']
+        marca= request.form.get('marca')
+        modelo= request.form.get('modelo') 
+        matricula= request.form.get('matricula')
+        color= request.form.get('color')
+        plazas= request.form.get('plazas')
+        fotos_vehiculo= request.form.get('fotos_vehiculo')
        
         if marca and modelo and matricula and color and plazas:
             response = vehiculo_data.update_vehiculo(id, marca, modelo, matricula, color, int(plazas), fotos_vehiculo)
             if response == "Acierto":
-                return redirect('/vehiculo')
+                return redirect('/app/vehiculos')
         else:
             return render_template('vehiculo/editarVehiculo.html', error="El vehiculo no se ha podido actualizar, faltan campos") 
 
-@bpclient.route('/vehiculo/delete/<id>', methods=['GET'])
+@bpclient.route('/app/vehiculos/delete/<id>', methods=['GET'])
 def delete_vehiculo(id):
     vehiculo_data.delete_vehiculo(id)
-    return redirect("/vehiculo",code = 302)
+    return redirect("/app/vehiculos",code = 302)
     #response = jsonify({'message': 'El vehiculo con id '+id+' se ha eliminado exitosamente'})
     #return response
 # ---------------------------------------------FIN VEHICULO -----------------------------------------------------------

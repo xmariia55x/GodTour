@@ -1,6 +1,16 @@
-{% block content %}
+<!DOCTYPE html>
+<html>
 
-<h1 style="text-align: center">Vehiculos</h1>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Lista de vehiculos</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+</head>
+<body>
+    <h1 style="text-align: center">Vehiculos</h1>
         {%if vehiculos |count >0%}
         <table class="table" border="1" style="margin: auto;">
             <thead>
@@ -14,14 +24,14 @@
             <tbody>
             {% for i in vehiculos %}
             <tr>
-                <td>{{i.marca}}</td>
+                <td>{{ i.marca}}</td>
                 <td>{{ i.modelo }}</td>
                 <td>{{ i.matricula}}</td>
                 <td>{{ i.color}}</td>
                 <td>{{ i.plazas}}</td>
-                <td><a href="{{ url_for('get_vehiculo', id = i._id) }}"> Informacion del vehiculo </a></td>
-                <td><a href="{{ url_for('delete_vehiculo', id = i._id) }}"> Eliminar vehiculo </a></td>
-                <td><a href="{{ url_for('update_vehiculo', id = i._id) }}"> Actualizar vehiculo </a></td>
+                <td><a href="{{ url_for('bpclient.get_vehiculo', id = i._id) }}"> Informacion del vehiculo </a></td>
+                <td><a href="{{ url_for('bpclient.delete_vehiculo', id = i._id) }}"> Eliminar vehiculo </a></td>
+                <td><a href="{{ url_for('bpclient.update_vehiculo', id = i._id) }}"> Actualizar vehiculo </a></td>
             </tr>
             {% endfor %}
             </tbody>
@@ -29,9 +39,8 @@
     {%else%}
         <h2>No hay vehiculos todavia</h2>
     {% endif %}
-    <form action="{{url_for('create_vehiculo')}}" method="GET">
+    <form action="{{url_for('bpclient.create_vehiculo')}}" method="GET">
         <input type="submit" value="Crear nuevo vehiculo">
     </form>
-
-
-{% endblock content %}
+</body>
+</html>

@@ -1,8 +1,4 @@
 <!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
 <html>
 
 <head>
@@ -16,7 +12,10 @@
 
 
 <body>
-    <form action="{{url_for('create_vehiculo')}}" method="POST">
+    {%if error%}
+        <h2>{{error}}</h2>
+    {%endif%}
+    <form action="{{url_for('bpclient.create_vehiculo')}}" method="POST">
         <label for="marca">Marca:</label><br>
         <input type="text" id="marca" name="marca" required><br>
         <label for="modelo">Modelo:</label><br>
@@ -32,9 +31,7 @@
         <input type="submit" value="Crear">
       </form>
       <br>
-    {%if error%}
-        <h2>{{error}}</h2>
-    {%endif%}
+
 </body>
 
 </html>

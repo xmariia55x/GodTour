@@ -4,7 +4,7 @@ import sys
 from datetime import datetime, timedelta
 # import datos.datos_abiertos as datos_abiertos
 from bp.client import bpclient
-from bp.server import bpserver
+#from bp.server import bpserver
 from mongoDB import disconnect_database
 
 '''ultima_actualizacion_gasolineras = 0
@@ -21,7 +21,7 @@ class FlaskApp(Flask):
 app = Flask(__name__)
 # app.secret_key = 'clave de cifrado lo más robusta posible'
 app.register_blueprint(bpclient)
-app.register_blueprint(bpserver)
+#app.register_blueprint(bpserver)
 
 app.run()
 
