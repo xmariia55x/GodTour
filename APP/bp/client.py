@@ -17,6 +17,9 @@ import datos.trayecto as trayecto_data
 import datos.usuario as usuario_data
 import datos.vehiculo as vehiculo_data
 
+from mongoDB import usuario_db #MARIA: HABRIA QUE QUITARLO CUANDO HAGAIS REFACTOR
+from mongoDB import trayecto_db
+
 bpclient = Blueprint('bpclient', __name__, template_folder='templates')
 
 #PRUEBA JINJA
@@ -32,8 +35,7 @@ def favicon():
    return "", 200
 
 # -----------------------------------------------------USUARIO-------------------------------------------------------------
-# Obtengo la colección de usuarios
-usuario_db = db['Usuario']
+
 
 #Devuelve una lista con los usuarios
 @bpclient.route('/usuario', methods=['GET'])
@@ -136,8 +138,6 @@ def get_usuario_by_email():
 
 # ---------------------------------------------INICIO TRAYECTO-----------------------------------------------------------
 
-# Obtengo la colección de trayectos
-trayecto_db = db['Trayecto']
 
 #Devuelve una lista de trayectos
 @bpclient.route('/trayecto', methods=['GET'])
@@ -199,7 +199,7 @@ def create_trayecto():
     return redirect("/")
 
 #Crea un nuevo trayecto
-@bpclient.route('/trayecto/create', methods=["POST"])
+'''@bpclient.route('/trayecto/create', methods=["POST"])
 def create_trayecto():
     
     PRUEBA
@@ -262,7 +262,7 @@ def create_trayecto():
         return response
     else:
         return not_found("No se ha podido crear el trayecto")
-
+'''
 #Elimina un trayecto cuyo id coincide con el que se pasa por parametro
 @bpclient.route('/trayecto/delete/<id>', methods=['GET'])
 def delete_trayecto(id):
@@ -310,7 +310,7 @@ def update_trayecto(id):
 
 
 #Actualiza la informacion del trayecto cuyo id coincide con el que se pasa por parametro
-@bpclient.route('/trayecto/update/<id>', methods=['PUT'])
+'''@bpclient.route('/trayecto/update/<id>', methods=['PUT'])
 def update_trayecto(id):
     destino = request.json['destino']
     duracion= int(request.json['duracion'])
@@ -355,7 +355,7 @@ def update_trayecto(id):
         return response
     else:
         return not_found("No se ha podido actualizar el trayecto con id: " + id)
-
+'''
 #Devuelve los trayectos cuyo destino coincide con el que se pasa por parámetro 
 @bpclient.route('/trayecto/by_destino', methods=['POST'])
 def get_trayecto_destino():

@@ -364,21 +364,21 @@ def get_usuario_trayecto(id):
 @bpserver.route('/api/incidencias', methods=['GET'])
 def get_trafico():
     provincia = request.args.get("provincia")
-    latitude = float(request.args.get("latitude"))
-    longitude = float(request.args.get("longitude"))
-    rango = float(request.args.get("rango"))
+    latitude = request.args.get("latitude")
+    longitude = request.args.get("longitude")
+    rango = request.args.get("rango")
     causa = request.args.get("causa")
 
     if provincia:
         datos_trafico = datos_abiertos.get_incidencias_provincia(provincia)
     elif causa and latitude and longitude and rango:
-        datos_trafico = datos_abiertos.get_incidencias_causa(latitude, longitude, rango, causa)
+        datos_trafico = datos_abiertos.get_incidencias_causa(float(latitude), float(longitude), float(rango), causa)
     elif causa and rango:
-        datos_trafico =  datos_abiertos.get_incidencias_causa(None, None, rango, causa)
+        datos_trafico =  datos_abiertos.get_incidencias_causa(None, None, float(rango), causa)
     elif latitude and longitude and rango:
-        datos_trafico = datos_abiertos.get_incidencias_rango(latitude, longitude, rango)
+        datos_trafico = datos_abiertos.get_incidencias_rango(float(latitude), float(longitude), float(rango))
     elif rango:
-        datos_trafico = datos_abiertos.get_incidencias_rango(None, None, rango)
+        datos_trafico = datos_abiertos.get_incidencias_rango(None, None, float(rango))
     else:
         datos_trafico = datos_abiertos.descargar_datos_trafico()
 
