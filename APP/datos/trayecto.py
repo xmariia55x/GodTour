@@ -1,4 +1,5 @@
 from mongoDB import trayecto_db
+from mongoDB import usuario_db
 from bson import json_util
 from bson.objectid import ObjectId
 
@@ -83,3 +84,29 @@ def update_restringido_trayecto(id, periodicidad, fotos_opcionales, plazas_total
         
     result = trayecto_db.update_one(filter, new_values)
 '''
+
+###################################################################################################################################
+# QUERIES
+###################################################################################################################################
+def get_trayectos_by_destino(destino):
+    trayectos = trayecto_db.find({'destino': destino})
+    return trayectos
+
+def get_trayectos_by_origen(origen):
+    trayectos = trayecto_db.find({'origen': origen})
+    return trayectos
+
+def get_trayectos_by_origen_destino(origen, destino):
+    trayectos = trayecto_db.find({'origen': origen, 'destino': destino})
+    return trayectos
+
+def get_trayectos_by_precio(precio):
+    trayectos = trayecto_db.find({'precio': { "$lt" : precio }})
+    return trayectos
+
+def get_usuarios_by_trayecto(id):
+    trayecto = find_trayecto(id)
+    # Alomejor habrá que castear a ObjectId
+    lista_usuarios = trayecto.get("pasajeros")
+    usuarios = usuario_db.find({'_id': {"$in" : lista_usuarios}})
+    
