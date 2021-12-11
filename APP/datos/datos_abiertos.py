@@ -3,7 +3,7 @@ import json
 
 from geopy.geocoders import Nominatim
 import geocoder
-
+from datetime import datetime, timedelta
 from pprint import pprint
 
 
@@ -16,6 +16,21 @@ LINKS DE INTERÉS:
     Datos de incidencias de tráfico: 'https://opendata.arcgis.com/datasets/a64659151f0a42c69a38563e9d006c6b_0.geojson'
 
 '''
+ultima_actualizacion_gasolineras = datetime.now()
+# ultima_actualizacion_trafico = datetime.now()
+gasolineras_datos_abiertos = None 
+# trafico_datos_abiertos = None 
+
+def get_datos_gasolineras_actualizadas():
+    global gasolineras_datos_abiertos, ultima_actualizacion_gasolineras #Llamada a la vbles globales para obtener y actualizar su valor
+    proxima_actualizacion = ultima_actualizacion_gasolineras + timedelta(hours = 12) #Comprobamos que los datos se actualizan cada 12 horas
+    if gasolineras_datos_abiertos is None:
+        gasolineras_datos_abiertos = descargar_gasolineras()
+    elif datetime.now() > proxima_actualizacion: #Descargar los datos y actualizar en caso de que este desactualizado
+        ultima_actualizacion_gasolineras = proxima_actualizacion
+        gasolineras_datos_abiertos = descargar_gasolineras()
+    return gasolineras_datos_abiertos
+
 def descargar_datos_trafico():
     link = 'https://opendata.arcgis.com/datasets/a64659151f0a42c69a38563e9d006c6b_0.geojson'
     file = request.urlopen(link)
@@ -46,7 +61,8 @@ def calcula_ubicacion():
 
 # --------------- OPERACIONES TRÁFICO ------------------------#
 
-def get_incidencias_provincia(provincia, trafico_actualizado):
+def get_incidencias_provincia(provincia):
+    trafico_actualizado = descargar_datos_trafico()
     lista_incidencias = []
     for incidencia in trafico_actualizado["features"]:
         if incidencia["properties"]["provincia"].upper() == provincia.upper() :
@@ -56,8 +72,8 @@ def get_incidencias_provincia(provincia, trafico_actualizado):
     return incidencias_json
 
 
-def get_incidencias_rango(latitud, longitud, rango,trafico_actualizado):
-
+def get_incidencias_rango(latitud, longitud, rango):
+    trafico_actualizado = descargar_datos_trafico()
     if not latitud and not longitud:
         latitud, longitud = calcula_ubicacion()
 
@@ -78,8 +94,8 @@ def get_incidencias_rango(latitud, longitud, rango,trafico_actualizado):
     incidencias_json = json.loads(incidencias_json_string)
     return incidencias_json
 
-def get_incidencias_nieve(latitud, longitud, rango,trafico_actualizado):
-
+def get_incidencias_nieve(latitud, longitud, rango):
+    trafico_actualizado = descargar_datos_trafico()
     if not latitud and not longitud:
         latitud, longitud = calcula_ubicacion()
 
@@ -101,8 +117,8 @@ def get_incidencias_nieve(latitud, longitud, rango,trafico_actualizado):
     incidencias_json = json.loads(incidencias_json_string)
     return incidencias_json
 
-def get_incidencias_obras(latitud, longitud, rango,trafico_actualizado):
-
+def get_incidencias_obras(latitud, longitud, rango):
+    trafico_actualizado = descargar_datos_trafico()
     if not latitud and not longitud:
         latitud, longitud = calcula_ubicacion()
 
@@ -124,8 +140,8 @@ def get_incidencias_obras(latitud, longitud, rango,trafico_actualizado):
     incidencias_json = json.loads(incidencias_json_string)
     return incidencias_json
 
-def get_incidencias_cortes(latitud, longitud, rango,trafico_actualizado):
-
+def get_incidencias_cortes(latitud, longitud, rango):
+    trafico_actualizado = descargar_datos_trafico()
     if not latitud and not longitud:
         latitud, longitud = calcula_ubicacion()
 
@@ -147,8 +163,8 @@ def get_incidencias_cortes(latitud, longitud, rango,trafico_actualizado):
     incidencias_json = json.loads(incidencias_json_string)
     return incidencias_json
 
-def get_incidencias_clima(latitud, longitud, rango,trafico_actualizado):
-
+def get_incidencias_clima(latitud, longitud, rango):
+    trafico_actualizado = descargar_datos_trafico()
     if not latitud and not longitud:
         latitud, longitud = calcula_ubicacion()
 
@@ -172,7 +188,8 @@ def get_incidencias_clima(latitud, longitud, rango,trafico_actualizado):
 
 # --------------- OPERACIONES GASOLINERAS ------------------------#
 
-def get_gasolineras_gasolina95_lowcost_localidad(localidad, datos_gasolineras):
+def get_gasolineras_gasolina95_lowcost_localidad(localidad):
+    datos_gasolineras = get_datos_gasolineras_actualizadas()
     lista_gasolineras = []
     for gasolinera in datos_gasolineras["ListaEESSPrecio"]:
         if gasolinera["Localidad"] == localidad:
@@ -182,7 +199,8 @@ def get_gasolineras_gasolina95_lowcost_localidad(localidad, datos_gasolineras):
     gasolineras_json_ordenadas = sorted(gasolineras_json, key=lambda k: k['Precio Gasolina 95 E5'], reverse=False)
     return gasolineras_json_ordenadas
 
-def get_gasolineras_ubicacion(gasolineras_datos_abiertos, latitud, longitud, rango):
+def get_gasolineras_ubicacion(latitud, longitud, rango):
+    datos_gasolineras = get_datos_gasolineras_actualizadas()
     #Si el parametro recibido es nulo, se actualiza con la ubicación actual
     if not latitud and not longitud:
         latitud, longitud = calcula_ubicacion()     
@@ -192,7 +210,7 @@ def get_gasolineras_ubicacion(gasolineras_datos_abiertos, latitud, longitud, ran
     longitud_min = longitud - float(rango)
     longitud_max = longitud + float(rango)
     lista = []
-    for g in gasolineras_datos_abiertos["ListaEESSPrecio"]:
+    for g in datos_gasolineras["ListaEESSPrecio"]:
         lat = float(g["Latitud"].replace(",","."))
         lon = float(g["Longitud (WGS84)"].replace(",","."))
         if (latitud_min < lat < latitud_max) and (longitud_min < lon < longitud_max):
@@ -203,9 +221,10 @@ def get_gasolineras_ubicacion(gasolineras_datos_abiertos, latitud, longitud, ran
 
     return gasolineras_json
 
-def get_gasolineras_24horas(gasolineras_datos_abiertos, provincia):
+def get_gasolineras_24horas(provincia):
+    datos_gasolineras = get_datos_gasolineras_actualizadas()
     lista = []
-    for g in gasolineras_datos_abiertos["ListaEESSPrecio"]:
+    for g in datos_gasolineras["ListaEESSPrecio"]:
         if g["Provincia"].upper() == provincia.upper() and g["Horario"].find("24H") != -1:
             lista.append(g)
     gasolineras_json_string = json.dumps(lista)

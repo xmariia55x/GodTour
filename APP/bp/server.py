@@ -9,7 +9,7 @@ from pymongo import message
 from werkzeug.wrappers import response
 import datos.datos_abiertos as datos_abiertos
 from datetime import datetime, timedelta
-from app import ultima_actualizacion_gasolineras
+# from app import ultima_actualizacion_gasolineras
 
 #Importamos las entidades
 import datos.trayecto as trayecto_data
@@ -18,15 +18,15 @@ import datos.vehiculo as vehiculo_data
 
 bpserver = Blueprint('bpserver', __name__)
 
-ultima_actualizacion_trafico = 0
-'''
+'''ultima_actualizacion_trafico = 0
+
 ultima_actualizacion_gasolineras = 0
 class FlaskApp(Flask):
   def run(self, host=None, port=None, debug=None, load_dotenv=True, **options):
     if not self.debug or os.getenv('WERKZEUG_RUN_MAIN') == 'true':
       with self.app_context():
         global gasolineras_datos_abiertos, ultima_actualizacion_gasolineras 
-        gasolineras_datos_abiertos = B2abiertosREST.descargar_gasolineras() 
+        gasolineras_datos_abiertos = datos_abiertos.descargar_gasolineras() 
         ultima_actualizacion_gasolineras = datetime.now()
     super(FlaskApp, self).run(host=host, port=port, debug=debug, load_dotenv=load_dotenv, **options)
 app = FlaskApp(__name__)
@@ -340,26 +340,27 @@ def get_usuario_trayecto(id):
         return Response(response, mimetype='application/json')
 
 # ---------------------------------------------FIN TRAYECTO-----------------------------------------------------------
+# ---------------------------------------------INICIO VEHICULO--------------------------------------------------------
 
-# --------------------------------------------- DATOS ABIERTOS - TRAFICO -----------------------------------------------------------
-def get_datos_trafico_actualizados():
-    trafico_datos_abiertos = datos_abiertos.descargar_datos_trafico()
-    return trafico_datos_abiertos
+#PARA DAVID Y ADRI, SOLO HACEIS EL CREAR, BUSCAR POR ID, UPDATE, DELETE Y BUSCAR TODOS LOS VEHICULOS
+
+# ---------------------------------------------FIN VEHICULO-----------------------------------------------------------
+# --------------------------------------------- DATOS ABIERTOS - TRAFICO ---------------------------------------------------------
+
 
 #Devuelve una lista con las incidencias de trafico del conjunto de datos abiertos
-@bpserver.route('/trafico', methods=['GET'])
+@bpserver.route('/incidencias', methods=['GET'])
 def get_trafico():
-    datos_trafico = get_datos_trafico_actualizados()
+    datos_trafico = datos_abiertos.descargar_datos_trafico()
     response = json_util.dumps(datos_trafico)
     return Response(response, mimetype='application/json')
 
 #Devuelve las incidencias de trafico de una provincia
-@bpserver.route('/trafico/by_provincia', methods=['POST'])
+@bpserver.route('/incidencias/by_provincia', methods=['GET'])
 def get_incidencias_provincia():
-    provincia = request.json["provincia"]
+    provincia = request.args.get("provincia")
     if provincia:
-        trafico_actualizado = get_datos_trafico_actualizados()
-        incidencias_trafico = B2abiertosREST.get_incidencias_provincia(provincia, trafico_actualizado)
+        incidencias_trafico = datos_abiertos.get_incidencias_provincia(provincia)
         response = json_util.dumps(incidencias_trafico)    
         if response == '[]':
             return not_found("No hay incidencias en " + provincia) 
@@ -368,25 +369,24 @@ def get_incidencias_provincia():
     else:
         return not_found("No se ha indicado provincia")
         
-@bpserver.route('/trafico/rango', methods=['POST'])
+@bpserver.route('/incidencias/rango', methods=['GET'])
 def get_trafico_in_rango():
     latitude = None
     longitude = None
 
     try : 
-        latitude = float(request.json["latitude"])
-        longitude = float(request.json["longitude"])
+        latitude = float(request.args.get("latitude"))
+        longitude = float(request.args.get("longitude"))
     except :
         print("Latitud, longitud o rango no introducidos")
     
-    rango = float(request.json["rango"])
+    rango = float(request.args.get("rango"))
     
     lista = None
-    trafico_actualizado = get_datos_trafico_actualizados()
     if latitude and longitude:
-        lista = B2abiertosREST.get_incidencias_rango(latitude, longitude, rango, trafico_actualizado)
+        lista = datos_abiertos.get_incidencias_rango(latitude, longitude, rango)
     else:
-        lista = B2abiertosREST.get_incidencias_rango(None, None, rango, trafico_actualizado)
+        lista = datos_abiertos.get_incidencias_rango(None, None, rango)
         
     response = json_util.dumps(lista)
 
@@ -395,24 +395,23 @@ def get_trafico_in_rango():
     else:
         return Response(response, mimetype='application/json')
 
-@bpserver.route('/trafico/nieve', methods=['POST'])
+@bpserver.route('/incidencias/nieve', methods=['GET'])
 def get_trafico_nieve():
     latitude = None
     longitude = None
 
     try : 
-        latitude = float(request.json["latitude"])
-        longitude = float(request.json["longitude"])
+        latitude = float(request.args.get("latitude"))
+        longitude = float(request.args.get("longitude"))
     except :
         print("Latitud y longitud no introducidas")
     
-    rango = float(request.json["rango"])
+    rango = float(request.args.get("rango"))
     lista = None
-    trafico_actualizado = get_datos_trafico_actualizados()
     if latitude and longitude:
-        lista = B2abiertosREST.get_incidencias_nieve(latitude, longitude, rango, trafico_actualizado)
+        lista = datos_abiertos.get_incidencias_nieve(latitude, longitude, rango)
     else:
-        lista = B2abiertosREST.get_incidencias_nieve(None, None, rango, trafico_actualizado)
+        lista = datos_abiertos.get_incidencias_nieve(None, None, rango)
         
     response = json_util.dumps(lista)
 
@@ -421,24 +420,23 @@ def get_trafico_nieve():
     else:
         return Response(response, mimetype='application/json')    
 
-@bpserver.route('/trafico/obras', methods=['POST'])
+@bpserver.route('/incidencias/obras', methods=['GET'])
 def get_trafico_obras():
     latitude = None
     longitude = None
 
     try : 
-        latitude = float(request.json["latitude"])
-        longitude = float(request.json["longitude"])
+        latitude = float(request.args.get("latitude"))
+        longitude = float(request.args.get("longitude"))
     except :
         print("Latitud y longitud no introducidas")
     
-    rango = float(request.json["rango"])
+    rango = float(request.args.get("rango"))
     lista = None
-    trafico_actualizado = get_datos_trafico_actualizados()
     if latitude and longitude:
-        lista = B2abiertosREST.get_incidencias_obras(latitude, longitude, rango, trafico_actualizado)
+        lista = datos_abiertos.get_incidencias_obras(latitude, longitude, rango)
     else:
-        lista = B2abiertosREST.get_incidencias_obras(None, None, rango, trafico_actualizado)
+        lista = datos_abiertos.get_incidencias_obras(None, None, rango)
         
     response = json_util.dumps(lista)
 
@@ -447,24 +445,23 @@ def get_trafico_obras():
     else:
         return Response(response, mimetype='application/json')  
 
-@bpserver.route('/trafico/cortes', methods=['POST'])
+@bpserver.route('/incidencias/cortes', methods=['GET'])
 def get_trafico_cortes():
     latitude = None
     longitude = None
 
     try : 
-        latitude = float(request.json["latitude"])
-        longitude = float(request.json["longitude"])
+        latitude = float(request.args.get("latitude"))
+        longitude = float(request.args.get("longitude"))
     except :
         print("Latitud y longitud no introducidas")
     
-    rango = float(request.json["rango"])
+    rango = float(request.args.get("rango"))
     lista = None
-    trafico_actualizado = get_datos_trafico_actualizados()
     if latitude and longitude:
-        lista = B2abiertosREST.get_incidencias_cortes(latitude, longitude, rango, trafico_actualizado)
+        lista = datos_abiertos.get_incidencias_cortes(latitude, longitude, rango)
     else:
-        lista = B2abiertosREST.get_incidencias_cortes(None, None, rango, trafico_actualizado)
+        lista = datos_abiertos.get_incidencias_cortes(None, None, rango)
         
     response = json_util.dumps(lista)
 
@@ -473,24 +470,23 @@ def get_trafico_cortes():
     else:
         return Response(response, mimetype='application/json')  
 
-@bpserver.route('/trafico/clima', methods=['POST'])
+@bpserver.route('/incidencias/clima', methods=['GET'])
 def get_trafico_clima():
     latitude = None
     longitude = None
 
     try : 
-        latitude = float(request.json["latitude"])
-        longitude = float(request.json["longitude"])
+        latitude = float(request.args.get("latitude"))
+        longitude = float(request.args.get("longitude"))
     except :
         print("Latitud y longitud no introducidas")
     
-    rango = float(request.json["rango"])
+    rango = float(request.args.get("rango"))
     lista = None
-    trafico_actualizado = get_datos_trafico_actualizados()
     if latitude and longitude:
-        lista = B2abiertosREST.get_incidencias_clima(latitude, longitude, rango, trafico_actualizado)
+        lista = datos_abiertos.get_incidencias_clima(latitude, longitude, rango)
     else:
-        lista = B2abiertosREST.get_incidencias_clima(None, None, rango, trafico_actualizado)
+        lista = datos_abiertos.get_incidencias_clima(None, None, rango)
         
     response = json_util.dumps(lista)
 
@@ -501,15 +497,106 @@ def get_trafico_clima():
 
 # --------------------------------------------- FIN DATOS ABIERTOS - TRAFICO -------------------------------------------------------
 
-# ---------------------------------------------MANEJO DE ERRORES-----------------------------------------------------------
+# --------------------------------------------- DATOS ABIERTOS - GASOLINERA -----------------------------------------------------------
+#Devuelve una lista con todas las gasolineras del conjunto de datos abiertos
+@bpserver.route('/gasolineras', methods=['GET'])
+def get_gasolineras():
+    datos_actualizados = datos_abiertos.get_datos_gasolineras_actualizadas()
+    response = json_util.dumps(datos_actualizados)    
+    return Response(response, mimetype='application/json')
+
+#Devuelve una lista con las gasolineras de una localidad pasada por parametro
+#Las gasolineras estan ordenadas segun el precio de la gasolina 95 (de mas barata a mas cara)
+@bpserver.route('/gasolineras/gasolina95_low_cost', methods=['GET'])
+def get_gasolineras_gasolina95_lowcost(): 
+    localidad = request.args.get("localidad")
+    if localidad:
+        gasolineras_lowcost = datos_abiertos.get_gasolineras_gasolina95_lowcost_localidad(localidad)
+        response = json_util.dumps(gasolineras_lowcost) 
+        if response == '[]':
+            return not_found("No se han encontrado gasolineras en " + localidad)
+        else:     
+            return Response(response, mimetype='application/json')
+    else:
+        return not_found("No se ha especificado una localidad")
+    
+# Devuelve una lista de gasolineras de un rango X en km de una ubicación pasada por parámetro o la ubicación real
+@bpserver.route('/gasolineras/rango', methods=['GET'])
+def get_gasolineras_rango():  
+    #PRUEBA
+    '''
+    {
+        "latitude": 36.73428,
+        "longitude": -4.56591,
+        "rango": 5
+    }
+    '''
+    latitude = None
+    longitude = None
+
+    try : 
+        latitude = request.args.get("latitude")
+        longitude = request.args.get("longitude")
+    except :
+        print("Latitud y longitud no introducidas")
+
+    rango_km = float(request.args.get("rango"))
+    consulta = None
+
+    rango = rango_km / 111.12  # Paso de km a grados
+
+    # Si no le pasa ubicacion por parametro se pasa None en los campos para que calcule la ubicacion actual
+    if latitude and longitude:
+        consulta = datos_abiertos.get_gasolineras_ubicacion(latitude, longitude, rango)
+    else:
+        consulta = datos_abiertos.get_gasolineras_ubicacion(None, None, rango)
+    
+    response = json_util.dumps(consulta)
+
+    # Controla los errores
+    if response == '[]':
+        return not_found("No hay gasolineras en el rango de " + str(rango_km) +" kms")
+    else:
+        return Response(response, mimetype='application/json')
+    
+# Devuelve las gasolineras abiertas 24 horas de una provincia pasada por parametro
+@bpserver.route('/gasolineras/provincia_24_horas', methods=['GET'])
+def get_gasolineras_provincia_24horas():
+    # PRUEBA
+    '''
+    {
+        "Provincia" : "Málaga"
+    }
+    '''
+    provincia = request.args.get("Provincia")
+    if provincia:
+        consulta = datos_abiertos.get_gasolineras_24horas(provincia)
+        response = json_util.dumps(consulta)
+        
+        if response == '[]':
+            return not_found("No se han encontrado gasolineras abiertas 24 horas en " + provincia)
+        else:
+            return Response(response, mimetype='application/json')  
+    else:
+        return not_found("No se ha indicado una provincia")  
+    
+# ---------------------------------------------FIN DATOS ABIERTOS-----------------------------------------------------------
+
+# ---------------------------------------------MANEJO DE ERRORES------------------------------------------------------------
 
 #Error 400
 @bpserver.errorhandler(400)
 def not_found(error=None):
-    response = jsonify({
-        'message': 'Bad request: ' + request.url,
-        'status': 400
-    })
+    if error is None:
+        response = jsonify({
+            'message': 'Bad request: ' + request.url,
+            'status': 400
+        })
+    else:
+        response = jsonify({
+            'message': error,
+            'status': 400
+        })
     response.status_code = 400
     return response
 
@@ -539,98 +626,4 @@ def server_error(error):
     response.status_code = 500
     return response
 
-# --------------------------------------------- DATOS ABIERTOS - GASOLINERA -----------------------------------------------------------
-def get_datos_gasolineras_actualizadas():
-    global ultima_actualizacion_gasolineras, gasolineras_datos_abiertos #Llamada a la vbles globales para obtener y actualizar su valor
-    proxima_actualizacion = ultima_actualizacion_gasolineras + timedelta(hours = 24) #Comprobamos que los datos se actualizan cada 24 horas
-    if ultima_actualizacion_gasolineras > proxima_actualizacion: #Descargar los datos y actualizar en caso de que este desactualizado
-        ultima_actualizacion_gasolineras = proxima_actualizacion
-        gasolineras_datos_abiertos = B2abiertosREST.descargar_gasolineras()
-    return gasolineras_datos_abiertos
-
-#Devuelve una lista con todas las gasolineras del conjunto de datos abiertos
-@bpserver.route('/gasolineras', methods=['GET'])
-def get_gasolineras():
-    datos_actualizados = get_datos_gasolineras_actualizadas()
-    response = json_util.dumps(datos_actualizados)    
-    return Response(response, mimetype='application/json')
-
-#Devuelve una lista con las gasolineras de una localidad pasada por parametro
-#Las gasolineras estan ordenadas segun el precio de la gasolina 95 (de mas barata a mas cara)
-@bpserver.route('/gasolineras/gasolina95_low_cost', methods=['POST'])
-def get_gasolineras_gasolina95_lowcost():
-    localidad = request.json["localidad"]
-    if localidad:
-        datos_actualizados = get_datos_gasolineras_actualizadas()
-        gasolineras_lowcost = B2abiertosREST.get_gasolineras_gasolina95_lowcost_localidad(localidad, datos_actualizados)
-        response = json_util.dumps(gasolineras_lowcost) 
-        if response == '[]':
-            return not_found("No se han encontrado gasolineras en " + localidad)
-        else:     
-            return Response(response, mimetype='application/json')
-    else:
-        return not_found("No se ha especificado una localidad")
-    
-# Devuelve una lista de gasolineras de un rango X en km de una ubicación pasada por parámetro o la ubicación real
-@bpserver.route('/gasolineras/rango', methods=['POST'])
-def get_gasolineras_rango():  
-    #PRUEBA
-    '''
-    {
-        "latitude": 36.73428,
-        "longitude": -4.56591,
-        "rango": 5
-    }
-    '''
-    latitude = None
-    longitude = None
-
-    try : 
-        latitude = request.json["latitude"]
-        longitude = request.json["longitude"]
-    except :
-        print("Latitud y longitud no introducidas")
-
-    rango_km = float(request.json["rango"])
-    consulta = None
-
-    rango = rango_km / 111.12  # Paso de km a grados
-
-    gasolineras_actualizadas = get_datos_gasolineras_actualizadas()
-    # Si no le pasa ubicacion por parametro se pasa None en los campos para que calcule la ubicacion actual
-    if latitude and longitude:
-        consulta = B2abiertosREST.get_gasolineras_ubicacion(gasolineras_actualizadas, latitude, longitude, rango)
-    else:
-        consulta = B2abiertosREST.get_gasolineras_ubicacion(gasolineras_actualizadas, None, None, rango)
-    
-    response = json_util.dumps(consulta)
-
-    # Controla los errores
-    if response == '[]':
-        return not_found("No hay gasolineras en el rango de " + str(rango_km) +" kms")
-    else:
-        return Response(response, mimetype='application/json')
-    
-# Devuelve las gasolineras abiertas 24 horas de una provincia pasada por parametro
-@bpserver.route('/gasolineras/provincia_24_horas', methods=['POST'])
-def get_gasolineras_provincia_24horas():
-    # PRUEBA
-    '''
-    {
-        "Provincia" : "Málaga"
-    }
-    '''
-    provincia = request.json["Provincia"]
-    if provincia:
-        gasolineras_actualizadas = get_datos_gasolineras_actualizadas()
-        consulta = B2abiertosREST.get_gasolineras_24horas(gasolineras_actualizadas, provincia)
-        response = json_util.dumps(consulta)
-        
-        if response == '[]':
-            return not_found("No se han encontrado gasolineras abiertas 24 horas en " + provincia)
-        else:
-            return Response(response, mimetype='application/json')  
-    else:
-        return not_found("No se ha indicado una provincia")  
-    
-# ---------------------------------------------FIN DATOS ABIERTOS-----------------------------------------------------------
+# --------------------------------------------- FIN MANEJO DE ERRORES-----------------------------------------------------------
