@@ -337,19 +337,19 @@ def get_datos_trafico_actualizados():
     return trafico_datos_abiertos
 
 #Devuelve una lista con las incidencias de trafico del conjunto de datos abiertos
-@bpserver.route('/trafico', methods=['GET'])
+@bpserver.route('/incidencias', methods=['GET'])
 def get_trafico():
     datos_trafico = get_datos_trafico_actualizados()
     response = json_util.dumps(datos_trafico)
     return Response(response, mimetype='application/json')
 
 #Devuelve las incidencias de trafico de una provincia
-@bpserver.route('/trafico/by_provincia', methods=['POST'])
+@bpserver.route('/incidencias/by_provincia', methods=['POST'])
 def get_incidencias_provincia():
     provincia = request.json["provincia"]
     if provincia:
         trafico_actualizado = get_datos_trafico_actualizados()
-        incidencias_trafico = B2abiertosREST.get_incidencias_provincia(provincia, trafico_actualizado)
+        incidencias_trafico = datos_abiertos.get_incidencias_provincia(provincia, trafico_actualizado)
         response = json_util.dumps(incidencias_trafico)    
         if response == '[]':
             return not_found("No hay incidencias en " + provincia) 
