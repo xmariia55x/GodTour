@@ -94,7 +94,30 @@ def get_incidencias_rango(latitud, longitud, rango):
     incidencias_json = json.loads(incidencias_json_string)
     return incidencias_json
 
-def get_incidencias_nieve(latitud, longitud, rango):
+def get_incidencias_causa(latitud, longitud, rango, causa_solicitada):
+    trafico_actualizado = descargar_datos_trafico()
+    if not latitud and not longitud:
+        latitud, longitud = calcula_ubicacion()
+
+    rangoGrados = rango/111.12
+    latitud_min = latitud - rangoGrados
+    latitud_max = latitud + rangoGrados
+    longitud_min = longitud - rangoGrados
+    longitud_max = longitud + rangoGrados
+    lista_incidencias = []
+    for incidencia in trafico_actualizado["features"]:
+        if incidencia["geometry"] is not None: 
+            causa = incidencia["properties"]["tipo"]
+            cords = incidencia["geometry"]["coordinates"]
+            lon = float(cords[0])
+            lat = float(cords[1])
+            if (latitud_min < lat < latitud_max) and (longitud_min < lon < longitud_max) and causa == causa_solicitada:
+                lista_incidencias.append(incidencia)
+    incidencias_json_string = json.dumps(lista_incidencias)
+    incidencias_json = json.loads(incidencias_json_string)
+    return incidencias_json
+
+'''def get_incidencias_nieve(latitud, longitud, rango):
     trafico_actualizado = descargar_datos_trafico()
     if not latitud and not longitud:
         latitud, longitud = calcula_ubicacion()
@@ -185,7 +208,7 @@ def get_incidencias_clima(latitud, longitud, rango):
     incidencias_json_string = json.dumps(lista_incidencias)
     incidencias_json = json.loads(incidencias_json_string)
     return incidencias_json
-
+'''
 # --------------- OPERACIONES GASOLINERAS ------------------------#
 
 def get_gasolineras_gasolina95_lowcost_localidad(localidad):
