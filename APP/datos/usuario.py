@@ -41,3 +41,6 @@ def update_usuario(id, nombre_completo, correo, dni, fecha_nacimiento, antigueda
         return "Fallo"
     else:
         return "Acierto"
+
+def delete_usuario(id):
+    usuario_db.delete_one({'_id': ObjectId(id)})

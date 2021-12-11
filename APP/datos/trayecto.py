@@ -66,6 +66,11 @@ def update_trayecto(id, origen_nombre, origen_latitud, origen_longitud, destino_
         }}
         
     result = trayecto_db.update_one(filter, new_values)
+
+
+def delete_trayecto(id):
+    trayecto_db.delete_one({'_id': ObjectId(id)})
+
 '''
 def update_restringido_trayecto(id, periodicidad, fotos_opcionales, plazas_totales, vehiculo):
     filter = {"_id": ObjectId(id)}
