@@ -335,8 +335,12 @@ def get_usuario_trayecto(id):
         return Response(response, mimetype='application/json')
 
 # ---------------------------------------------FIN TRAYECTO-----------------------------------------------------------
+# ---------------------------------------------INICIO VEHICULO--------------------------------------------------------
 
-# --------------------------------------------- DATOS ABIERTOS - TRAFICO -----------------------------------------------------------
+#PARA DAVID Y ADRI, SOLO HACEIS EL CREAR, BUSCAR POR ID, UPDATE, DELETE Y BUSCAR TODOS LOS VEHICULOS
+
+# ---------------------------------------------FIN VEHICULO-----------------------------------------------------------
+# --------------------------------------------- DATOS ABIERTOS - TRAFICO ---------------------------------------------------------
 
 
 #Devuelve una lista con las incidencias de trafico del conjunto de datos abiertos
@@ -488,50 +492,6 @@ def get_trafico_clima():
 
 # --------------------------------------------- FIN DATOS ABIERTOS - TRAFICO -------------------------------------------------------
 
-# ---------------------------------------------MANEJO DE ERRORES-----------------------------------------------------------
-
-#Error 400
-@bpserver.errorhandler(400)
-def not_found(error=None):
-    if error is None:
-        response = jsonify({
-            'message': 'Bad request: ' + request.url,
-            'status': 400
-        })
-    else:
-        response = jsonify({
-            'message': error,
-            'status': 400
-        })
-    response.status_code = 400
-    return response
-
-#Error 404
-@bpserver.errorhandler(404)
-def not_found(error=None):
-    if error is None : 
-        response = jsonify({
-        'message': 'Recurso no encontrado: ' + request.url,
-        'status': 404
-        })
-    else: 
-        response = jsonify({
-        'message': error,
-        'status': 404
-        })
-    response.status_code = 404
-    return response
-
-#Error 500
-@bpserver.errorhandler(500)
-def server_error(error):
-    response = jsonify({
-        'message': 'Error del servidor: ' + request.url,
-        'status': 500
-    })
-    response.status_code = 500
-    return response
-
 # --------------------------------------------- DATOS ABIERTOS - GASOLINERA -----------------------------------------------------------
 #Devuelve una lista con todas las gasolineras del conjunto de datos abiertos
 @bpserver.route('/gasolineras', methods=['GET'])
@@ -616,3 +576,49 @@ def get_gasolineras_provincia_24horas():
         return not_found("No se ha indicado una provincia")  
     
 # ---------------------------------------------FIN DATOS ABIERTOS-----------------------------------------------------------
+
+# ---------------------------------------------MANEJO DE ERRORES------------------------------------------------------------
+
+#Error 400
+@bpserver.errorhandler(400)
+def not_found(error=None):
+    if error is None:
+        response = jsonify({
+            'message': 'Bad request: ' + request.url,
+            'status': 400
+        })
+    else:
+        response = jsonify({
+            'message': error,
+            'status': 400
+        })
+    response.status_code = 400
+    return response
+
+#Error 404
+@bpserver.errorhandler(404)
+def not_found(error=None):
+    if error is None : 
+        response = jsonify({
+        'message': 'Recurso no encontrado: ' + request.url,
+        'status': 404
+        })
+    else: 
+        response = jsonify({
+        'message': error,
+        'status': 404
+        })
+    response.status_code = 404
+    return response
+
+#Error 500
+@bpserver.errorhandler(500)
+def server_error(error):
+    response = jsonify({
+        'message': 'Error del servidor: ' + request.url,
+        'status': 500
+    })
+    response.status_code = 500
+    return response
+
+# --------------------------------------------- FIN MANEJO DE ERRORES-----------------------------------------------------------
