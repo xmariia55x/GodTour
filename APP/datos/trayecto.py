@@ -23,20 +23,20 @@ def create_trayecto(creador, origen_nombre, origen_latitud, origen_longitud, des
             "creador": ObjectId(creador),
             "destino": 
                 {"nombre": destino_nombre, 
-                 "latitud": destino_latitud,
-                 "longitud": destino_longitud
+                 "latitud": float(destino_latitud),
+                 "longitud": float(destino_longitud)
                 },
-            "duracion": duracion,
-            "timestamp": date_converter.date_to_timestamp(fecha, hora),
+            "duracion": int(duracion),
+            "timestamp": float(date_converter.date_to_timestamp(fecha, hora)),
             "origen":
                 {"nombre": origen_nombre, 
-                 "latitud": origen_latitud,
-                 "longitud": origen_longitud
+                 "latitud": float(origen_latitud),
+                 "longitud": float(origen_longitud)
                 },
-            "periodicidad": periodicidad,
-            "precio": precio,
+            "periodicidad": int(periodicidad),
+            "precio": float(precio),
             "fotos_opcionales": fotos_opcionales,
-            "plazas_totales": plazas_totales,
+            "plazas_totales": int(plazas_totales),
             "vehiculo": ObjectId(vehiculo), 
             "pasajeros": []
         })
@@ -48,20 +48,20 @@ def update_trayecto(id, origen_nombre, origen_latitud, origen_longitud, destino_
     new_values = {"$set":{
             "destino": 
                 {"nombre": destino_nombre, 
-                 "latitud": destino_latitud,
-                 "longitud": destino_longitud
+                 "latitud": float(destino_latitud),
+                 "longitud": float(destino_longitud)
                 },
-            "duracion": duracion,
-            "timestamp": date_converter.date_to_timestamp(fecha, hora),
-            "origen": 
+            "duracion": int(duracion),
+            "timestamp": float(date_converter.date_to_timestamp(fecha, hora)),
+            "origen":
                 {"nombre": origen_nombre, 
-                 "latitud": origen_latitud,
-                 "longitud": origen_longitud
+                 "latitud": float(origen_latitud),
+                 "longitud": float(origen_longitud)
                 },
-            "periodicidad": periodicidad,
-            "precio": precio,
+            "periodicidad": int(periodicidad),
+            "precio": float(precio),
             "fotos_opcionales": fotos_opcionales,
-            "plazas_totales": plazas_totales,
+            "plazas_totales": int(plazas_totales),
             "vehiculo": ObjectId(vehiculo), 
             "pasajeros": pasajeros
     }}
