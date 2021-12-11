@@ -7,7 +7,7 @@ from bson import json_util
 from bson.objectid import ObjectId
 from pymongo import message
 from werkzeug.wrappers import response
-import datos.datos_abiertos
+import datos.datos_abiertos as datos_abiertos
 from datetime import datetime, timedelta
 from app import ultima_actualizacion_gasolineras
 
@@ -158,9 +158,14 @@ def get_usuario_by_email():
 #Devuelve una lista de trayectos
 @bpserver.route('/trayecto', methods=['GET'])
 def get_trayectos():
-    trayectos = trayecto_data
-    response = json_util.dumps(trayectos)
-    return Response(response, mimetype='application/json')
+    trayectos = trayecto_data.find_trayectos()
+
+    if trayectos is None:
+        response = {"message: No se han encontrado trayectos"}
+        return response
+    else:
+        response = json_util.dumps(trayectos)
+        return Response(response, mimetype='application/json')
 
 #Devuelve un trayecto cuyo id coincide con el que se pasa por parámetro
 @bpserver.route('/trayecto/<id>', methods=['GET'])
