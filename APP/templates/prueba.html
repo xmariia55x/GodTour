@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Nuevo trayecto</title>
+</head>
+
+<body>
+    <form action="{{url_for('get_post')}}" method="POST">´
+        <label>Fecha: </label>
+        <input type="date" name="fecha" required><br>
+        <label>Hora: </label>
+        <input type="time" name="hora" required><br>
+    </form>
+
+</body>
