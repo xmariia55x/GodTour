@@ -10,17 +10,14 @@ from pymongo import message
 from werkzeug.wrappers import response
 import datos.datos_abiertos
 from datetime import datetime, timedelta
+#Importamos los metodos para las fechas
+import fechas as date_converter
 #Importamos las entidades
 import datos.trayecto as trayecto_data
 import datos.usuario as usuario_data
 import datos.vehiculo as vehiculo_data
 
 bpclient = Blueprint('bpclient', __name__, template_folder='templates')
-
-# Para formatear fechas con un formato de entrada y formato salida
-def formatear_fecha(str_fecha, formatoEntrada, formatoSalida):
-    date_obj = datetime.strptime(str_fecha, formatoEntrada)
-    return datetime.strftime(date_obj, formatoSalida)
 
 #PRUEBA JINJA
 @bpclient.route('/')
