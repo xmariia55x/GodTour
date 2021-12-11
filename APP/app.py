@@ -4,6 +4,7 @@ import sys
 from datetime import datetime, timedelta
 import datos.datos_abiertos as datos_abiertos
 from bp.client import bpclient
+from mongoDB import disconnect_database
 
 ultima_actualizacion_gasolineras = 0
 ultima_actualizacion_trafico = 0
@@ -20,3 +21,6 @@ app.secret_key = 'clave de cifrado lo más robusta posible'
 app.register_blueprint(bpclient)
 
 app.run()
+
+disconnect_database()
+

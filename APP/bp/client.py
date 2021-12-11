@@ -17,7 +17,7 @@ import datos.trayecto as trayecto_data
 import datos.usuario as usuario_data
 import datos.vehiculo as vehiculo_data
 
-bpclient = Blueprint('app', __name__, template_folder='templates')
+bpclient = Blueprint('bpclient', __name__, template_folder='templates')
 
 # Para formatear fechas con un formato de entrada y formato salida
 def formatear_fecha(str_fecha, formatoEntrada, formatoSalida):
