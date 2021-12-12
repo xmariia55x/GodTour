@@ -11,7 +11,11 @@ def find_vehiculo(id):
     return vehiculo
 
 def create_vehiculo(marca, modelo, matricula, color, plazas, fotos):
-    id = vehiculo_db.insert_one({"marca": marca, "modelo": modelo, "matricula": matricula, "color": color,"plazas": plazas, "fotos_vehiculo": fotos})
+    lista_fotos_vehiculo = []
+    if fotos:
+        for foto in fotos:
+            lista_fotos_vehiculo.append(foto)
+    id = vehiculo_db.insert_one({"marca": marca, "modelo": modelo, "matricula": matricula, "color": color,"plazas": plazas, "fotos_vehiculo": lista_fotos_vehiculo})
 
 def update_vehiculo(id, marca, modelo, matricula, color, plazas, fotos_vehiculo):
     lista_fotos_vehiculo = []
@@ -28,7 +32,7 @@ def update_vehiculo(id, marca, modelo, matricula, color, plazas, fotos_vehiculo)
         "plazas": plazas,
         "fotos_vehiculo": lista_fotos_vehiculo
     }}
-            
+  
     result = vehiculo_db.update_one(filter, new_values) 
 
     if result.matched_count == 0:

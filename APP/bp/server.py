@@ -337,9 +337,72 @@ def get_usuario_trayecto(id):
 
 # ---------------------------------------------FIN TRAYECTO-----------------------------------------------------------
 # ---------------------------------------------INICIO VEHICULO--------------------------------------------------------
+#Devuelve una lista con los vehiculos
+@bpserver.route('/api/vehiculos', methods=['GET'])
+def get_vehiculos():
+    vehiculos = vehiculo_data.find_vehiculos()
+    response = json_util.dumps(vehiculos)
+    if response == "[]":
+        return not_found("No se han encontrado vehiculos")
+    else:
+        return Response(response, mimetype='application/json')
 
-#PARA DAVID Y ADRI, SOLO HACEIS EL CREAR, BUSCAR POR ID, UPDATE, DELETE Y BUSCAR TODOS LOS VEHICULOS
+#Devuelve un vehiculo cuyo id coincide con el que se pasa por parámetro
+@bpserver.route('/api/vehiculos/<id>', methods=['GET'])
+def get_vehiculo(id):
+    vehiculo = vehiculo_data.find_vehiculo(id)
+    if vehiculo is None:
+        return not_found("No se han encontrado vehiculos con el id: " + id)
+    else: 
+        response = json_util.dumps(vehiculo)    
+        return Response(response, mimetype='application/json')
 
+#Crea un nuevo vehiculo
+@bpserver.route('/api/vehiculos/create', methods=['POST'])
+def create_vehiculo():
+    marca = request.json.get('marca')
+    modelo = request.json.get('modelo')
+    matricula = request.json.get('matricula')
+    color = request.json.get('color')
+    plazas = request.json.get('plazas')
+    fotos = request.json.get('fotos_vehiculo')
+    if marca and modelo and matricula and color and plazas:
+        id = vehiculo_data.create_vehiculo(marca, modelo, matricula, color, plazas, fotos)
+
+        response = {
+            "id": str(id),
+            "marca": marca,
+            "modelo": modelo,
+            "matricula": matricula,
+            "color": color,
+            "plazas": plazas
+        }
+        return response
+    else:
+        return not_found("No se ha podido crear el vehiculo, faltan campos")
+
+#Elimina un vehiculo cuyo id coincide con el que se pasa por parametro
+@bpserver.route('/api/vehiculos/delete/<id>', methods=['DELETE'])
+def delete_vehiculo(id):
+    vehiculo_data.delete_vehiculo(id)
+    response = jsonify({'message': 'El vehiculo con id '+id+' se ha eliminado exitosamente'})
+    return response
+
+#Actualiza la informacion del vehiculo cuyo id coincide con el que se pasa por parametro
+@bpserver.route('/api/vehiculos/update/<id>', methods=['PUT'])
+def update_vehiculo(id):
+    marca = request.json.get('marca')
+    modelo = request.json.get('modelo')
+    matricula = request.json.get('matricula')
+    color = request.json.get('color')
+    plazas = request.json.get('plazas')
+    fotos = request.json.get('fotos_vehiculo')
+    if marca and modelo and matricula and color and plazas:     
+        vehiculo_data.update_vehiculo(id, marca, modelo, matricula, color, plazas, fotos)
+        response = jsonify({'message': 'El vehiculo con id '+id+' se ha actualizado exitosamente'})
+        return response
+    else:
+        return not_found("No se ha podido actualizar el vehiculo con el id: " + id + " , faltan campos")
 # ---------------------------------------------FIN VEHICULO-----------------------------------------------------------
 # --------------------------------------------- DATOS ABIERTOS - TRAFICO ---------------------------------------------------------
 #Devuelve una lista con las incidencias de trafico del conjunto de datos abiertos
