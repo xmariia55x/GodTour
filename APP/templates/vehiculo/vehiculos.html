@@ -38,8 +38,14 @@
                 <div class="row text-center container">
                     <div class="mx-auto">
                         <div class="bg-white rounded shadow-sm py-5 px-4">
+                            {% if vehiculo.fotos_vehiculo | first is not none %}
+                            <img src="{{vehiculo.fotos_vehiculo | first}}" alt="" width="100"
+                            class="img-fluid mb-3 img-thumbnail shadow-sm">
+                            {%else%}
                             <img src="https://img.icons8.com/bubbles/100/000000/car.png" alt="" width="100"
                                 class="img-fluid mb-3 img-thumbnail shadow-sm">
+                            {%endif%}
+                            
                             <h5 class="mb-0">{{ vehiculo.marca }} {{ vehiculo.modelo }}</h5>
                             <span class="small text-muted">Color {{ vehiculo.color}}</span><br>
                             <span class="small text-muted">Matricula {{ vehiculo.matricula}}</span><br>

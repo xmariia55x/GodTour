@@ -483,9 +483,10 @@ def create_vehiculo():
         color= request.form.get('color')
         plazas= int(request.form.get('plazas'))
         fotos_vehiculo= request.form.get('fotos_vehiculo')
-
+        array_fotos = []
+        array_fotos.append(fotos_vehiculo)
         if marca and modelo and matricula and color and plazas:
-            vehiculo_data.create_vehiculo(marca, modelo, matricula, color, plazas, fotos_vehiculo)
+            vehiculo_data.create_vehiculo(marca, modelo, matricula, color, plazas, array_fotos)
             return redirect('/app/vehiculos')
         else:
             return render_template('vehiculo/nuevoVehiculo.html', error="No se ha podido crear el vehiculo, faltan campos")
@@ -504,9 +505,11 @@ def update_vehiculo(id):
         color= request.form.get('color')
         plazas= request.form.get('plazas')
         fotos_vehiculo= request.form.get('fotos_vehiculo')
+        array_fotos = []
+        array_fotos.append(fotos_vehiculo)
        
         if marca and modelo and matricula and color and plazas:
-            response = vehiculo_data.update_vehiculo(id, marca, modelo, matricula, color, int(plazas), fotos_vehiculo)
+            response = vehiculo_data.update_vehiculo(id, marca, modelo, matricula, color, int(plazas), array_fotos)
             if response == "Acierto":
                 return redirect('/app/vehiculos')
         else:

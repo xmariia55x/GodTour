@@ -22,7 +22,8 @@
     {%if vehiculo %}
     <div style="padding: 2% 15%">
 
-        <button type="button" class="btn btn-light" onclick="window.location.href='{{ url_for( 'bpclient.get_vehiculos' ) }}';">
+        <button type="button" class="btn btn-light"
+            onclick="window.location.href='{{ url_for( 'bpclient.get_vehiculos' ) }}';">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                 class="bi bi-arrow-left-circle" viewBox="0 0 16 16">
                 <path fill-rule="evenodd"
@@ -34,8 +35,13 @@
             <div class="row text-center container">
                 <div class="col-md-4 col-sm-6 mb-5">
                     <div class="bg-white rounded shadow-sm py-5 px-4">
+                        {% if vehiculo.fotos_vehiculo | first is not none %}
+                        <img src="{{vehiculo.fotos_vehiculo | first}}" alt="" width="100"
+                            class="img-fluid mb-3 img-thumbnail shadow-sm">
+                        {%else%}
                         <img src="https://img.icons8.com/bubbles/100/000000/car.png" alt="" width="100"
                             class="img-fluid mb-3 img-thumbnail shadow-sm">
+                        {%endif%}
                         <h5 class="mb-0">{{ vehiculo.marca }} {{ vehiculo.modelo }}</h5>
                         <span class="small text-muted">Color {{ vehiculo.color}}</span><br>
                         <span class="small text-muted">Matricula {{ vehiculo.matricula}}</span><br>
@@ -43,9 +49,12 @@
 
                         <ul class="social mb-0 list-inline mt-3">
                             <li class="list-inline-item"><img src="https://img.icons8.com/bubbles/75/000000/edit.png"
-                                onclick="window.location.href='{{ url_for( 'bpclient.update_vehiculo', id = vehiculo._id ) }}';" /></li>
-                            <li class="list-inline-item"><img src="https://img.icons8.com/bubbles/75/000000/delete-sign.png" 
-                                onclick="window.location.href='{{ url_for( 'bpclient.delete_vehiculo', id = vehiculo._id ) }}';" /></li>
+                                    onclick="window.location.href='{{ url_for( 'bpclient.update_vehiculo', id = vehiculo._id ) }}';" />
+                            </li>
+                            <li class="list-inline-item"><img
+                                    src="https://img.icons8.com/bubbles/75/000000/delete-sign.png"
+                                    onclick="window.location.href='{{ url_for( 'bpclient.delete_vehiculo', id = vehiculo._id ) }}';" />
+                            </li>
                         </ul>
                     </div>
                 </div>
