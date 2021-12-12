@@ -352,19 +352,19 @@ def get_trafico():
     causa = request.args.get("causa")
 
     if provincia:
-        datos_trafico = datos_abiertos.get_incidencias_provincia(provincia)
+        datos_trafico = datos_abiertos.get_incidencias_provincia(provincia) #FUNCIONA
     elif causa and latitude and longitude and rango:
         datos_trafico = datos_abiertos.get_incidencias_causa(float(latitude), float(longitude), float(rango), causa)
     elif causa and rango:
         datos_trafico =  datos_abiertos.get_incidencias_causa(None, None, float(rango), causa)
-    elif latitude and longitude and rango:
-        datos_trafico = datos_abiertos.get_incidencias_rango(float(latitude), float(longitude), float(rango))
+    elif latitude and longitude and rango:                                  
+        datos_trafico = datos_abiertos.get_incidencias_rango(float(latitude), float(longitude), float(rango)) #FUNCIONA
     elif rango:
-        datos_trafico = datos_abiertos.get_incidencias_rango(None, None, float(rango))
+        datos_trafico = datos_abiertos.get_incidencias_rango(None, None, float(rango)) #FUNCIONA
     else:
-        datos_trafico = datos_abiertos.descargar_datos_trafico()
+        datos_trafico = datos_abiertos.descargar_datos_trafico()  #FUNCIONA
 
-    if datos_trafico is None:
+    if not datos_trafico: 
         return not_found("No se han encontrado incidencias de trafico")
     else:    
         response = json_util.dumps(datos_trafico)
@@ -530,22 +530,22 @@ def get_trafico_clima():
 @bpserver.route('/api/gasolineras', methods=['GET'])
 def get_gasolineras():
     localidad = request.args.get("localidad")
-    latitude = float(request.args.get("latitude"))
-    longitude = float(request.args.get("longitude"))
-    rango = float(request.args.get("rango"))
+    latitude = request.args.get("latitude")
+    longitude = request.args.get("longitude")
+    rango = request.args.get("rango")
     provincia = request.args.get("provincia")
     if localidad:
-        gasolineras = datos_abiertos.get_gasolineras_gasolina95_lowcost_localidad(localidad)
+        gasolineras = datos_abiertos.get_gasolineras_gasolina95_lowcost_localidad(localidad) #FUNCIONA
     elif provincia:
-        gasolineras = datos_abiertos.get_gasolineras_24horas(provincia)
+        gasolineras = datos_abiertos.get_gasolineras_24horas(provincia) #FUNCIONA
     elif latitude and longitude and rango:
-        gasolineras = datos_abiertos.get_gasolineras_ubicacion(latitude, longitude, rango)
+        gasolineras = datos_abiertos.get_gasolineras_ubicacion(float(latitude), float(longitude), float(rango)) #NO FUNCIONA
     elif rango:
-        gasolineras = datos_abiertos.get_gasolineras_ubicacion(None, None, rango)
+        gasolineras = datos_abiertos.get_gasolineras_ubicacion(None, None, float(rango)) #NO FUNCIONA
     else:
-        gasolineras = datos_abiertos.get_datos_gasolineras_actualizadas()
+        gasolineras = datos_abiertos.get_datos_gasolineras_actualizadas() #FUNCIONA
         
-    if gasolineras is None:    
+    if not gasolineras:    
         return not_found("No se han encontrado gasolineras") 
     else:
         response = json_util.dumps(gasolineras)    

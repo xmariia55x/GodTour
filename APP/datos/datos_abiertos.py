@@ -94,6 +94,7 @@ def get_incidencias_rango(latitud, longitud, rango):
     incidencias_json = json.loads(incidencias_json_string)
     return incidencias_json
 
+#NO FUNCIONA
 def get_incidencias_causa(latitud, longitud, rango, causa_solicitada):
     # trafico_actualizado = descargar_datos_trafico()
     trafico_actualizado = get_incidencias_rango(latitud, longitud, rango)
@@ -111,14 +112,15 @@ def get_incidencias_causa(latitud, longitud, rango, causa_solicitada):
     for incidencia in trafico_actualizado["features"]:
         if incidencia["geometry"] is not None: 
             causa = incidencia["properties"]["tipo"]
-            '''
-            cords = incidencia["geometry"]["coordinates"]
-            lon = float(cords[0])
-            lat = float(cords[1])
-            '''
+            
+            #cords = incidencia["geometry"]["coordinates"]
+            #lon = float(cords[0])
+            #lat = float(cords[1])
+            
             # if (latitud_min < lat < latitud_max) and (longitud_min < lon < longitud_max) and causa == causa_solicitada:
             if causa == causa_solicitada:
                 lista_incidencias.append(incidencia)
+       
     incidencias_json_string = json.dumps(lista_incidencias)
     incidencias_json = json.loads(incidencias_json_string)
     return incidencias_json
@@ -221,7 +223,7 @@ def get_gasolineras_gasolina95_lowcost_localidad(localidad):
     datos_gasolineras = get_datos_gasolineras_actualizadas()
     lista_gasolineras = []
     for gasolinera in datos_gasolineras["ListaEESSPrecio"]:
-        if gasolinera["Localidad"] == localidad:
+        if gasolinera["Localidad"].upper() == localidad.upper():
             lista_gasolineras.append(gasolinera)
     gasolineras_json_string = json.dumps(lista_gasolineras)
     gasolineras_json = json.loads(gasolineras_json_string)
