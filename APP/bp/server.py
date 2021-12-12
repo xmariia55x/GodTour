@@ -45,7 +45,7 @@ def get_usuarios():
 
     email = request.args.get("email")
     if len(request.args) == 0:
-        usuarios = usuario_data.find_usuarios
+        usuarios = usuario_data.find_usuarios()
     else:
         if email:
             usuarios = usuario_data.find_usuario_by_email(email)
