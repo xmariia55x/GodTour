@@ -42,11 +42,21 @@ db = client.get_default_database()
 #Devuelve una lista con los usuarios
 @bpserver.route('/api/usuarios', methods=['GET'])
 def get_usuarios():
-    usuarios = usuario_data.find_usuarios()
-    if usuarios is None:
-        return not_found("No se han encontrado usuarios")
+
+    email = request.args.get("email")
+    if len(request.args) == 0:
+        usuarios = usuario_data.find_usuarios
+    else:
+        if email:
+            usuarios = usuario_data.find_usuario_by_email(email)
+        else:
+            return not_found("Parámetros introducidos no válidos")
+
     response = json_util.dumps(usuarios)
-    return Response(response, mimetype='application/json')
+    if response == "[]":
+        return not_found("No se han encontrado usuarios")
+    else:
+        return Response(response, mimetype='application/json')
 
 #Devuelve un usuario cuyo id coincide con el que se pasa por parámetro
 @bpserver.route('/api/usuarios/<id>', methods=['GET'])
@@ -123,34 +133,6 @@ def get_usuario_ordered_by_name():
     response = json_util.dumps(usuarios)
     return Response(response, mimetype='application/json')
 
-#Devuelve un usuario a partir de (parte de) su correo electronico pasado por parametro
-@bpserver.route('/api/usuarios', methods=['GET'])
-def get_usuario_by_email():
-    email = request.args.get('correo')
-    if email:
-        usuarios = usuario_data.find_usuario_by_email(email)
-        response = json_util.dumps(usuarios)
-        if response == '[]':
-            return not_found("No se ha encontrado ningún usuario con el email " + email)
-        else:     
-            return Response(response, mimetype='application/json')
-    else:
-        return not_found("No se ha introducido ningun email")
-
-# ESTA QUERY COMENTADA TIENE QUE IR EN api/usuarios
-'''
-@bpserver.route('/api/usuarios', methods=['GET'])
-def get_usuarios():
-    email = request.args.get('correo')
-    if email:
-        usuarios = usuario_data.find_usuario_by_email(email)
-    
-    if usuarios is None:
-        return not_found("No se han encontrado usuarios")
-    else:
-        response = json_util.dumps(usuarios)
-        return Response(response, mimetype='application/json')
-'''
 # ---------------------------------------------FIN USUARIO-----------------------------------------------------------
 
 # ---------------------------------------------INICIO TRAYECTO-----------------------------------------------------------
