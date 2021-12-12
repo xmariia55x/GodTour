@@ -164,39 +164,38 @@ def get_trayecto(id):
     else:     
         return Response(response, mimetype='application/json')
 
-@bpclient.route('/trayecto/create', methods=["GET", "POST"])
+@bpclient.route('/app/trayectos/new', methods=["GET", "POST"])
 def create_trayecto():
     usuario = usuario_data.find_usuario("6194e4dbc76e95c373d80508")
     if request.method == "GET":
         vehiculos_id = usuario["vehiculos"]
         lista_vehiculos = []
         for v in vehiculos_id:
-            vehiculo = vehiculo_db.find_one({'_id': ObjectId(v)})
+            vehiculo = vehiculo_data.find_vehiculo(v)
             lista_vehiculos.append(vehiculo)
-        return render_template("trayecto/nuevo_trayecto.html", usuario = usuario, vehiculos = lista_vehiculos)
+        return render_template("trayecto/nuevoTrayecto.html", usuario = usuario, vehiculos = lista_vehiculos)
     else: #POST
         creador = request.form.get("creador")
         origen_nombre = request.form.get("origen_nombre")
-        origen_latitud = float(request.form.get("origen_latitud"))
-        origen_longitud = float(request.form.get("origen_longitud"))
+        origen_latitud = request.form.get("origen_latitud")
+        origen_longitud = request.form.get("origen_longitud")
         destino_nombre = request.form.get("destino_nombre")
-        destino_latitud = float(request.form.get("destino_latitud"))
-        destino_longitud = float(request.form.get("destino_longitud"))
-        fecha = formatear_fecha(request.form.get("fecha")) #datetime.strptime(request.form.get("fecha"), '%Y-%m-%d') 
+        destino_latitud = request.form.get("destino_latitud")
+        destino_longitud = request.form.get("destino_longitud")
+        fecha = request.form.get("fecha")
         hora = request.form.get("hora")
-        duracion = int(request.form.get("duracion"))
-        periodicidad = int(request.form.get("periodicidad"))
-        precio = float(request.form.get("precio"))
+        duracion = request.form.get("duracion")
+        periodicidad = request.form.get("periodicidad")
+        precio = request.form.get("precio")
         fotos_opcionales = [] #Modificar cuando se manejen las fotos
-        plazas_totales = int(request.form.get("plazas_totales"))
+        plazas_totales = request.form.get("plazas_totales")
         vehiculo = request.form.get("vehiculo")
-        pasajeros = []  #Modificar para edit
 
         # Crea el nuevo trayecto
         trayecto_data.create_trayecto(creador, origen_nombre, origen_latitud, origen_longitud, destino_nombre, destino_latitud, destino_longitud,
-                                      fecha, hora, duracion, periodicidad, precio, fotos_opcionales, plazas_totales, vehiculo, pasajeros)
+                                      fecha, hora, duracion, periodicidad, precio, fotos_opcionales, plazas_totales, vehiculo)
     
-    return redirect("/")
+    return redirect("/app/trayectos/new")
 
 #Crea un nuevo trayecto
 '''@bpclient.route('/trayecto/create', methods=["POST"])
@@ -271,40 +270,41 @@ def delete_trayecto(id):
     return response
 
 #Actualiza la informacion del trayecto cuyo id coincide con el que se pasa por parametro
-@bpclient.route('/trayecto/update/<id>', methods=['GET', 'POST'])
+@bpclient.route('/app/trayectos/update/<id>', methods=['GET', 'POST'])
 def update_trayecto(id):
     # Si hay pasajeros ya apuntados al trayecto no se puede modificar información delicada - origne, destino, precio...
+    trayecto = trayecto_data.find_trayecto(id)
+    usuario = usuario_data.find_usuario(trayecto["creador"])
     if request.method == "GET":
-        trayecto = trayecto_data.find_trayecto(id)
-        usuario = usuario_data.find_usuario(trayecto["creador"])
         vehiculos_id = usuario["vehiculos"]
-        fecha_format = formatear_fecha(trayecto["fecha"], '%d/%m/%Y', '%Y-%m-%d')
+        fecha_format, hora_format = date_converter.timestamp_to_date(trayecto["timestamp"])
         lista_vehiculos = []
         for v in vehiculos_id:
-            vehiculo = vehiculo_db.find_one({'_id': ObjectId(v)})
+            vehiculo = vehiculo_data.find_vehiculo(v)
             lista_vehiculos.append(vehiculo)
-        return render_template("trayecto/editar_trayecto.html", trayecto = trayecto, usuario = usuario, vehiculos = lista_vehiculos, fecha = fecha_format)
+        return render_template("trayecto/editar_trayecto.html", trayecto = trayecto, usuario = usuario, vehiculos = lista_vehiculos, fecha = fecha_format, hora = hora_format)
     else: #POST
         # creador = request.form.get("creador")
         origen_nombre = request.form.get("origen_nombre")
-        origen_latitud = float(request.form.get("origen_latitud"))
-        origen_longitud = float(request.form.get("origen_longitud"))
+        origen_latitud = request.form.get("origen_latitud")
+        origen_longitud = request.form.get("origen_longitud")
         destino_nombre = request.form.get("destino_nombre")
-        destino_latitud = float(request.form.get("destino_latitud"))
-        destino_longitud = float(request.form.get("destino_longitud"))
-        fecha = formatear_fecha(request.form.get("fecha"), '%Y-%m-%d', '%d/%m/%Y')
+        destino_latitud = request.form.get("destino_latitud")
+        destino_longitud = request.form.get("destino_longitud")
+        fecha = request.form.get("fecha")
         hora = request.form.get("hora")
-        duracion = int(request.form.get("duracion"))
-        periodicidad = int(request.form.get("periodicidad"))
-        precio = float(request.form.get("precio"))
+        duracion = request.form.get("duracion")
+        periodicidad = request.form.get("periodicidad")
+        precio = request.form.get("precio")
         fotos_opcionales = [] #Modificar cuando se manejen las fotos
-        plazas_totales = int(request.form.get("plazas_totales"))
+        plazas_totales = request.form.get("plazas_totales")
         vehiculo = request.form.get("vehiculo")
-        # pasajeros = []  #Modificar para edit
+        # Un usuario no puede modificar la lista de pasajeros
+        pasajeros = trayecto["pasajeros"]  #Modificar para edit
 
-        # Crea el nuevo trayecto
+        # Actualiza el trayecto
         trayecto_data.update_trayecto(id, origen_nombre, origen_latitud, origen_longitud, destino_nombre, destino_latitud, destino_longitud,
-                                      fecha, hora, duracion, periodicidad, precio, fotos_opcionales, plazas_totales, vehiculo)
+                                      fecha, hora, duracion, periodicidad, precio, fotos_opcionales, plazas_totales, vehiculo, pasajeros)
 
     return redirect("/")
 

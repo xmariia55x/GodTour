@@ -42,15 +42,15 @@
                 <td>{{ i.antiguedad_permiso}}</td>
                 <td>{{ i.foto_perfil}}</td>
                 <td>{{ i._id}}</td>
-                <td><a href="{{ url_for('app.get_usuario', id = i._id) }}"> Info </a></td>
-                <td><a href="{{ url_for('app.delete_usuario', id = i._id) }}"> Borrar </a></td>
-                <td><a href="{{ url_for('app.link_update_usuario', id = i._id) }}"> Actualizar </a></td>
+                <td><a href="{{ url_for('bpclient.get_usuario', id = i._id) }}"> Info </a></td>
+                <td><a href="{{ url_for('bpclient.delete_usuario', id = i._id) }}"> Borrar </a></td>
+                <td><a href="{{ url_for('bpclient.link_update_usuario', id = i._id) }}"> Actualizar </a></td>
             </tr>
             {% endfor %}
         </tbody>
     </table>
 
-    <form action="{{ url_for('app.link_create_usuario') }}" methods="GET">
+    <form action="{{ url_for('bpclient.link_create_usuario') }}" methods="GET">
         <input type="submit" value="Crear"/>
     </form>
 

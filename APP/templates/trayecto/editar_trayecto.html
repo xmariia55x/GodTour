@@ -8,35 +8,35 @@
 <body>
     <h1>Editar trayecto</h1><br>
 
-    <form action="{{url_for('app.update_trayecto', id = trayecto._id)}}" method="POST">
+    <form action="{{url_for('bpclient.update_trayecto', id = trayecto._id)}}" method="POST">
         Origen: 
         <label>Nombre: </label>
-        <input type="text" name="origen_nombre" required max="50" value="{{trayecto.origen.nombre}}" {{disabled}} >
+        <input type="text" name="origen_nombre" required max="50" value="{{trayecto.origen.nombre}}" />
         <label>Latitud: </label>
-        <input type="number" name="origen_latitud" step="any" required value="{{trayecto.origen.latitud}}">
+        <input type="number" name="origen_latitud" step="any" required value="{{trayecto.origen.latitud}}" />
         <label>Longitud: </label>
-        <input type="number" name="origen_longitud" step="any" required value="{{trayecto.origen.longitud}}">
+        <input type="number" name="origen_longitud" step="any" required value="{{trayecto.origen.longitud}}" />
         <br>
         Destino: 
         <label>Nombre: </label>
-        <input type="text" name="destino_nombre" required max="50" value="{{trayecto.destino.nombre}}">
+        <input type="text" name="destino_nombre" required max="50" value="{{trayecto.destino.nombre}}" />
         <label>Latitud: </label>
-        <input type="number" name="destino_latitud" step="any" required value="{{trayecto.destino.latitud}}">
+        <input type="number" name="destino_latitud" step="any" required value="{{trayecto.destino.latitud}}" />
         <label>Longitud: </label>
-        <input type="number" name="destino_longitud" step="any" required value="{{trayecto.destino.longitud}}">
+        <input type="number" name="destino_longitud" step="any" required value="{{trayecto.destino.longitud}}" />
         <br>
         <label>Fecha: </label>
-        <input type="date" name="fecha" required value="{{fecha}}"><br>
+        <input type="date" name="fecha" required value="{{fecha}}"/><br>
         <label>Hora: </label>
-        <input type="time" name="hora" required value="{{trayecto.hora}}"><br>
+        <input type="time" name="hora" required value="{{hora}}"/><br>
         <label>Duraci&oacuten: </label>
-        <input type="number" name="duracion" required min="1" value="{{trayecto.duracion}}"><br>
+        <input type="number" name="duracion" required min="1" value="{{trayecto.duracion}}"/><br>
         <label>Periodicidad: </label>
-        <input type="number" name="periodicidad" required min="0" max="365" value="{{trayecto.periodicidad}}"><br>
+        <input type="number" name="periodicidad" required min="0" max="365" value="{{trayecto.periodicidad}}"/><br>
         <label>Plazas totales: </label>
-        <input type="number" name="plazas_totales" required min="{{trayecto.pasajeros|length}}" value="{{trayecto.plazas_totales}}"><br>
+        <input type="number" name="plazas_totales" required min="{{trayecto.pasajeros|length}}" value="{{trayecto.plazas_totales}}"/><br>
         <label>Precio: </label>
-        <input type="number" name="precio" step="any" required min="0" value="{{trayecto.precio}}"><br>
+        <input type="number" name="precio" step="any" required min="0" value="{{trayecto.precio}}"/><br>
         <label>Veh&iacuteculo: </label>
         <select name="cars">
         {% for v in vehiculos %}
