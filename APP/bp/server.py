@@ -417,13 +417,13 @@ def get_trafico():
     if provincia:
         datos_trafico = datos_abiertos.get_incidencias_provincia(provincia) #FUNCIONA
     elif causa and latitude and longitude and rango:
-        datos_trafico = datos_abiertos.get_incidencias_causa(float(latitude), float(longitude), float(rango), causa)
+        datos_trafico = datos_abiertos.get_incidencias_causa(latitude, longitude, rango, causa) #FUNCIONA
     elif causa and rango:
-        datos_trafico =  datos_abiertos.get_incidencias_causa(None, None, float(rango), causa)
+        datos_trafico =  datos_abiertos.get_incidencias_causa(None, None, rango, causa) #FUNCIONA
     elif latitude and longitude and rango:                                  
-        datos_trafico = datos_abiertos.get_incidencias_rango(float(latitude), float(longitude), float(rango)) #FUNCIONA
+        datos_trafico = datos_abiertos.get_incidencias_rango(latitude, longitude, rango) #FUNCIONA
     elif rango:
-        datos_trafico = datos_abiertos.get_incidencias_rango(None, None, float(rango)) #FUNCIONA
+        datos_trafico = datos_abiertos.get_incidencias_rango(None, None, rango) #FUNCIONA
     else:
         datos_trafico = datos_abiertos.descargar_datos_trafico()  #FUNCIONA
 
@@ -602,9 +602,9 @@ def get_gasolineras():
     elif provincia:
         gasolineras = datos_abiertos.get_gasolineras_24horas(provincia) #FUNCIONA
     elif latitude and longitude and rango:
-        gasolineras = datos_abiertos.get_gasolineras_ubicacion(float(latitude), float(longitude), float(rango)) #NO FUNCIONA
+        gasolineras = datos_abiertos.get_gasolineras_ubicacion(latitude, longitude, rango) #FUNCIONA
     elif rango:
-        gasolineras = datos_abiertos.get_gasolineras_ubicacion(None, None, float(rango)) #NO FUNCIONA
+        gasolineras = datos_abiertos.get_gasolineras_ubicacion(None, None, rango) #FUNCIONA
     else:
         gasolineras = datos_abiertos.get_datos_gasolineras_actualizadas() #FUNCIONA
         
