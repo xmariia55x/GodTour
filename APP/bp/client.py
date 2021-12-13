@@ -8,7 +8,6 @@ from bson import json_util
 from bson.objectid import ObjectId
 from pymongo import message
 from werkzeug.wrappers import response
-import datos.datos_abiertos
 from datetime import datetime, timedelta
 #Importamos los metodos para las fechas
 import fechas as date_converter
@@ -16,9 +15,7 @@ import fechas as date_converter
 import datos.trayecto as trayecto_data
 import datos.usuario as usuario_data
 import datos.vehiculo as vehiculo_data
-
-from mongoDB import usuario_db #MARIA: HABRIA QUE QUITARLO CUANDO HAGAIS REFACTOR
-from mongoDB import trayecto_db
+import datos.datos_abiertos as datos_abiertos
 
 bpclient = Blueprint('bpclient', __name__, template_folder='templates')
 
@@ -38,100 +35,89 @@ def favicon():
 
 
 #Devuelve una lista con los usuarios
-@bpclient.route('/usuario', methods=['GET'])
+@bpclient.route('/app/usuarios', methods=['GET'])
 def get_usuarios():
     usuarios = usuario_data.find_usuarios()
-    # response = json_util.dumps(usuarios)
-    #return Response(response, mimetype='application/json')
     return render_template("/usuario/listaUsuarios.html",usuarios = list(usuarios)) 
 
 #Devuelve un usuario cuyo id coincide con el que se pasa por parámetro
-@bpclient.route('/usuario/<id>', methods=['GET'])
+@bpclient.route('/app/usuarios/<id>', methods=['GET'])
 def get_usuario(id):
     usuario = usuario_data.find_usuario(id)
-    #response = json_util.dumps(usuario)
-    #if usuario == 'null':
-    #    return not_found("No se han encontrado usuarios con el id: " + id)
-    #else:     
-        #return Response(response, mimetype='application/json')
-    return render_template("/usuario/infoUsuario.html",usuario = usuario)
-
-#Metodo necesario para crear un usuario
-@bpclient.route('/usuario/link_create/', methods=['GET'])
-def link_create_usuario():
-    return render_template("/usuario/crearUsuario.html")
-
-#Metodo necesario para actualizar un usuario
-@bpclient.route('/usuario/link_update/<id>', methods=['GET'])
-def link_update_usuario(id):
-    usuario = usuario_data.find_usuario(id)
-    return render_template("/usuario/actualizarUsuario.html", usuario = usuario)
+    if usuario is None:
+        return render_template('usuario/listaUsuarios.html', error="No se ha encontrado el usuario")
+    else:
+        return render_template("usuario/infoUsuario.html",usuario = usuario)
 
 #Crea un nuevo usuario
-@bpclient.route('/usuario/create', methods=['POST'])
+@bpclient.route('/app/usuarios/create', methods=['GET', 'POST'])
 def create_usuario():
-    nombre_completo = request.form.get('nombre_completo')
-    correo = request.form.get('correo')
-    dni = request.form.get('dni')
-    fecha_nacimiento = request.form.get('fecha_nacimiento')
-    antiguedad_permiso = request.form.get('antiguedad_permiso')
-    foto_perfil = request.form.get('foto_perfil')
-    valoracion_media = 0
-
-    if nombre_completo and correo and dni and fecha_nacimiento:
-        usuario_data.create_usuario(nombre_completo,correo,dni,fecha_nacimiento,
-        antiguedad_permiso,foto_perfil,valoracion_media)
-        return redirect("/usuario")
+    if request.method == 'GET':
+        return render_template('usuario/crearUsuario.html')
     else:
-        return not_found("No se ha podido crear un usuario")
+        nombre_completo = request.form.get('nombre_completo')
+        correo = request.form.get('correo')
+        dni = request.form.get('dni')
+        fecha_nacimiento = request.form.get('fecha_nacimiento')
+        antiguedad_permiso = request.form.get('antiguedad_permiso')
+        foto_perfil = request.form.get('foto_perfil')
+        valoracion_media = 0
+
+        if nombre_completo and correo and dni and fecha_nacimiento:
+            usuario_data.create_usuario(nombre_completo,correo,dni,fecha_nacimiento,
+            antiguedad_permiso,foto_perfil,valoracion_media)
+            return redirect("/app/usuarios")
+        else:
+            return render_template('usuario/nuevoUsuario.html', error="No se ha podido crear el usuario, faltan campos")
 
 #Elimina un usuario cuyo id coincide con el que se pasa por parametro
-@bpclient.route('/usuario/delete/<id>', methods=['GET','DELETE'])
+@bpclient.route('/app/usuarios/delete/<id>', methods=['GET'])
 def delete_usuario(id):
     usuario_data.delete_usuario(id)
-    #response = jsonify({'message': 'El usuario con id '+id+' se ha eliminado exitosamente'})
-    return redirect("/usuario",code = 302)
+    return redirect("/app/usuarios")
 
 #Actualiza la informacion del usuario cuyo id coincide con el que se pasa por parametro
-@bpclient.route('/usuario/update/<id>', methods=['POST'])
+@bpclient.route('/app/usuarios/update/<id>', methods=['GET','POST'])
 def update_usuario(id):
-    nombre_completo = request.form.get('nombre_completo')
-    correo = request.form.get('correo')
-    dni = request.form.get('dni')
-    fecha_nacimiento = request.form.get('fecha_nacimiento')
-    antiguedad_permiso = request.form.get('antiguedad_permiso')
-    foto_perfil = request.form.get('foto_perfil')
-    valoracion_media = request.form.get('valoracion_media')
-    
-    if nombre_completo and correo and dni and fecha_nacimiento:
-        response = usuario_data.update_usuario(id, nombre_completo, correo, dni, fecha_nacimiento, antiguedad_permiso, foto_perfil, valoracion_media)
-        #response = jsonify({'message': 'El usuario con id '+id+' se ha actualizado exitosamente'})
+    if request.method == 'GET':
+        usuario = usuario_data.find_usuario(id)
+        return render_template('usuario/actualizarUsuario.html', usuario=usuario)    
+    else:    
+        nombre_completo = request.form.get('nombre_completo')
+        correo = request.form.get('correo')
+        dni = request.form.get('dni')
+        fecha_nacimiento = request.form.get('fecha_nacimiento')
+        antiguedad_permiso = request.form.get('antiguedad_permiso')
+        foto_perfil = request.form.get('foto_perfil')
+        valoracion_media = request.form.get('valoracion_media')
         
-        if response == "Acierto":
-            return redirect('/usuario')
-        else:
-            return render_template('usuario/actualizarUsuario.html', error="El usuario no se ha podido actualizar, faltan campos")
+        if nombre_completo and correo and dni and fecha_nacimiento:
+            response = usuario_data.update_usuario(id, nombre_completo, correo, dni, fecha_nacimiento, antiguedad_permiso, foto_perfil, valoracion_media)
+
+            if response == "Acierto":
+                return redirect('/app/usuarios')
+            else:
+                return render_template('/usuario/actualizarUsuario.html', error="El usuario no se ha podido actualizar, faltan campos")
 
 #Devuelve una lista de usuarios ordenados alfabeticamente, orden ascendente -> python.ASCENDING , orden descendente -> python.DESCENDING
-@bpclient.route('/usuario/by_name', methods=['GET'])
+@bpclient.route('/app/usuarios/name', methods=['GET'])
 def get_usuario_ordered_by_name():
-    usuarios = usuario_db.find().sort("nombre_completo", pymongo.ASCENDING)
-    response = json_util.dumps(usuarios)
-    return Response(response, mimetype='application/json')
-
+   usuarios = usuario_data.find_usuarios_ordered_by_name()
+   return render_template("/usuario/listaUsuarios.html",usuarios = list(usuarios)) 
+   
 #Devuelve un usuario a partir de (parte de) su correo electronico pasado por parametro
-@bpclient.route('/usuario/by_email', methods=['POST'])
+@bpclient.route('/app/usuarios/email', methods=['POST'])
 def get_usuario_by_email():
-    email = request.json['correo']
+    email = request.form.get('correo')
     if email:
-        usuarios = usuario_db.find( { 'correo': { "$regex": email + '.*', "$options" :'i' }} )
-        response = json_util.dumps(usuarios)
-        if response == '[]':
-            return not_found("No se ha encontrado ningún usuario con el email " + email)
+        usuarios = usuario_data.find_usuarios_by_email(email)
+        
+        if usuarios is None:
+            return render_template('/usuarios/listaUsuarios.html', error="No se han encontrado usuarios con el correo")
         else:     
-            return Response(response, mimetype='application/json')
+            return render_template('/usuarios/listaUsuarios.html', usuarios = list(usuarios))
     else:
-        return not_found("No se ha introducido ningun email")
+        return redirect("/app/usuarios")
 
 
 # ---------------------------------------------FIN USUARIO-----------------------------------------------------------
@@ -466,17 +452,6 @@ def create_vehiculo():
     if request.method == 'GET':
         return render_template('vehiculo/nuevoVehiculo.html')
     else:
-        '''
-        PRUEBA
-        {
-        "marca":"Opel",
-        "modelo":"Astra",
-        "matricula":"5588CDF",
-        "color":"Negro",
-        "plazas":5,
-        "fotos_vehiculo":["http://www.google.drive.com/fotocoche.jpg"]
-        }
-        '''
         marca= request.form.get('marca')
         modelo= request.form.get('modelo')
         matricula= request.form.get('matricula')
@@ -495,9 +470,7 @@ def create_vehiculo():
 def update_vehiculo(id):
     if request.method == 'GET':
         vehiculo = vehiculo_data.find_vehiculo(id)
-        #response = json_util.dumps(vehiculo)
         return render_template('vehiculo/editarVehiculo.html', vehiculo=vehiculo)    
-        #return Response(response, mimetype='application/json')
     else:    
         marca= request.form.get('marca')
         modelo= request.form.get('modelo') 
@@ -518,9 +491,7 @@ def update_vehiculo(id):
 @bpclient.route('/app/vehiculos/delete/<id>', methods=['GET'])
 def delete_vehiculo(id):
     vehiculo_data.delete_vehiculo(id)
-    return redirect("/app/vehiculos",code = 302)
-    #response = jsonify({'message': 'El vehiculo con id '+id+' se ha eliminado exitosamente'})
-    #return response
+    return redirect("/app/vehiculos")
 # ---------------------------------------------FIN VEHICULO -----------------------------------------------------------
 
 # --------------------------------------------- DATOS ABIERTOS - TRAFICO -----------------------------------------------------------
