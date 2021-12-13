@@ -1,58 +1,63 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>Editar trayecto</title>
-</head>
+{% block title %}Editar trayecto{% endblock %}
+
 {% set disabled = "disabled" if trayecto.pasajeros|length > 0 else "" %}
-<body>
-    <h1>Editar trayecto</h1><br>
 
-    <form action="{{url_for('bpclient.update_trayecto', id = trayecto._id)}}" method="POST">
-        Origen: 
-        <label>Nombre: </label>
-        <input type="text" name="origen_nombre" required max="50" value="{{trayecto.origen.nombre}}" />
-        <label>Latitud: </label>
-        <input type="number" name="origen_latitud" step="any" required value="{{trayecto.origen.latitud}}" />
-        <label>Longitud: </label>
-        <input type="number" name="origen_longitud" step="any" required value="{{trayecto.origen.longitud}}" />
-        <br>
-        Destino: 
-        <label>Nombre: </label>
-        <input type="text" name="destino_nombre" required max="50" value="{{trayecto.destino.nombre}}" />
-        <label>Latitud: </label>
-        <input type="number" name="destino_latitud" step="any" required value="{{trayecto.destino.latitud}}" />
-        <label>Longitud: </label>
-        <input type="number" name="destino_longitud" step="any" required value="{{trayecto.destino.longitud}}" />
-        <br>
-        <label>Fecha: </label>
-        <input type="date" name="fecha" required value="{{fecha}}"/><br>
-        <label>Hora: </label>
-        <input type="time" name="hora" required value="{{hora}}"/><br>
-        <label>Duraci&oacuten: </label>
-        <input type="number" name="duracion" required min="1" value="{{trayecto.duracion}}"/><br>
-        <label>Periodicidad: </label>
-        <input type="number" name="periodicidad" required min="0" max="365" value="{{trayecto.periodicidad}}"/><br>
-        <label>Plazas totales: </label>
-        <input type="number" name="plazas_totales" required min="{{trayecto.pasajeros|length}}" value="{{trayecto.plazas_totales}}"/><br>
-        <label>Precio: </label>
-        <input type="number" name="precio" step="any" required min="0" value="{{trayecto.precio}}"/><br>
-        <label>Veh&iacuteculo: </label>
-        <select name="cars">
+{% block content %}
+<h1>Editar trayecto</h1><br>
+
+<form action="{{url_for('bpclient.update_trayecto', id = trayecto._id)}}" method="POST" class="form-floating"> 
+    Origen:
+    <input id="ogn" type="text" name="origen_nombre" required max="50" value="{{trayecto.origen.nombre}}" />
+    <label for="ogn">Nombre: </label>
+    <label>Latitud: </label>
+    <input type="number" name="origen_latitud" step="any" required value="{{trayecto.origen.latitud}}" />
+    <label>Longitud: </label>
+    <input type="number" name="origen_longitud" step="any" required value="{{trayecto.origen.longitud}}" />
+    <br>
+    Destino:
+    <label>Nombre: </label>
+    <input type="text" name="destino_nombre" required max="50" value="{{trayecto.destino.nombre}}" />
+    <label>Latitud: </label>
+    <input type="number" name="destino_latitud" step="any" required value="{{trayecto.destino.latitud}}" />
+    <label>Longitud: </label>
+    <input type="number" name="destino_longitud" step="any" required value="{{trayecto.destino.longitud}}" />
+    <br>
+    <label>Fecha: </label>
+    <input type="date" name="fecha" required value="{{fecha}}" /><br>
+    <label>Hora: </label>
+    <input type="time" name="hora" required value="{{hora}}" /><br>
+    <label>Duraci&oacuten: </label>
+    <input type="number" name="duracion" required min="1" value="{{trayecto.duracion}}" /><br>
+    <label>Periodicidad: </label>
+    <input type="number" name="periodicidad" required min="0" max="365" value="{{trayecto.periodicidad}}" /><br>
+    <label>Plazas totales: </label>
+    <input type="number" name="plazas_totales" required min="{{trayecto.pasajeros|length}}"
+        value="{{trayecto.plazas_totales}}" /><br>
+    <label>Precio: </label>
+    <input type="number" name="precio" step="any" required min="0" value="{{trayecto.precio}}" /><br>
+    <label>Veh&iacuteculo: </label>
+    <select name="cars">
         {% for v in vehiculos %}
-            {% set selected = "" %}
-            {% if v == trayecto.vehiculo %}
-                {% set selected = "selected" %}
-            {% else %}
-                {% set selected = "" %}
-            {% endif %}
-            <option value="{{v._id}}" {{selected}}>{{v.marca}} {{v.modelo}} - {{v.matricula}}</option>
+        {% set selected = "" %}
+        {% if v == trayecto.vehiculo %}
+        {% set selected = "selected" %}
+        {% else %}
+        {% set selected = "" %}
+        {% endif %}
+        <option value="{{v._id}}" {{selected}}>{{v.marca}} {{v.modelo}} - {{v.matricula}}</option>
         {% endfor %}
-        </select>
-        <br>
-        <br>
-        <input type="submit" value="Editar"/>
-    </form>
-</body>
-
-</html>
+    </select>
+    <br>
+    <label>Pasajeros: </label>
+    <ul>
+        {% for p in pasajeros %}
+        <li>{{p.nombre_completo}} - {{p.correo}}</li>
+        {% endfor %}
+    </ul>
+    <br>
+    <br>
+    <input type="submit" value="Editar" />
+</form>
+{% endblock %}
