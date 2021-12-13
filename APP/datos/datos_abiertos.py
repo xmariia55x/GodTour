@@ -98,7 +98,7 @@ def get_incidencias_rango(latitud, longitud, rango):
     incidencias_json = json.loads(incidencias_json_string)
     return incidencias_json
 
-#NO FUNCIONA
+#FUNCIONA
 def get_incidencias_causa(latitud, longitud, rango, causa_solicitada):
     # trafico_actualizado = descargar_datos_trafico()
     trafico_actualizado = get_incidencias_rango(latitud, longitud, rango)
@@ -242,11 +242,17 @@ def get_gasolineras_ubicacion(latitud, longitud, rango):
     #Si el parametro recibido es nulo, se actualiza con la ubicación actual
     if not latitud and not longitud:
         latitud, longitud = calcula_ubicacion()     
+    else: 
+        latitud = float(latitud)
+        longitud = float(longitud)
+    
+    #Refactor de los cerebro grande
+    rangoGrados = float(rango)/111.12
+    latitud_min = latitud - rangoGrados
+    latitud_max = latitud + rangoGrados
+    longitud_min = longitud - rangoGrados
+    longitud_max = longitud + rangoGrados
 
-    latitud_min = latitud - float(rango)
-    latitud_max = latitud + float(rango)
-    longitud_min = longitud - float(rango)
-    longitud_max = longitud + float(rango)
     lista = []
     for g in datos_gasolineras["ListaEESSPrecio"]:
         lat = float(g["Latitud"].replace(",","."))

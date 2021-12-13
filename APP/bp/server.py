@@ -602,9 +602,9 @@ def get_gasolineras():
     elif provincia:
         gasolineras = datos_abiertos.get_gasolineras_24horas(provincia) #FUNCIONA
     elif latitude and longitude and rango:
-        gasolineras = datos_abiertos.get_gasolineras_ubicacion(float(latitude), float(longitude), float(rango)) #NO FUNCIONA
+        gasolineras = datos_abiertos.get_gasolineras_ubicacion(latitude, longitude, rango) #FUNCIONA
     elif rango:
-        gasolineras = datos_abiertos.get_gasolineras_ubicacion(None, None, float(rango)) #NO FUNCIONA
+        gasolineras = datos_abiertos.get_gasolineras_ubicacion(None, None, rango) #FUNCIONA
     else:
         gasolineras = datos_abiertos.get_datos_gasolineras_actualizadas() #FUNCIONA
         
