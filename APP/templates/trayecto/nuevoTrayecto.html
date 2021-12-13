@@ -1,53 +1,48 @@
-<!DOCTYPE html>
-<html>
+{% extends "base.html" %}
 
-<head>
-    <title>Nuevo trayecto</title>
-</head>
+{% block title %}Nuevo trayecto{% endblock %}
 
-<body>
-    <h1>Nuevo trayecto</h1><br>
+{% block content %}
+<h1>Nuevo trayecto</h1><br>
 
-    <form action="{{url_for('bpclient.create_trayecto')}}" method="POST">
-        <input type="hidden" name="creador" value="{{usuario._id}}" />  
-        Origen: 
-        <label>Nombre: </label>
-        <input type="text" name="origen_nombre" required max="50">
-        <label>Latitud: </label>
-        <input type="number" name="origen_latitud" step="any" required>
-        <label>Longitud: </label>
-        <input type="number" name="origen_longitud" step="any" required>
-        <br>
-        Destino: 
-        <label>Nombre: </label>
-        <input type="text" name="destino_nombre" required max="50">
-        <label>Latitud: </label>
-        <input type="number" name="destino_latitud" step="any" required>
-        <label>Longitud: </label>
-        <input type="number" name="destino_longitud" step="any" required>
-        <br>
-        <label>Fecha: </label>
-        <input type="date" name="fecha" required><br>
-        <label>Hora: </label>
-        <input type="time" name="hora" required><br>
-        <label>Duraci&oacuten: </label>
-        <input type="number" name="duracion" required><br>
-        <label>Periodicidad: </label>
-        <input type="number" name="periodicidad" required max="365"><br>
-        <label>Plazas totales: </label>
-        <input type="number" name="plazas_totales" required><br>
-        <label>Precio: </label>
-        <input type="number" name="precio" step="any" required><br>
-        <label>Veh&iacuteculo: </label>
-        <select name="cars">
+<form action="{{url_for('bpclient.create_trayecto')}}" method="POST">
+    <input type="hidden" name="creador" value="{{usuario._id}}" />
+    Origen:
+    <label>Nombre: </label>
+    <input type="text" name="origen_nombre" required max="50">
+    <label>Latitud: </label>
+    <input type="number" name="origen_latitud" step="any" required>
+    <label>Longitud: </label>
+    <input type="number" name="origen_longitud" step="any" required>
+    <br>
+    Destino:
+    <label>Nombre: </label>
+    <input type="text" name="destino_nombre" required max="50">
+    <label>Latitud: </label>
+    <input type="number" name="destino_latitud" step="any" required>
+    <label>Longitud: </label>
+    <input type="number" name="destino_longitud" step="any" required>
+    <br>
+    <label>Fecha: </label>
+    <input type="date" name="fecha" required><br>
+    <label>Hora: </label>
+    <input type="time" name="hora" required><br>
+    <label>Duraci&oacuten: </label>
+    <input type="number" name="duracion" required><br>
+    <label>Periodicidad: </label>
+    <input type="number" name="periodicidad" required max="365"><br>
+    <label>Plazas totales: </label>
+    <input type="number" name="plazas_totales" required><br>
+    <label>Precio: </label>
+    <input type="number" name="precio" step="any" required><br>
+    <label>Veh&iacuteculo: </label>
+    <select name="cars">
         {% for v in vehiculos %}
-            <option value="{{v._id}}">{{v.marca}} {{v.modelo}} - {{v.matricula}}</option>
+        <option value="{{v._id}}">{{v.marca}} {{v.modelo}} - {{v.matricula}}</option>
         {% endfor %}
-        </select>
-        <br>
-        <br>
-        <input type="submit" value="Crear"/>
-    </form>
-</body>
-
-</html>
+    </select>
+    <br>
+    <br>
+    <input type="submit" value="Crear" />
+</form>
+{% endblock %}

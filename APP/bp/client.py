@@ -275,14 +275,24 @@ def update_trayecto(id):
     # Si hay pasajeros ya apuntados al trayecto no se puede modificar información delicada - origne, destino, precio...
     trayecto = trayecto_data.find_trayecto(id)
     usuario = usuario_data.find_usuario(trayecto["creador"])
+    pasajeros = trayecto["pasajeros"]
+
     if request.method == "GET":
-        vehiculos_id = usuario["vehiculos"]
         fecha_format, hora_format = date_converter.timestamp_to_date(trayecto["timestamp"])
+
+        vehiculos_id = usuario["vehiculos"] 
         lista_vehiculos = []
         for v in vehiculos_id:
             vehiculo = vehiculo_data.find_vehiculo(v)
             lista_vehiculos.append(vehiculo)
-        return render_template("trayecto/editar_trayecto.html", trayecto = trayecto, usuario = usuario, vehiculos = lista_vehiculos, fecha = fecha_format, hora = hora_format)
+
+        lista_pasajeros = []
+        for p in pasajeros:
+            pasajero = usuario_data.find_usuario(p)
+            lista_pasajeros.append(pasajero)
+        
+        return render_template("trayecto/editar_trayecto.html", trayecto = trayecto, usuario = usuario, vehiculos = lista_vehiculos, 
+                                                                pasajeros = lista_pasajeros, fecha = fecha_format, hora = hora_format)
     else: #POST
         # creador = request.form.get("creador")
         origen_nombre = request.form.get("origen_nombre")
@@ -299,8 +309,8 @@ def update_trayecto(id):
         fotos_opcionales = [] #Modificar cuando se manejen las fotos
         plazas_totales = request.form.get("plazas_totales")
         vehiculo = request.form.get("vehiculo")
-        # Un usuario no puede modificar la lista de pasajeros
-        pasajeros = trayecto["pasajeros"]  #Modificar para edit
+        # Un usuario no puede modificar la lista de pasajeros - Se obtiene arriba
+        # pasajeros = trayecto["pasajeros"]  #Modificar para edit
 
         # Actualiza el trayecto
         trayecto_data.update_trayecto(id, origen_nombre, origen_latitud, origen_longitud, destino_nombre, destino_latitud, destino_longitud,

@@ -1,0 +1,21 @@
+html, body {
+    height: 100%;
+}
+
+#wrapper {
+    min-height: 100%;
+    position: relative;
+}
+
+#content {
+    /* ... */
+    padding-bottom: 81px; /* El tamaño del footer para evitar el sobreposicionamiento */
+}
+
+#footer {
+    width: 100%;
+    height: 81px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
