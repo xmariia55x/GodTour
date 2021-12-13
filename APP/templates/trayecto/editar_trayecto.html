@@ -7,10 +7,10 @@
 {% block content %}
 <h1>Editar trayecto</h1><br>
 
-<form action="{{url_for('bpclient.update_trayecto', id = trayecto._id)}}" method="POST">
+<form action="{{url_for('bpclient.update_trayecto', id = trayecto._id)}}" method="POST" class="form-floating"> 
     Origen:
-    <label>Nombre: </label>
-    <input type="text" name="origen_nombre" required max="50" value="{{trayecto.origen.nombre}}" />
+    <input id="ogn" type="text" name="origen_nombre" required max="50" value="{{trayecto.origen.nombre}}" />
+    <label for="ogn">Nombre: </label>
     <label>Latitud: </label>
     <input type="number" name="origen_latitud" step="any" required value="{{trayecto.origen.latitud}}" />
     <label>Longitud: </label>
