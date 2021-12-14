@@ -22,8 +22,8 @@ bpclient = Blueprint('bpclient', __name__, template_folder='templates')
 #PRUEBA JINJA
 @bpclient.route('/')
 def prueba_Jinja():
-    #return render_template("pruebaJinja.html",variable="soy una variable")
-    return redirect("/usuario", code=302)
+    return render_template("inicio.html")
+    
 
 #Si se quita esto y se ejecuta un GET, en la consola de python salta una excepcion aunque  muestra los vehiculos
 #NO TOCAR!!!!
