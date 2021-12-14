@@ -1,3 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}Lista de veh&iacute;culos{% endblock %}
+
+{% block head %}
+    {{super()}}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/vehiculoStyles.css') }}">
+{% endblock %}
+
+<!--
 <!DOCTYPE html>
 <html>
 
@@ -12,8 +22,9 @@
     <link rel="stylesheet" href="">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/vehiculoStyles.css') }}">
 </head>
+-->
 
-<body>
+{% block content %}
     <div style="padding: 2% 15%">
         <h1 style="text-align: center">Mis veh&iacute;culos</h1>
         {%if vehiculos |count >0%}
@@ -81,6 +92,4 @@
         </div>
         {% endif %}
     </div>
-</body>
-
-</html>
+{% endblock %}
