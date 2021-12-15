@@ -129,8 +129,8 @@ def get_usuario_by_email():
 @bpclient.route('/trayecto', methods=['GET'])
 def get_trayectos():
     trayectos = trayecto_data.find_trayectos()
-    response = json_util.dumps(trayectos)
-    return Response(response, mimetype='application/json')
+    # print(list(trayectos))
+    return render_template("trayecto/listaTrayectos.html",trayectos=list(trayectos))
 
 #Devuelve los trayectos de un creador
 @bpclient.route('/trayecto/creador/<id>', methods=['GET'])
@@ -138,17 +138,32 @@ def get_trayectos_creador(id):
     trayectos_creador = trayecto_data.find_trayectos_creador(id)
     #response = json_util.dumps(trayectos_creador)
     #return Response(response, mimetype='application/json')
-    return render_template("trayecto/misTrayectos.html", trayectos_creador = list(trayectos_creador))
+    return 
 
 #Devuelve un trayecto cuyo id coincide con el que se pasa por parámetro
 @bpclient.route('/trayecto/<id>', methods=['GET'])
 def get_trayecto(id):
     trayecto = trayecto_data.find_trayecto(id)
     response = json_util.dumps(trayecto)
+    pasajeros = trayecto["pasajeros"]
+    fecha_format, hora_format = date_converter.timestamp_to_date(trayecto["timestamp"])
+    
+    # Esto no se trae nada de la bd
+    print(trayecto["vehiculo"])
+    print(type(str(trayecto["vehiculo"])))
+    vehiculo= vehiculo_data.find_vehiculo(str(trayecto["vehiculo"]))
+    print(vehiculo)
+    lista_pasajeros = []
+    
+    for p in pasajeros:
+        pasajero = usuario_data.find_usuario(p)
+        lista_pasajeros.append(pasajero)
+
+    print(lista_pasajeros)
     if response == 'null':
         return not_found("No se han encontrado trayectos con el id: " + id)
     else:     
-        return Response(response, mimetype='application/json')
+        return render_template("trayecto/info_trayecto.html", trayecto = trayecto, fecha = fecha_format, hora= hora_format, pasajeros = lista_pasajeros,vehiculo=vehiculo)
 
 @bpclient.route('/app/trayectos/new', methods=["GET", "POST"])
 def create_trayecto():
@@ -183,77 +198,12 @@ def create_trayecto():
     
     return redirect("/app/trayectos/new")
 
-#Crea un nuevo trayecto
-'''@bpclient.route('/trayecto/create', methods=["POST"])
-def create_trayecto():
-    
-    PRUEBA
-    {
-    "creador":"6194e4dbc76e95c373d80508",
-    "destino":{"nombre":"ZARAGOZA","latitud":-33.56,"longitud":41.9},
-    "duracion":500,
-    "fecha":"05/12/2021",
-    "hora":"16:00",
-    "origen":{"nombre":"SEVILLA","latitud":-141.9,"longitud":54.8},
-    "periodicidad":7,
-    "precio":20.5,
-    "fotos_opcionales":["http://www.google.drive.com/fotocoche.jpg"],
-    "plazas_totales":3,
-    "vehiculo":"61a6769c6df626e2acba5868"
-    }
-    
-    creador= request.json['creador']
-    destino= request.json['destino'] 
-    duracion= int(request.json['duracion'])
-    fecha= request.json['fecha']
-    hora= request.json['hora']
-    origen= request.json['origen']
-    periodicidad= int(request.json['periodicidad'])
-    precio= float(request.json['precio'])
-    fotos_opcionales= request.json['fotos_opcionales']
-    plazas_totales= int(request.json['plazas_totales'])
-    vehiculo= request.json['vehiculo']
 
-    if creador and destino and origen and fecha and hora and precio and plazas_totales and vehiculo:
-        id=trayecto_db.insert_one({
-            "creador": ObjectId(creador),
-            "destino": destino,
-            "duracion": duracion,
-            "fecha": fecha,
-            "hora": hora,
-            "origen": origen,
-            "periodicidad": periodicidad,
-            "precio": precio,
-            "fotos_opcionales": fotos_opcionales,
-            "plazas_totales": plazas_totales,
-            "vehiculo": ObjectId(vehiculo), 
-            "pasajeros": []
-        })
-        response = {
-            "id": str(id),
-            "creador": creador,
-            "destino": destino,
-            "duracion": duracion,
-            "fecha": fecha,
-            "hora": hora,
-            "origen": origen,
-            "periodicidad": periodicidad,
-            "precio": precio,
-            "fotos_opcionales": fotos_opcionales,
-            "plazas_totales": plazas_totales,
-            "vehiculo": vehiculo, 
-            "pasajeros": []
-        }
-        return response
-    else:
-        return not_found("No se ha podido crear el trayecto")
-'''
 #Elimina un trayecto cuyo id coincide con el que se pasa por parametro
 @bpclient.route('/trayecto/delete/<id>', methods=['GET'])
 def delete_trayecto(id):
-    trayecto_db.delete_one({'_id': ObjectId(id)})
-    response = jsonify({'message': 'El trayecto con id '+id+' se ha eliminado exitosamente'})
-    return response
+    trayecto_data.delete_trayecto(id)
+    return redirect("/trayecto")
 
 #Actualiza la informacion del trayecto cuyo id coincide con el que se pasa por parametro
 @bpclient.route('/app/trayectos/update/<id>', methods=['GET', 'POST'])
@@ -444,10 +394,12 @@ def get_usuario_trayecto(id):
 # ---------------------------------------------FIN TRAYECTO-----------------------------------------------------------
 
 # --------------------------------------------- VEHICULO -----------------------------------------------------------
+
 @bpclient.route('/app/vehiculos', methods=['GET'])
 def get_vehiculos():
     vehiculos = vehiculo_data.find_vehiculos()
     return render_template('vehiculo/vehiculos.html', vehiculos = list(vehiculos))
+
 
 @bpclient.route('/app/vehiculos/<id>', methods=['GET'])
 def get_vehiculo(id):

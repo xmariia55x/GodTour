@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}Lista trayectos{% endblock %}
+
+{% set disabled = "disabled" if trayectos.pasajeros|length > 0 else "" %}
+
+{% block content %}
+
+
+<div style="padding: 2% 15%">
+    <h1 style="text-align: center">Lista trayectos</h1>
+    <!--<table class="table" border="1" style="margin: auto;">
+        <thead>
+        <th>Marca</th>
+        <th>Modelo</th>
+        <th>Matricula</th>
+        <th>Color</th>
+        <th>Plazas</th>
+        </thead>
+        
+        <tbody> -->
+    <form action="{{url_for('bpclient.create_trayecto')}}" method="GET">
+        <input  type="submit" value="Crear trayecto">
+    </form>
+    <br>
+    <div >
+        {% for trayecto in trayectos %}
+
+        <div class="d-flex justify-content-center">
+            <div class="row text-center container">
+                <div class="mx-auto">
+                    <div class="bg-white rounded shadow-sm py-5 px-4">
+                        {% if trayecto.fotos_opcionales | first is not none %}
+                        <img src="{{trayecto.fotos_opcionales | first}}" alt="" width="100"
+                        class="img-fluid mb-3 img-thumbnail shadow-sm">
+                        {%else%}
+                        <img src="https://img.icons8.com/bubbles/100/000000/car.png" alt="" width="100"
+                            class="img-fluid mb-3 img-thumbnail shadow-sm">
+                            {%endif%}
+
+                       <!--
+                           Lo de las fotos no funca, lo dejo así de momento-
+                        --> 
+                        <h5 class="mb-0">Origen: {{ trayecto.origen.nombre }} </h5>
+                        <h5 class="mb-0">Destino: {{ trayecto.destino.nombre }} </h5>
+                        <span class="small text-muted">Duracion {{ trayecto.duracion }}</span><br>
+                        <span class="small text-muted">Precio {{ trayecto.precio}}</span><br>
+                        <span class="small text-muted">Plazas totales: {{ trayecto.plazas}} </span><br>
+
+                        <ul class="social mb-0 list-inline mt-3">
+                            <li class="list-inline-item"><img
+                                    src="https://img.icons8.com/bubbles/75/000000/information.png"
+                                    onclick="window.location.href='{{ url_for('bpclient.get_trayecto', id = trayecto._id ) }}';" />
+                            </li>
+                            <li class="list-inline-item"><img
+                                    src="https://img.icons8.com/bubbles/75/000000/edit.png"
+                                    onclick="window.location.href='{{ url_for( 'bpclient.update_trayecto', id = trayecto._id ) }}';" />
+                            </li>
+                            <li class="list-inline-item"><img
+                                    src="https://img.icons8.com/bubbles/75/000000/delete-sign.png"
+                                    onclick="window.location.href='{{ url_for( 'bpclient.delete_trayecto', id = trayecto._id ) }}';" />
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+
+{% endblock %}

@@ -8,6 +8,8 @@ def find_vehiculos():
 
 def find_vehiculo(id):
     vehiculo = vehiculo_db.find_one({'_id': ObjectId(id)})
+    print(ObjectId(id))
+    print(vehiculo)
     return vehiculo
 
 def create_vehiculo(marca, modelo, matricula, color, plazas, fotos):

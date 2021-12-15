@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Info trayecto{% endblock %}
+
+{% set disabled = "disabled" if trayecto.pasajeros|length > 0 else "" %}
+
+{% block content %}
+<h1>Info trayecto</h1><br>
+
+
+    Origen:
+    <label for="ogn">Nombre: {{trayecto.origen.nombre}} </label>
+    <label>Latitud: {{trayecto.origen.latitud}} </label>
+  
+    <label>Longitud: {{trayecto.origen.longitud}} </label>
+    <br>
+    Destino:
+    <label>Nombre: {{trayecto.destino.nombre}} </label>
+    <label>Latitud: {{trayecto.destino.latitud}} </label>
+    <label>Longitud: {{trayecto.destino.longitud}} </label>
+    <br>
+    <label>Fecha: </label>
+    <input type="date" name="fecha" value="{{fecha}}" readonly/><br>
+    <label>Hora: </label>
+    <input type="time" name="hora" value="{{hora}}" readonly /><br>
+    <label>Duraci&oacuten: {{trayecto.duracion}}</label><br>
+    <label>Periodicidad: {{trayecto.periodicidad}}</label><br>
+    <label>Plazas totales: {{trayecto.plazas_totales}}</label><br>
+    <label>Precio: {{trayecto.precio}}</label><br>
+    <!-- 
+        En la BD vehículo es un object ID, me lo traigo supongo.
+        !!!HAY TRAYECTOS CON VEHICULOS QUE NO EXISTEN
+        PASAJEROS TAMPOCO!!!
+    -->
+    <label>Veh&iacuteculo: {{vehiculo.marca}} {{vehiculo.modelo}} - {{vehiculo.matricula}} </label><br>
+    <label>Pasajeros: </label>
+    <ul>
+        {% for p in pasajeros %}
+        <li>{{p.nombre_completo}} - {{p.correo}}</li>
+        {% endfor %}
+    </ul>
+    <br>
+    <br>
+{% endblock %}
