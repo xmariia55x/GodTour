@@ -27,6 +27,7 @@ def prueba_Jinja():
 
 #Si se quita esto y se ejecuta un GET, en la consola de python salta una excepcion aunque  muestra los vehiculos
 #NO TOCAR!!!!
+
 @bpclient.route("/favicon.ico")
 def favicon():
    return "", 200
