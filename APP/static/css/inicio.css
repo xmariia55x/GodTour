@@ -1,0 +1,20 @@
+html,
+body,
+.intro {
+  height: 100%;
+}
+
+.card-header {
+  border-bottom: 3px solid #fdfdfd;
+}
+
+
+.form-control {
+    color: #0dcaf0;
+    border-color: #0dcaf0;
+}
+
+.input-group>.form-control:focus {
+  border-color: transparent;
+  box-shadow: inset 0 0 0 1px transparent;
+}
