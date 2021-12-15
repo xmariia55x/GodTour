@@ -37,7 +37,7 @@
     <label class="form-label">Precio: </label>
     <input type="number" class="form-control" name="precio" step="any" required><br>
     <label class="form-label">Veh&iacuteculo: </label>
-    <select name="cars" class="form-select">
+    <select name="vehiculo" class="form-select">
         {% for v in vehiculos %}
         <option value="{{v._id}}">{{v.marca}} {{v.modelo}} - {{v.matricula}}</option>
         {% endfor %}
