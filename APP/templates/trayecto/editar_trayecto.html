@@ -38,7 +38,7 @@
     <label>Precio: </label>
     <input type="number" name="precio" step="any" required min="0" value="{{trayecto.precio}}" /><br>
     <label>Veh&iacuteculo: </label>
-    <select name="cars">
+    <select name="vehiculo">
         {% for v in vehiculos %}
         {% set selected = "" %}
         {% if v == trayecto.vehiculo %}

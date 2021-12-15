@@ -22,8 +22,8 @@ bpclient = Blueprint('bpclient', __name__, template_folder='templates')
 #PRUEBA JINJA
 @bpclient.route('/')
 def prueba_Jinja():
-    #return render_template("pruebaJinja.html",variable="soy una variable")
-    return redirect("/usuario", code=302)
+    return render_template("inicio.html")
+    
 
 #Si se quita esto y se ejecuta un GET, en la consola de python salta una excepcion aunque  muestra los vehiculos
 #NO TOCAR!!!!
@@ -198,7 +198,6 @@ def create_trayecto():
     
     return redirect("/app/trayectos/new")
 
-
 #Elimina un trayecto cuyo id coincide con el que se pasa por parametro
 @bpclient.route('/trayecto/delete/<id>', methods=['GET'])
 def delete_trayecto(id):
@@ -254,54 +253,6 @@ def update_trayecto(id):
 
     return redirect("/")
 
-
-#Actualiza la informacion del trayecto cuyo id coincide con el que se pasa por parametro
-'''@bpclient.route('/trayecto/update/<id>', methods=['PUT'])
-def update_trayecto(id):
-    destino = request.json['destino']
-    duracion= int(request.json['duracion'])
-    fecha = request.json['fecha']
-    hora = request.json['hora']
-    origen = request.json['origen']
-    periodicidad = int(request.json['periodicidad'])
-    precio= float(request.json['precio'])
-    fotos_opcionales = request.json['fotos_opcionales']
-    plazas_totales= int(request.json['plazas_totales'])
-    vehiculo = request.json['vehiculo']
-    pasajeros = request.json['pasajeros']
-
-    lista_pasajeros = []
-    if destino and origen and fecha and hora and precio and plazas_totales and vehiculo:
-        if pasajeros:
-            for pasajero in pasajeros:
-                lista_pasajeros.append(ObjectId(pasajero))
-                
-        filter = {"_id": ObjectId(id)}
-        new_values = {"$set":{
-            "destino": destino,
-            "duracion": duracion,
-            "fecha": fecha,
-            "hora": hora,
-            "origen": origen,
-            "periodicidad": periodicidad,
-            "precio": precio,
-            "fotos_opcionales": fotos_opcionales,
-            "plazas_totales": plazas_totales,
-            "vehiculo": ObjectId(vehiculo), 
-            "pasajeros": lista_pasajeros
-        }}
-        
-        result = trayecto_db.update_one(filter, new_values) 
-
-        if result.matched_count == 0:
-            return not_found("No se ha encontrado el trayecto con id: " + id)
-        else:
-            response = jsonify({'message': 'El trayecto con id '+id+' se ha actualizado exitosamente'})
-        
-        return response
-    else:
-        return not_found("No se ha podido actualizar el trayecto con id: " + id)
-'''
 #Devuelve los trayectos cuyo destino coincide con el que se pasa por parámetro 
 @bpclient.route('/trayecto/by_destino', methods=['POST'])
 def get_trayecto_destino():
