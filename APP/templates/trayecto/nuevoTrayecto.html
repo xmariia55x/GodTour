@@ -3,9 +3,11 @@
 {% block title %}Nuevo trayecto{% endblock %}
 
 {% block content %}
-<h1>Nuevo trayecto</h1><br>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/trayectoStyles.css') }}">
 
-<form action="{{url_for('bpclient.create_trayecto')}}" method="POST" class="mb-3">
+<div style="padding: 2% 20%">
+    <h1 style="text-align: center;">Nuevo trayecto</h1><br>
+    <form action="{{url_for('bpclient.create_trayecto')}}" method="POST" class="mb-3">
     <input type="hidden" name="creador" value="{{usuario._id}}" />
     
     <label class="form-label">Origen </label> <br>
@@ -44,6 +46,7 @@
     </select>
     <br>
     <br>
-    <input type="submit" value="Crear" />
-</form>
+    <input type="submit" class="btn btn-outline-info btn-lg" id="botonCentrado" value="Crear" />
+    </form>
+</div>
 {% endblock %}
