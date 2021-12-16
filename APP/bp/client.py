@@ -17,7 +17,16 @@ import datos.usuario as usuario_data
 import datos.vehiculo as vehiculo_data
 import datos.datos_abiertos as datos_abiertos
 
-import os
+#Subir archivos
+import cloudinary
+from cloudinary.uploader import upload
+from cloudinary.utils import cloudinary_url
+
+cloudinary.config(
+  cloud_name = 'cloudgodtour',  
+  api_key = '435589662959849',  
+  api_secret = 'kfUawr3yMrsnYmeHbO--B0STtnI'  
+)
 
 bpclient = Blueprint('bpclient', __name__, template_folder='templates')
 
