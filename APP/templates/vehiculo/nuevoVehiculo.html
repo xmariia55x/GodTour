@@ -1,6 +1,4 @@
-<!DOCTYPE html>
-<html>
-
+<!--
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -12,9 +10,16 @@
     <link rel="stylesheet" href="">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/vehiculoStyles.css') }}">
 </head>
+{% block title %}
+    Crear vehiculo
+{% endblock %}
+-->
 
+{% extends "base.html" %}
 
-<body>
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/vehiculoStyles.css') }}">
+
     <div style="padding: 2% 15%">
         <h1 style="text-align: center">Creando veh&iacute;culo</h1>
         {%if error%}
@@ -80,6 +85,5 @@
             </form>
         </div>
     </div>
-</body>
+{% endblock %}
 
-</html>
