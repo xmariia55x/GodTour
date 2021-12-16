@@ -33,7 +33,7 @@ bpclient = Blueprint('bpclient', __name__, template_folder='templates')
 #PRUEBA JINJA
 @bpclient.route('/')
 def prueba_Jinja():
-    cloudinary.uploader.upload("logoInformatica.jpg")
+    cloudinary.uploader.upload("vallecillo.jfif")
     return render_template("inicio.html")
     
 
