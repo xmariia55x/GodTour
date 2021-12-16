@@ -33,8 +33,11 @@ bpclient = Blueprint('bpclient', __name__, template_folder='templates')
 #PRUEBA JINJA
 @bpclient.route('/')
 def prueba_Jinja():
-    cloudinary.uploader.upload("vallecillo.jfif")
+    # El id es el nombre del archivo
     return render_template("inicio.html")
+
+#Si se quita esto y se ejecuta un GET, en la consola de python salta una excepcion aunque  muestra los vehiculos
+#NO TOCAR!!!!
 
 @bpclient.route('/favicon.ico')
 def favicon():
@@ -379,9 +382,11 @@ def create_vehiculo():
         matricula= request.form.get('matricula')
         color= request.form.get('color')
         plazas= int(request.form.get('plazas'))
-        fotos_vehiculo= request.form.get('fotos_vehiculo')
+        fotos_vehiculo=  request.files['fotos_vehiculo']
+        response = cloudinary.uploader.upload(fotos_vehiculo)
+        url= response["url"]
         array_fotos = []
-        array_fotos.append(fotos_vehiculo)
+        array_fotos.append(url)
         if marca and modelo and matricula and color and plazas:
             vehiculo_data.create_vehiculo(marca, modelo, matricula, color, plazas, array_fotos)
             return redirect('/app/vehiculos')
