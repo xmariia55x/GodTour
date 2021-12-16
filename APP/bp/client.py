@@ -33,9 +33,10 @@ bpclient = Blueprint('bpclient', __name__, template_folder='templates')
 #PRUEBA JINJA
 @bpclient.route('/')
 def prueba_Jinja():
-    cloudinary.uploader.upload("vallecillo.jfif")
-    return render_template("inicio.html")
-    
+    # El id es el nombre del archivo
+    response = cloudinary.uploader.upload("vallecillo.jfif", public_id= "vallecillo")
+    url= response["url"]
+    return Response(url, mimetype='application/json')
 
 #Si se quita esto y se ejecuta un GET, en la consola de python salta una excepcion aunque  muestra los vehiculos
 #NO TOCAR!!!!
