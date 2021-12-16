@@ -35,10 +35,6 @@ bpclient = Blueprint('bpclient', __name__, template_folder='templates')
 def prueba_Jinja():
     cloudinary.uploader.upload("vallecillo.jfif")
     return render_template("inicio.html")
-    
-
-#Si se quita esto y se ejecuta un GET, en la consola de python salta una excepcion aunque  muestra los vehiculos
-#NO TOCAR!!!!
 
 @bpclient.route('/favicon.ico')
 def favicon():
