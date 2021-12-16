@@ -16,12 +16,15 @@ import datos.trayecto as trayecto_data
 import datos.usuario as usuario_data
 import datos.vehiculo as vehiculo_data
 import datos.datos_abiertos as datos_abiertos
-
+import cloudinary
+from cloudinary.uploader import upload
+from cloudinary.utils import cloudinary_url
 bpclient = Blueprint('bpclient', __name__, template_folder='templates')
 
 #PRUEBA JINJA
 @bpclient.route('/')
 def prueba_Jinja():
+    cloudinary.uploader.upload("logoInformatica.jpg")
     return render_template("inicio.html")
     
 
