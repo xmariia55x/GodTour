@@ -34,10 +34,6 @@ bpclient = Blueprint('bpclient', __name__, template_folder='templates')
 @bpclient.route('/')
 def prueba_Jinja():
     return render_template("inicio.html")
-    
-
-#Si se quita esto y se ejecuta un GET, en la consola de python salta una excepcion aunque  muestra los vehiculos
-#NO TOCAR!!!!
 
 @bpclient.route('/favicon.ico')
 def favicon():
