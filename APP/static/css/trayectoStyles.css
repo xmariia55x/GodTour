@@ -14,14 +14,41 @@ h1{
 }
 
 #map{
-    float: right;
     margin-top: 2%;
     margin-right: 5%;
     height: 400px;
-    width: 45%;
+    width: 100%;
+}
+
+#divDerecha {
+    float: left;
+    width: 40%;
+}
+
+#divCoche {
+    margin-top: 4%;
 }
 
 #footer{
     position: relative;
     clear: left;
+}
+
+#carouselExampleControls {
+    margin-top: 1.5%;
+}
+
+#titulo {
+    text-align: center;
+}
+
+.cards{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+.separarCards{
+    padding: 3%; 
 }

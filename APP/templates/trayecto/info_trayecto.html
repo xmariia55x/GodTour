@@ -4,41 +4,93 @@
 
 {% set disabled = "disabled" if trayecto.pasajeros|length > 0 else "" %}
 
+{% block head %} 
+{{super()}}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/trayectoStyles.css') }}">
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+<script defer type="text/javascript" src="../../static/js/infoTrayecto.js"></script>
+{% endblock %}}
+
 {% block content %}
-<h1>Info trayecto</h1><br>
 
+<div id="principal">
+    <h1 id="titulo">Información del trayecto</h1><br>
+    <label class="form-label">Origen: </label>
+    <input type="text" class="form-control col-xs-3" id="dir_origen" value="{{trayecto.origen.nombre}}" readonly></br>
 
-    Origen:
-    <label for="ogn">Nombre: {{trayecto.origen.nombre}} </label>
-    <label>Latitud: {{trayecto.origen.latitud}} </label>
-  
-    <label>Longitud: {{trayecto.origen.longitud}} </label>
-    <br>
-    Destino:
-    <label>Nombre: {{trayecto.destino.nombre}} </label>
-    <label>Latitud: {{trayecto.destino.latitud}} </label>
-    <label>Longitud: {{trayecto.destino.longitud}} </label>
-    <br>
-    <label>Fecha: </label>
-    <input type="date" name="fecha" value="{{fecha}}" readonly/><br>
-    <label>Hora: </label>
-    <input type="time" name="hora" value="{{hora}}" readonly /><br>
-    <label>Duraci&oacuten: {{trayecto.duracion}}</label><br>
-    <label>Periodicidad: {{trayecto.periodicidad}}</label><br>
-    <label>Plazas totales: {{trayecto.plazas_totales}}</label><br>
-    <label>Precio: {{trayecto.precio}}</label><br>
-    <!-- 
-        En la BD vehículo es un object ID, me lo traigo supongo.
-        !!!HAY TRAYECTOS CON VEHICULOS QUE NO EXISTEN
-        PASAJEROS TAMPOCO!!!
-    -->
-    <label>Veh&iacuteculo: {{vehiculo.marca}} {{vehiculo.modelo}} - {{vehiculo.matricula}} </label><br>
-    <label>Pasajeros: </label>
-    <ul>
+    <!-- Los hidden están para pasarle las coordenadas -->
+    <input type="hidden" id="latOrigen" value="{{trayecto.origen.latitud}}" />
+    <input type="hidden" id="lonOrigen" value="{{trayecto.origen.longitud}}" />
+
+    
+    <label class="form-label">Destino: </label>
+    <input type="text" class="form-control col-xs-3" id="dir_destino" value="{{trayecto.destino.nombre}}" readonly></br>
+    
+    <!-- Los hidden están para pasarle las coordenadas -->
+    <input type="hidden" id="latDestino" value="{{trayecto.destino.latitud}}" />
+    <input type="hidden" id="lonDestino" value="{{trayecto.destino.longitud}}" />
+    
+    <label class="form-label">Fecha: </label>
+    <input type="date" class="form-control col-xs-3" id="fecha" value="{{fecha}}" readonly></br>
+    
+    <label class="form-label">Hora: </label>
+    <input type="time" class="form-control col-xs-3" id="hora" value="{{hora}}" readonly></br>
+
+    <label class="form-label">Duracion: </label>
+    <input type="text" class="form-control col-xs-3" id="duracion" value="{{trayecto.duracion}}" readonly></br>
+
+    <label class="form-label">Periodicidad: </label>
+    <input type="text" class="form-control col-xs-3" id="periodicidad" value="{{trayecto.periodicidad}}" readonly></br>
+
+    <label class="form-label">Plazas totales: </label>
+    <input type="text" class="form-control col-xs-3" id="plazas_totales" value="{{trayecto.plazas_totales}}" readonly></br>
+
+    <label class="form-label">Precio: </label>
+    <input type="text" class="form-control col-xs-3" id="precio" value="{{trayecto.precio}}" readonly></br>
+
+    
+    <label class="form-label">Pasajeros: </label>
         {% for p in pasajeros %}
-        <li>{{p.nombre_completo}} - {{p.correo}}</li>
+            <input type="text" class="form-control col-xs-3" id="vehiculo" value="{{p.nombre_completo}} - {{p.correo}}" readonly></br>
         {% endfor %}
-    </ul>
     <br>
     <br>
+</div>
+
+<div id="divDerecha">
+    <div id="map"></div>
+    {% if vehiculo.fotos_vehiculo | count > 0 %}
+    <div id="divCoche">
+        <label class="form-label">Veh&iacuteculo: </label>
+    <input type="text" class="form-control col-xs-3" id="vehiculo" value="{{vehiculo.marca}} {{vehiculo.modelo}} - {{vehiculo.matricula}}" readonly>
+
+
+    <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img src="{{vehiculo.fotos_vehiculo[0]}}" class="d-block w-100">
+          </div>
+          {% for i in range(1,vehiculo.fotos_vehiculo | length) %}
+          <div class="carousel-item">
+            <img src="{{vehiculo.fotos_vehiculo[i]}}" class="d-block w-100">
+          </div>
+          {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </div>
+    {% endif %}
+    
+    
+    
+</div>
+    
 {% endblock %}

@@ -1,4 +1,4 @@
-from mongoDB import usuario_db
+from mongoDB import usuario_db, vehiculo_db
 from bson import json_util
 from bson.objectid import ObjectId
 from datetime import datetime
@@ -12,14 +12,6 @@ def find_usuarios():
 def find_usuario(id):
     usuario = usuario_db.find_one({'_id': ObjectId(id)})
     return usuario
-
-def find_usuarios_by_email(email):
-    usuario = usuario_db.find({ 'correo': { "$regex": email + '.*', "$options" :'i' }})
-    return usuario
-
-def find_usuarios_ordered_by_name():
-    usuarios = usuario_db.find().sort("nombre_completo", pymongo.ASCENDING)
-    return usuarios
 
 def create_usuario(nombre_completo,correo,dni,fecha_nacimiento,antiguedad_permiso,
 foto_perfil,valoracion_media):
@@ -59,3 +51,27 @@ def update_usuario(id, nombre_completo, correo, dni, fecha_nacimiento, antigueda
 
 def delete_usuario(id):
     usuario_db.delete_one({'_id': ObjectId(id)})
+
+
+
+#----------QUERIES-------------
+
+
+
+
+def find_usuarios_by_email(email):
+    usuario = usuario_db.find({ 'correo': { "$regex": email + '.*', "$options" :'i' }})
+    return usuario
+
+def find_usuarios_ordered_by_name():
+    usuarios = usuario_db.find().sort("nombre_completo", pymongo.ASCENDING)
+    return usuarios
+
+def find_vehiculos_usuario(id):
+    usuario_completo = usuario_db.find_one({'_id': ObjectId(id)})
+    vehiculos = usuario_completo.get('vehiculos')
+    lista_vehiculos = []
+    for vehiculo in vehiculos:
+        lista_vehiculos.append(vehiculo_db.find_one({'_id': ObjectId(vehiculo)}))
+    return lista_vehiculos
+

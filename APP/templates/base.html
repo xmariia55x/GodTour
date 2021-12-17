@@ -26,19 +26,41 @@
                         <a class="navbar-brand" href="#"><img src="/static/images/logo.png" id="logo"></a>
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="#">Home</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="#">Link</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link disabled">Disabled</a>
+                                <a class="nav-link active" aria-current="page" href="#">Bienvenido a GodTour</a>
                             </li>
                         </ul>
-                        <form class="d-flex" id="buscar">
-                            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                            <button class="btn btn-outline-info" type="submit">Search</button>
-                        </form>
+                        <!-- <form class="d-flex" id="buscar"> -->
+                        <div class="dropdown d-flex">
+                            <ul class="nav-item dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Mis datos</a>
+                                <div class="dropdown-menu dropdown-menu-end">
+                                    <a href="#" class="dropdown-item">Mi perfil</a>
+                                    <a href="/app/vehiculos/usuarios/{{session['id']}}" class="dropdown-item">Mis vehiculos</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a href="/app/trayectos/usuarios/creados/{{session['id']}}" class="dropdown-item">Mis viajes publicados</a>
+                                    <a href="#" class="dropdown-item">Mis viajes contratados</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a href="#" class="dropdown-item">Cerrar sesion</a>
+                                </div>
+                            </ul>
+                            <!--<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Dropdown
+                            </button>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a href="">item 1</a></li>
+                                <li><a href="">item 2</a></li>
+                                <li><a href="">item 3</a></li>
+                                <li><a href="">item 4</a></li>
+                                <li><a href="">item 5</a></li>
+                              </ul>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenu2">
+                                <button class="dropdown-item" type="button">Action</button>
+                                <button class="dropdown-item" type="button">Another action</button>
+                                <button class="dropdown-item" type="button">Something else here</button>
+                            </div>-->
+                        </div>
+                        <!--- </form> --->
                     </div>
                     {% endblock %}
                 </div>

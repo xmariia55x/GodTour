@@ -2,6 +2,11 @@
 
 {% block title %}Lista trayectos{% endblock %}
 
+{% block head %}
+    {{super()}}
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/trayectoStyles.css') }}">
+{% endblock %}
+
 {% set disabled = "disabled" if trayectos.pasajeros|length > 0 else "" %}
 
 {% block content %}
@@ -20,16 +25,16 @@
         
         <tbody> -->
     <form action="{{url_for('bpclient.create_trayecto')}}" method="GET">
-        <input  type="submit" value="Crear trayecto">
+        <input  type="submit" class="btn btn-outline-info" value="Crear trayecto">
     </form>
     <br>
-    <div >
+    <div class="cards" >
         {% for trayecto in trayectos %}
 
         <div class="d-flex justify-content-center">
-            <div class="row text-center container">
+            <div class="row text-center container separarCards">
                 <div class="mx-auto">
-                    <div class="bg-white rounded shadow-sm py-5 px-4">
+                    <div  class="bg-white rounded shadow-sm py-5 px-4">
                         {% if trayecto.fotos_opcionales | first is not none %}
                         <img src="{{trayecto.fotos_opcionales | first}}" alt="" width="100"
                         class="img-fluid mb-3 img-thumbnail shadow-sm">
