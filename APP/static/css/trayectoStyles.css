@@ -2,3 +2,11 @@
     text-align: center;
     justify-content: center;
 }
+
+#principal{
+    padding: 2% 20%
+}
+
+#map{
+    height: 200px;
+}

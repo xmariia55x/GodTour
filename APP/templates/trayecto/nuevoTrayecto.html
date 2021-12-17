@@ -2,29 +2,36 @@
 
 {% block title %}Nuevo trayecto{% endblock %}
 
-{% block content %}
+{% block head %} 
+{{super()}}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/trayectoStyles.css') }}">
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+<script defer type="text/javascript" src="../../static/js/nuevoTrayecto.js"></script>
+{% endblock %}}
 
-<div style="padding: 2% 20%">
+{% block content %}
+<div id="principal">
     <h1 style="text-align: center;">Nuevo trayecto</h1><br>
     <form action="{{url_for('bpclient.create_trayecto')}}" method="POST" class="mb-3">
     <input type="hidden" name="creador" value="{{usuario._id}}" />
     
-    <label class="form-label">Origen </label> <br>
-    <label class="form-label">Nombre: </label>
-    <input type="text" class="form-control col-xs-3" name="origen_nombre" required max="50">
-    <label class="form-label">Latitud: </label>
-    <input type="number" class="form-control" name="origen_latitud" step="any" required>
-    <label class="form-label">Longitud: </label>
-    <input type="number" class="form-control" name="origen_longitud" step="any" required>
+    <label class="form-label">Origen: </label> <br>
+    <input type="text" class="form-control col-xs-3" id="dir_origen" required max="50">
+    <button id="buscarOrigen"></button>
+
+    <input type="hidden" class="form-control col-xs-3" name="origen_nombre" required max="50">
+    <input type="hidden" class="form-control" name="origen_latitud" step="any" required>
+    <input type="hidden" class="form-control" name="origen_longitud" step="any" required>
+    <button id="buscarDestino"></button>
+
     <br>
     <label class="form-label">Destino: </label> <br>
-    <label class="form-label">Nombre: </label>
-    <input type="text" class="form-control" name="destino_nombre" required max="50">
-    <label class="form-label">Latitud: </label>
-    <input type="number" class="form-control" name="destino_latitud" step="any" required>
-    <label class="form-label">Longitud: </label>
-    <input type="number" class="form-control" name="destino_longitud" step="any" required>
+    <input type="text" class="form-control col-xs-3" id="dir_destino" required max="50">
+
+    <input type="hidden" class="form-control" name="destino_nombre" required max="50">
+    <input type="hidden" class="form-control" name="destino_latitud" step="any" required>
+    <input type="hidden" class="form-control" name="destino_longitud" step="any" required>
     <br>
     <label class="form-label">Fecha: </label>
     <input type="date" class="form-control" name="fecha" required><br>
@@ -49,4 +56,7 @@
     <input type="submit" class="btn btn-outline-info btn-lg" id="botonCentrado" value="Crear" />
     </form>
 </div>
+
+<div id="map"></div>
+
 {% endblock %}
