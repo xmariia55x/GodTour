@@ -4,20 +4,27 @@
 
 {% set disabled = "disabled" if trayecto.pasajeros|length > 0 else "" %}
 
+{% block head %} 
+{{super()}}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/trayectoStyles.css') }}">
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+<script defer type="text/javascript" src="../../static/js/infoTrayecto.js"></script>
+{% endblock %}}
+
 {% block content %}
 <h1>Info trayecto</h1><br>
 
-
+<div id="principal">
     Origen:
     <label for="ogn">Nombre: {{trayecto.origen.nombre}} </label>
-    <label>Latitud: {{trayecto.origen.latitud}} </label>
-  
-    <label>Longitud: {{trayecto.origen.longitud}} </label>
+    <input type="hidden" id="latOrigen" value="{{trayecto.origen.latitud}}" /><br>
+    <input type="hidden" id="lonOrigen" value="{{trayecto.origen.longitud}}" /><br>
     <br>
     Destino:
-    <label>Nombre: {{trayecto.destino.nombre}} </label>
-    <label>Latitud: {{trayecto.destino.latitud}} </label>
-    <label>Longitud: {{trayecto.destino.longitud}} </label>
+    <label for="ogn">Nombre: {{trayecto.destino.nombre}} </label>
+    <input type="hidden" id="latDestino" value="{{trayecto.destino.latitud}}" /><br>
+    <input type="hidden" id="lonDestino" value="{{trayecto.destino.longitud}}" /><br>
     <br>
     <label>Fecha: </label>
     <input type="date" name="fecha" value="{{fecha}}" readonly/><br>
@@ -41,4 +48,8 @@
     </ul>
     <br>
     <br>
+</div>
+
+<div id="map"></div>
+    
 {% endblock %}

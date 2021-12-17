@@ -1,8 +1,6 @@
 // The first parameter are the coordinates of the center of the map
 // The second parameter is the zoom level
 
-console.log("Adri pidele salir ya a la ñiña");
-
 var map = L.map('map').setView([36.7213028, -4.4216366], 11);
 
 // {s}, {z}, {x} and {y} are placeholders for map tiles
