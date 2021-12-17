@@ -139,14 +139,14 @@ def get_usuario_by_email():
 
 
 #Devuelve una lista de trayectos
-@bpclient.route('/trayecto', methods=['GET'])
+@bpclient.route('/app/trayectos', methods=['GET'])
 def get_trayectos():
     trayectos = trayecto_data.find_trayectos()
     # print(list(trayectos))
     return render_template("trayecto/listaTrayectos.html",trayectos=list(trayectos))
 
 #Devuelve los trayectos de un creador
-@bpclient.route('/trayecto/creador/<id>', methods=['GET'])
+@bpclient.route('/app/trayectos/creador/<id>', methods=['GET'])
 def get_trayectos_creador(id):
     trayectos_creador = trayecto_data.find_trayectos_creador(id)
     #response = json_util.dumps(trayectos_creador)
@@ -154,7 +154,7 @@ def get_trayectos_creador(id):
     return 
 
 #Devuelve un trayecto cuyo id coincide con el que se pasa por parámetro
-@bpclient.route('/trayecto/<id>', methods=['GET'])
+@bpclient.route('/app/trayectos/<id>', methods=['GET'])
 def get_trayecto(id):
     trayecto = trayecto_data.find_trayecto(id)
     response = json_util.dumps(trayecto)
@@ -178,7 +178,7 @@ def get_trayecto(id):
     else:     
         return render_template("trayecto/info_trayecto.html", trayecto = trayecto, fecha = fecha_format, hora= hora_format, pasajeros = lista_pasajeros,vehiculo=vehiculo)
 
-@bpclient.route('/app/trayectos/new', methods=["GET", "POST"])
+@bpclient.route('/app/trayectos/create', methods=["GET", "POST"])
 def create_trayecto():
     usuario = usuario_data.find_usuario("6194e4dbc76e95c373d80508")
     if request.method == "GET":
@@ -212,7 +212,7 @@ def create_trayecto():
     return redirect("/app/trayectos/new")
 
 #Elimina un trayecto cuyo id coincide con el que se pasa por parametro
-@bpclient.route('/trayecto/delete/<id>', methods=['GET'])
+@bpclient.route('/app/trayectos/delete/<id>', methods=['GET'])
 def delete_trayecto(id):
     trayecto_data.delete_trayecto(id)
     return redirect("/trayecto")
@@ -267,7 +267,7 @@ def update_trayecto(id):
     return redirect("/")
 
 #Devuelve los trayectos cuyo destino coincide con el que se pasa por parámetro 
-@bpclient.route('/trayecto/by_destino', methods=['POST'])
+@bpclient.route('/app/trayectos/trayecto_by_destino', methods=['POST'])
 def get_trayecto_destino():
     destino_nombre = request.json['destino_nombre'].upper()
     
@@ -282,7 +282,7 @@ def get_trayecto_destino():
         return not_found("No se ha indicado un destino")
 
 #Devuelve los trayectos cuyo origen coincide con el que se pasa por parámetro 
-@bpclient.route('/trayecto/by_origen', methods=['POST'])
+@bpclient.route('/app/trayectos/trayecto_by_origen', methods=['POST'])
 def get_trayecto_origen():
     origen_nombre = request.json['origen.nombre'].upper()
     
@@ -297,7 +297,7 @@ def get_trayecto_origen():
         return not_found("No se ha indicado un origen")
     
 #Devuelve los trayectos cuyos origenes y destinos coinciden con los pasados por parámetro 
-@bpclient.route('/trayecto/by_origen_destino', methods=['POST'])
+@bpclient.route('/app/trayectos/trayecto_by_origen_destino', methods=['POST'])
 def get_trayecto_origen_destino():
     origen_nombre = request.json['origen'].upper()
     destino_nombre = request.json['destino'].upper()
@@ -312,7 +312,7 @@ def get_trayecto_origen_destino():
         return not_found("No se han indicado trayectos con origen " + origen_nombre + " y destino " + destino_nombre)
 
 #Devuelve los trayectos ordenados por la fecha y hora
-@bpclient.route('/trayecto/by_fecha_hora', methods=['POST'])
+@bpclient.route('/app/trayectos/trayecto_by_fecha_hora', methods=['POST'])
 def get_trayecto_fecha_hora():
     fecha = request.json['origen'].upper()
     hora = request.json['destino'].upper()
@@ -327,7 +327,7 @@ def get_trayecto_fecha_hora():
         return not_found("No se han indicado trayectos con origen " + origen_nombre + " y destino " + destino_nombre)
 
 #Devuelve los trayectos cuyo precio es menor que la cantidad indicada por parametro
-@bpclient.route('/trayecto/by_precio', methods=['POST'])
+@bpclient.route('/app/trayectos/trayecto_by_precio', methods=['POST'])
 def get_trayecto_precio():
     precio = request.json['precio']
     if precio:
@@ -339,7 +339,7 @@ def get_trayecto_precio():
             return Response(response, mimetype='application/json')
     else:
         return not_found("No se ha indicado un precio")
-
+'''
 #Devuelve los usuarios de un trayecto a partir del id del trayecto indicado por parametro
 @bpclient.route('/usuario/by_trayecto/<id>', methods=['GET'])
 def get_usuario_trayecto(id):
@@ -354,6 +354,8 @@ def get_usuario_trayecto(id):
         return not_found("El trayecto con id: " + id + " no tiene usuarios")
     else:     
         return Response(response, mimetype='application/json')
+
+'''
 
 # ---------------------------------------------FIN TRAYECTO-----------------------------------------------------------
 
