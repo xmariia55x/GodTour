@@ -25,3 +25,14 @@ h1{
     position: relative;
     clear: left;
 }
+
+.cards{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+}
+.separarCards{
+    padding: 3%; 
+}
