@@ -33,7 +33,8 @@ bpclient = Blueprint('bpclient', __name__, template_folder='templates')
 #PRUEBA JINJA
 @bpclient.route('/')
 def prueba_Jinja():
-    # El id es el nombre del archivo
+    # Esto ira en el login
+    session['id'] = "6194e4dbc76e95c373d80508"
     return render_template("inicio.html")
 
 #Si se quita esto y se ejecuta un GET, en la consola de python salta una excepcion aunque  muestra los vehiculos
