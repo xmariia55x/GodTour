@@ -14,7 +14,8 @@ var layer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 // Now add the layer onto the map
 // map.addLayer(layer);
 
-var marcadores = [];
+var marcadorOrigen = null;
+var marcadorDestino = null;
 
 // This is AJAX FC
 function cargarMapa() {

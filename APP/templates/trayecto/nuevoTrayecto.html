@@ -11,19 +11,18 @@
 {% endblock %}}
 
 {% block content %}
+<h1 style="text-align: center;">Nuevo trayecto</h1><br>
 <div id="principal">
-    <h1 style="text-align: center;">Nuevo trayecto</h1><br>
     <form action="{{url_for('bpclient.create_trayecto')}}" method="POST" class="mb-3">
     <input type="hidden" name="creador" value="{{usuario._id}}" />
     
     <label class="form-label">Origen: </label> <br>
     <input type="text" class="form-control col-xs-3" id="dir_origen" required max="50">
-    <button id="buscarOrigen"></button>
+    <button id="buscarOrigen">Buscar</button>
 
     <input type="hidden" class="form-control col-xs-3" name="origen_nombre" required max="50">
     <input type="hidden" class="form-control" name="origen_latitud" step="any" required>
     <input type="hidden" class="form-control" name="origen_longitud" step="any" required>
-    <button id="buscarDestino"></button>
 
     <br>
     <label class="form-label">Destino: </label> <br>
@@ -32,6 +31,7 @@
     <input type="hidden" class="form-control" name="destino_nombre" required max="50">
     <input type="hidden" class="form-control" name="destino_latitud" step="any" required>
     <input type="hidden" class="form-control" name="destino_longitud" step="any" required>
+    <button id="buscarDestino">Buscar</button>
     <br>
     <label class="form-label">Fecha: </label>
     <input type="date" class="form-control" name="fecha" required><br>
