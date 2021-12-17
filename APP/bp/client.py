@@ -132,7 +132,6 @@ def get_usuario_by_email():
     else:
         return redirect("/app/usuarios")
 
-
 # ---------------------------------------------FIN USUARIO-----------------------------------------------------------
 
 # ---------------------------------------------INICIO TRAYECTO-----------------------------------------------------------
@@ -355,6 +354,11 @@ def get_usuario_trayecto(id):
     else:     
         return Response(response, mimetype='application/json')
 
+
+@bpclient.route('/app/trayectos/usuarios/creados/<id>')
+def get_trayectos_creados_usuario(id):
+    trayectos = trayecto_data.get_trayectos_of_usuario(id)
+    return render_template('trayecto/misTrayectos.html', trayectos = list(trayectos))
 # ---------------------------------------------FIN TRAYECTO-----------------------------------------------------------
 
 # --------------------------------------------- VEHICULO -----------------------------------------------------------

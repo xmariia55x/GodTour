@@ -9,21 +9,11 @@
 {% block content %}
     <div style="padding: 2% 15%">
         <h1 style="text-align: center">Mis veh&iacute;culos</h1>
-        {%if vehiculos |count >0%}
-        <!--<table class="table" border="1" style="margin: auto;">
-            <thead>
-            <th>Marca</th>
-            <th>Modelo</th>
-            <th>Matricula</th>
-            <th>Color</th>
-            <th>Plazas</th>
-            </thead>
-            
-            <tbody> -->
         <form action="{{url_for('bpclient.create_vehiculo')}}" method="GET">
             <input class="btn btn-outline-primary" type="submit" value="Crear nuevo veh&iacute;culo">
         </form>
         <br>
+        {%if vehiculos |count >0%}
         <div class="cards">
             {% for vehiculo in vehiculos %}
 
@@ -64,10 +54,6 @@
             </div>
             {% endfor %}
         </div>
-        <!--    </tbody>
-        </table>
-    -->
-
         {%else%}
         <div class="alert alert-danger" role="alert">
             A&uacute;n no tienes veh&iacute;culos
