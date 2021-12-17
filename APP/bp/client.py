@@ -363,6 +363,11 @@ def get_vehiculos():
     vehiculos = vehiculo_data.find_vehiculos()
     return render_template('vehiculo/vehiculos.html', vehiculos = list(vehiculos))
 
+#Devuelve los vehiculos del usuario con dicho id
+@bpclient.route('/app/vehiculos/usuarios/<id>', methods=['GET'])
+def get_vehiculos_usuario(id):
+    vehiculos = usuario_data.find_vehiculos_usuario(id)
+    return render_template('vehiculo/vehiculos.html', vehiculos = list(vehiculos))
 
 @bpclient.route('/app/vehiculos/<id>', methods=['GET'])
 def get_vehiculo(id):

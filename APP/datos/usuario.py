@@ -1,4 +1,4 @@
-from mongoDB import usuario_db
+from mongoDB import usuario_db, vehiculo_db
 from bson import json_util
 from bson.objectid import ObjectId
 from datetime import datetime
@@ -59,3 +59,11 @@ def update_usuario(id, nombre_completo, correo, dni, fecha_nacimiento, antigueda
 
 def delete_usuario(id):
     usuario_db.delete_one({'_id': ObjectId(id)})
+
+def find_vehiculos_usuario(id):
+    usuario_completo = usuario_db.find_one({'_id': ObjectId(id)})
+    vehiculos = usuario_completo.get('vehiculos')
+    lista_vehiculos = []
+    for vehiculo in vehiculos:
+        lista_vehiculos.append(vehiculo_db.find_one({'_id': ObjectId(vehiculo)}))
+    return lista_vehiculos
