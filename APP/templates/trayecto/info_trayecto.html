@@ -60,7 +60,7 @@
 
 <div id="divDerecha">
     <div id="map"></div>
-    
+    {% if vehiculo.fotos_vehiculo | count > 0 %}
     <div id="divCoche">
         <label class="form-label">Veh&iacuteculo: </label>
     <input type="text" class="form-control col-xs-3" id="vehiculo" value="{{vehiculo.marca}} {{vehiculo.modelo}} - {{vehiculo.matricula}}" readonly>
@@ -87,6 +87,7 @@
         </button>
       </div>
     </div>
+    {% endif %}
     
     
     
