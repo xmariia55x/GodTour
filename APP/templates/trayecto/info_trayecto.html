@@ -15,7 +15,7 @@
 {% block content %}
 
 <div id="principal">
-    <h1>Info trayecto</h1><br>
+    <h1 id="titulo">Información del trayecto</h1><br>
     <label class="form-label">Origen: </label>
     <input type="text" class="form-control col-xs-3" id="dir_origen" value="{{trayecto.origen.nombre}}" readonly></br>
 
@@ -40,25 +40,60 @@
     <label class="form-label">Duracion: </label>
     <input type="text" class="form-control col-xs-3" id="duracion" value="{{trayecto.duracion}}" readonly></br>
 
-    <label>Periodicidad: {{trayecto.periodicidad}}</label><br>
-    <label>Plazas totales: {{trayecto.plazas_totales}}</label><br>
-    <label>Precio: {{trayecto.precio}}</label><br>
-    <!-- 
-        En la BD vehículo es un object ID, me lo traigo supongo.
-        !!!HAY TRAYECTOS CON VEHICULOS QUE NO EXISTEN
-        PASAJEROS TAMPOCO!!!
-    -->
-    <label>Veh&iacuteculo: {{vehiculo.marca}} {{vehiculo.modelo}} - {{vehiculo.matricula}} </label><br>
-    <label>Pasajeros: </label>
+    <label class="form-label">Periodicidad: </label>
+    <input type="text" class="form-control col-xs-3" id="periodicidad" value="{{trayecto.periodicidad}}" readonly></br>
+
+    <label class="form-label">Plazas totales: </label>
+    <input type="text" class="form-control col-xs-3" id="plazas_totales" value="{{trayecto.plazas_totales}}" readonly></br>
+
+    <label class="form-label">Precio: </label>
+    <input type="text" class="form-control col-xs-3" id="precio" value="{{trayecto.precio}}" readonly></br>
+
+    
+    <label class="form-label">Pasajeros: </label>
     <ul>
         {% for p in pasajeros %}
-        <li>{{p.nombre_completo}} - {{p.correo}}</li>
+        <li>
+            <input type="text" class="form-control col-xs-3" id="vehiculo" value="{{p.nombre_completo}} - {{p.correo}}" readonly></br>
+        </li>
         {% endfor %}
     </ul>
     <br>
     <br>
 </div>
 
-<div id="map"></div>
+<div id="divDerecha">
+    <div id="map"></div>
+    
+    <div id="divCoche">
+        <label class="form-label">Veh&iacuteculo: </label>
+    <input type="text" class="form-control col-xs-3" id="vehiculo" value="{{vehiculo.marca}} {{vehiculo.modelo}} - {{vehiculo.matricula}}" readonly>
+
+
+    <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img src="{{vehiculo.fotos_vehiculo[0]}}" class="d-block w-100">
+          </div>
+          {% for i in range(1,vehiculo.fotos_vehiculo | length) %}
+          <div class="carousel-item">
+            <img src="{{vehiculo.fotos_vehiculo[i]}}" class="d-block w-100">
+          </div>
+          {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+      </div>
+    </div>
+    
+    
+    
+</div>
     
 {% endblock %}

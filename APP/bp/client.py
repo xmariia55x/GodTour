@@ -161,10 +161,8 @@ def get_trayecto(id):
     fecha_format, hora_format = date_converter.timestamp_to_date(trayecto["timestamp"])
     
     # Esto no se trae nada de la bd
-    print(trayecto["vehiculo"])
-    print(type(str(trayecto["vehiculo"])))
-    vehiculo= vehiculo_data.find_vehiculo(str(trayecto["vehiculo"]))
-    print(vehiculo)
+
+    vehiculo= vehiculo_data.find_vehiculo(trayecto["vehiculo"])
     lista_pasajeros = []
     
     for p in pasajeros:
