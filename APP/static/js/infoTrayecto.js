@@ -7,7 +7,11 @@ var lonOrigen = document.getElementById("lonOrigen").value;
 var latDestino = document.getElementById("latDestino").value;
 var lonDestino = document.getElementById("lonDestino").value;
 
-var map = L.map('map').setView([latOrigen,lonOrigen], 11);
+var map = L.map('map');
+var corner1 = L.latLng(latOrigen, lonOrigen),
+corner2 = L.latLng(latDestino, lonDestino),
+bounds = L.latLngBounds(corner1, corner2);
+map.fitBounds(bounds);
 
 // {s}, {z}, {x} and {y} are placeholders for map tiles
 // {x} and {y} are the x/y of where you are on the map
