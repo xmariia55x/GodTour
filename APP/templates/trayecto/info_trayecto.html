@@ -51,13 +51,9 @@
 
     
     <label class="form-label">Pasajeros: </label>
-    <ul>
         {% for p in pasajeros %}
-        <li>
             <input type="text" class="form-control col-xs-3" id="vehiculo" value="{{p.nombre_completo}} - {{p.correo}}" readonly></br>
-        </li>
         {% endfor %}
-    </ul>
     <br>
     <br>
 </div>
