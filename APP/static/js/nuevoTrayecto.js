@@ -1,8 +1,6 @@
 // The first parameter are the coordinates of the center of the map
 // The second parameter is the zoom level
 
-console.log("Adri pidele salir ya a la ñiña");
-
 var map = L.map('map').setView([36.7213028, -4.4216366], 11);
 
 // {s}, {z}, {x} and {y} are placeholders for map tiles
@@ -16,7 +14,8 @@ var layer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 // Now add the layer onto the map
 // map.addLayer(layer);
 
-var marcadores = [];
+var marcadorOrigen = null;
+var marcadorDestino = null;
 
 // This is AJAX FC
 function cargarMapa() {
