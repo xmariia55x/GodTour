@@ -10,39 +10,45 @@
 {% block content %}
 <div style="padding: 2% 15%">
     <h1 style="text-align: center">Trayectos creados</h1>
+    <form action="{{url_for('bpclient.create_trayecto')}}" method="GET">
+        <input  type="submit" class="btn btn-outline-info" value="Crear un nuevo trayecto">
+    </form>
     {%if trayectos | count > 0%}
-    <div class="cards">
+    <div class="cards" >
         {% for trayecto in trayectos %}
-
         <div class="d-flex justify-content-center">
-            <div class="row text-center container">
+            <div class="row text-center container separarCards">
                 <div class="mx-auto">
-                    <div class="bg-white rounded shadow-sm py-5 px-4">
+                    <div  class="bg-white rounded shadow-sm py-5 px-4">
                         {% if trayecto.fotos_opcionales | first is not none %}
                         <img src="{{trayecto.fotos_opcionales | first}}" alt="" width="100"
                         class="img-fluid mb-3 img-thumbnail shadow-sm">
                         {%else%}
                         <img src="https://img.icons8.com/bubbles/100/000000/car.png" alt="" width="100"
                             class="img-fluid mb-3 img-thumbnail shadow-sm">
-                        {%endif%}
-                        
-                        <h5 class="mb-0">Origen {{ trayecto.origen }}, Destino {{ trayecto.destino }}</h5>
-                        <span class="small text-muted">Duracion {{ trayecto.duracion }}, Precio {{ trayecto.precio }}</span><br>
-                        <span class="small text-muted">Pla {{ vehiculo.matricula}}</span><br>
-                        <span class="small text-muted">{{ vehiculo.plazas}} plazas</span><br>
+                            {%endif%}
+
+                       <!--
+                           Lo de las fotos no funca, lo dejo así de momento-
+                        --> 
+                        <h5 class="mb-0">Origen: {{ trayecto.origen.nombre }} </h5>
+                        <h5 class="mb-0">Destino: {{ trayecto.destino.nombre }} </h5>
+                        <span class="small text-muted">Duracion {{ trayecto.duracion }}</span><br>
+                        <span class="small text-muted">Precio {{ trayecto.precio}}</span><br>
+                        <span class="small text-muted">Plazas totales: {{ trayecto.plazas}} </span><br>
 
                         <ul class="social mb-0 list-inline mt-3">
                             <li class="list-inline-item"><img
                                     src="https://img.icons8.com/bubbles/75/000000/information.png"
-                                    onclick="window.location.href='{{ url_for( 'bpclient.get_vehiculo', id = vehiculo._id ) }}';" />
+                                    onclick="window.location.href='{{ url_for('bpclient.get_trayecto', id = trayecto._id ) }}';" />
                             </li>
                             <li class="list-inline-item"><img
                                     src="https://img.icons8.com/bubbles/75/000000/edit.png"
-                                    onclick="window.location.href='{{ url_for( 'bpclient.update_vehiculo', id = vehiculo._id ) }}';" />
+                                    onclick="window.location.href='{{ url_for( 'bpclient.update_trayecto', id = trayecto._id ) }}';" />
                             </li>
                             <li class="list-inline-item"><img
                                     src="https://img.icons8.com/bubbles/75/000000/delete-sign.png"
-                                    onclick="window.location.href='{{ url_for( 'bpclient.delete_vehiculo', id = vehiculo._id ) }}';" />
+                                    onclick="window.location.href='{{ url_for( 'bpclient.delete_trayecto', id = trayecto._id ) }}';" />
                             </li>
                         </ul>
                     </div>
@@ -52,43 +58,9 @@
         {% endfor %}
     </div>
     {%else%}
-
+    <div class="alert alert-danger" role="alert">
+        A&uacute;n no has creado ning&uacute;n trayecto
+    </div>
     {%endif%}
-    <table class="table" border="1" style="margin: auto;">
-        <thead>
-            <th>Creador</th>
-            <th>Destino</th>
-            <th>Duracion</th>
-            <th>Fecha</th>
-            <th>Hora</th>
-            <th>Origen</th>
-            <th>Periodicidad</th>
-            <th>Precio</th>
-            <th>Fotos Opcionales</th>
-            <th>Plazas totales</th>
-            <th>vehiculo</th>
-            <th>Pasajeros</th>
-        </thead>
-
-        <tbody>
-            {% for i in trayectos_creador %}
-            <tr>
-                <td>{{ i.creador}}</td>
-                <td>{{ i.destino}}</td>
-                <td>{{ i.duracion}}</td>
-                <td>{{ i.fecha}}</td>
-                <td>{{ i.hora}}</td>
-                <td>{{ i.origen}}</td>
-                <td>{{ i.periodicidad}}</td>
-                <td>{{ i.precio}}</td>
-                <td>{{ i.fotos_opcionales}}</td>
-                <td>{{ i.plazas_totales}}</td>
-                <td>{{ i.vehiculo}}</td>
-                <td>{{ i.pasajeros}}</td>
-                <td><a href="{{ url_for('delete_trayecto', id = i._id) }}"> Borrar </a></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
 </div>
 {% endblock %}
