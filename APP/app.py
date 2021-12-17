@@ -19,7 +19,8 @@ class FlaskApp(Flask):
     super(FlaskApp, self).run(host=host, port=port, debug=debug, load_dotenv=load_dotenv, **options)
 '''
 app = Flask(__name__)
-# app.secret_key = 'clave de cifrado lo más robusta posible'
+
+app.secret_key = 'clave de cifrado lo más robusta posible'
 app.register_blueprint(bpclient)
 app.register_blueprint(bpserver)
 
