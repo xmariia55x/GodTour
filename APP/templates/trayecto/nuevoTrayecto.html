@@ -11,8 +11,8 @@
 {% endblock %}}
 
 {% block content %}
+<h1 style="text-align: center;">Nuevo trayecto</h1><br>
 <div id="principal">
-    <h1 style="text-align: center;">Nuevo trayecto</h1><br>
     <form action="{{url_for('bpclient.create_trayecto')}}" method="POST" class="mb-3">
     <input type="hidden" name="creador" value="{{usuario._id}}" />
     
