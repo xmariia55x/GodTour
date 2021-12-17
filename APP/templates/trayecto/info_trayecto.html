@@ -13,24 +13,33 @@
 {% endblock %}}
 
 {% block content %}
-<h1>Info trayecto</h1><br>
 
 <div id="principal">
-    Origen:
-    <label for="ogn">Nombre: {{trayecto.origen.nombre}} </label>
-    <input type="hidden" id="latOrigen" value="{{trayecto.origen.latitud}}" /><br>
-    <input type="hidden" id="lonOrigen" value="{{trayecto.origen.longitud}}" /><br>
-    <br>
-    Destino:
-    <label for="ogn">Nombre: {{trayecto.destino.nombre}} </label>
-    <input type="hidden" id="latDestino" value="{{trayecto.destino.latitud}}" /><br>
-    <input type="hidden" id="lonDestino" value="{{trayecto.destino.longitud}}" /><br>
-    <br>
-    <label>Fecha: </label>
-    <input type="date" name="fecha" value="{{fecha}}" readonly/><br>
-    <label>Hora: </label>
-    <input type="time" name="hora" value="{{hora}}" readonly /><br>
-    <label>Duraci&oacuten: {{trayecto.duracion}}</label><br>
+    <h1>Info trayecto</h1><br>
+    <label class="form-label">Origen: </label>
+    <input type="text" class="form-control col-xs-3" id="dir_origen" value="{{trayecto.origen.nombre}}" readonly></br>
+
+    <!-- Los hidden están para pasarle las coordenadas -->
+    <input type="hidden" id="latOrigen" value="{{trayecto.origen.latitud}}" />
+    <input type="hidden" id="lonOrigen" value="{{trayecto.origen.longitud}}" />
+
+    
+    <label class="form-label">Destino: </label>
+    <input type="text" class="form-control col-xs-3" id="dir_destino" value="{{trayecto.destino.nombre}}" readonly></br>
+    
+    <!-- Los hidden están para pasarle las coordenadas -->
+    <input type="hidden" id="latDestino" value="{{trayecto.destino.latitud}}" />
+    <input type="hidden" id="lonDestino" value="{{trayecto.destino.longitud}}" />
+    
+    <label class="form-label">Fecha: </label>
+    <input type="date" class="form-control col-xs-3" id="fecha" value="{{fecha}}" readonly></br>
+    
+    <label class="form-label">Hora: </label>
+    <input type="time" class="form-control col-xs-3" id="hora" value="{{hora}}" readonly></br>
+
+    <label class="form-label">Duracion: </label>
+    <input type="text" class="form-control col-xs-3" id="duracion" value="{{trayecto.duracion}}" readonly></br>
+
     <label>Periodicidad: {{trayecto.periodicidad}}</label><br>
     <label>Plazas totales: {{trayecto.plazas_totales}}</label><br>
     <label>Precio: {{trayecto.precio}}</label><br>
