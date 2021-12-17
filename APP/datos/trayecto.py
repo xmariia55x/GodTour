@@ -118,3 +118,16 @@ def get_usuarios_by_trayecto(id):
         lista_oid.append(ObjectId(x))
     usuarios = usuario_db.find({'_id': {"$in" : lista_oid}})
     return usuarios
+
+# Devuelve los trayectos que un usuario es propietario
+
+def get_trayectos_of_usuario(id):
+    trayectos = trayecto_db.find({'creador':ObjectId(id)})
+    return trayectos
+
+# Devuelve los trayectos donde un usuario es pasajero
+# Se le pasa el id de usuario
+# Hay que comprobar
+def get_trayectos_usuario_pasajero(id):
+    trayectos=trayecto_db.find({ObjectId(id):{"$in" : 'pasajeros'}})
+    return trayectos
