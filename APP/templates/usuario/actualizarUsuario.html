@@ -1,34 +1,76 @@
 {% extends "base.html" %}
 
-{% block title %}Editar Usuario{% endblock %}
+{% block title %}Actualizar perfil{% endblock %}
 
-{% block head %} 
+{% block head %}
 {{super()}}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/usuarioStyles.css') }}">
 {% endblock %}
 
 {% block content %}
 
-    <div style="text-align: center;">
-
-    
-    <h1>Actualizar Usuario</h1><br>
-
+<!--<div style="text-align: center;"> -->
+    {%if fecha_permiso%}
+    {% set value = fecha_permiso %}
+    {%else%}
+    {% set value = '' %}
+    {%endif%}
+<h1 style="text-align: center;">Actualizar perfil</h1><br>
+<div style="padding: 1% 15%;">
+    {%if error%}
+    <div class="alert alert-danger" role="alert">
+        {{error}}
+    </div>
+    {%endif%}
     <form action="{{url_for('bpclient.update_usuario',id=usuario._id)}}" method="POST" enctype="multipart/form-data">
-        <label>Nombre: </label>
-        <input type="text" name="nombre_completo" value="{{usuario.nombre_completo}}" required><br>
-        <label>Correo: </label>
-        <input type="text" name="correo" value="{{usuario.correo}}" required><br>
-        <label>DNI: </label>
-        <input type="text" name="dni" value="{{usuario.dni}}" required><br>
-        <label>Fecha: </label>
-        <input type="date" name="fecha_nacimiento" value="{{usuario.fecha_nacimiento}}" required><br>
-        <label>Antiguedad: </label>
-        <input type="date" name="antiguedad_permiso" value="{{usuario.antiguedad_permiso}}"><br>
-        <label>Foto: </label>
-         <img src="{{usuario.foto_perfil}}"><br>
-         <input type="file" class="form-control"  id="foto_perfil" name="foto_perfil" >
-        <input type="submit" value="Actualizar"/>
+        <div class="form-group row alinear">
+            <label for="nombre_completo" class="col-sm-2 col-form-label">Nombre</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="nombre_completo" value="{{usuario.nombre_completo}}"
+                    required>
+            </div>
+        </div>
+
+        <div class="form-group row alinear">
+            <label for="correo" class="col-sm-2 col-form-label">Correo</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="correo" value="{{usuario.correo}}" required>
+            </div>
+        </div>
+
+        <div class="form-group row alinear">
+            <label for="dni" class="col-sm-2 col-form-label">DNI</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="dni" value="{{usuario.dni}}" required>
+            </div>
+        </div>
+
+        <div class="form-group row alinear">
+            <label for="fecha_nacimiento" class="col-sm-2 col-form-label">Fecha de nacimiento</label>
+            <div class="col-sm-10">
+                <input type="date" class="form-control" name="fecha_nacimiento" value="{{fecha_nacimiento}}" required>
+            </div>
+        </div>
+
+        <div class="form-group row alinear">
+            <label for="antiguedad_permiso" class="col-sm-2 col-form-label">Antigüedad permiso</label>
+            <div class="col-sm-10">
+                <input type="date" class="form-control" name="antiguedad_permiso" value={{value}}>
+            </div>
+        </div>
+
+        <div class="form-group row alinear">
+            <label for="foto_perfil" class="col-sm-2 col-form-label">Foto de perfil</label><br>
+            <div class="col-sm-10">
+                <img src="{{usuario.foto_perfil}}" alt="" width="200" height="200"
+                    style="padding: 5% 5%;">
+            </div>
+            <input type="file" class="form-control" id="foto_perfil" name="foto_perfil">
+        </div>
+        <br>
+        <div class="col text-center">
+            <input class="btn btn-outline-info" type="submit" value="Actualizar">
+        </div>
     </form>
 </div>
 {% endblock %}

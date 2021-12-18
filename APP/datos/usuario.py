@@ -29,20 +29,36 @@ foto_perfil,valoracion_media):
             }
         )
 
-def update_usuario(id, nombre_completo, correo, dni, fecha_nacimiento, antiguedad_permiso, foto_perfil, valoracion_media):
+def update_usuario(id, nombre_completo, correo, dni, fecha_nacimiento, antiguedad_permiso, foto_perfil):
     #Lo creamos porque necesitamos una hora
     hora = "00:00"
-    filter = {"_id": ObjectId(id)}
-    new_values = {"$set":{
-        "nombre_completo": nombre_completo,
-        "correo": correo,
-        "dni": dni,
-        "fecha_nacimiento": float(date_converter.date_to_timestamp(fecha_nacimiento, hora)),
-        "antiguedad_permiso": float(date_converter.date_to_timestamp(antiguedad_permiso, hora)),
-        "foto_perfil": foto_perfil,
-        "valoracion_media": valoracion_media
-    }}
-        
+    if antiguedad_permiso is None:
+        antiguedad = None
+    else:    
+        antiguedad = float(date_converter.date_to_timestamp(antiguedad_permiso, hora))
+
+    if foto_perfil != "": #El usuario pone una foto nueva
+        filter = {"_id": ObjectId(id)}
+        new_values = {"$set":{
+            "nombre_completo": nombre_completo,
+            "correo": correo,
+            "dni": dni,
+            "fecha_nacimiento": float(date_converter.date_to_timestamp(fecha_nacimiento, hora)),
+            "antiguedad_permiso": antiguedad,
+            "foto_perfil": foto_perfil,
+            "valoracion_media": 0 #Cambiar cuando tengamos una tabla de valoraciones o algo
+        }}
+    else: #El usuario no modifica su foto actual
+        filter = {"_id": ObjectId(id)}
+        new_values = {"$set":{
+            "nombre_completo": nombre_completo,
+            "correo": correo,
+            "dni": dni,
+            "fecha_nacimiento": float(date_converter.date_to_timestamp(fecha_nacimiento, hora)),
+            "antiguedad_permiso": antiguedad,
+            "valoracion_media": 0 #Cambiar cuando tengamos una tabla de valoraciones o algo
+        }}
+
     result = usuario_db.update_one(filter, new_values)
     if result.matched_count == 0:
         return "Fallo"

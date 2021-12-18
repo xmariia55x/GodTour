@@ -94,18 +94,31 @@ def delete_usuario(id):
 def update_usuario(id):
     if request.method == 'GET':
         usuario = usuario_data.find_usuario(id)
-        return render_template('usuario/actualizarUsuario.html', usuario=usuario)    
+        fecha_format, hora_format = date_converter.timestamp_to_date(usuario["fecha_nacimiento"])
+        if(usuario["antiguedad_permiso"] is not None):
+            fecha_permiso, hora_permiso = date_converter.timestamp_to_date(usuario["antiguedad_permiso"])
+            return render_template('usuario/actualizarUsuario.html', usuario=usuario, fecha_nacimiento = fecha_format, fecha_permiso = fecha_permiso)    
+        else:
+            return render_template('usuario/actualizarUsuario.html', usuario=usuario, fecha_nacimiento = fecha_format)    
     else:    
         nombre_completo = request.form.get('nombre_completo')
         correo = request.form.get('correo')
         dni = request.form.get('dni')
-        fecha_nacimiento = request.form.get('fecha_nacimiento')
-        antiguedad_permiso = request.form.get('antiguedad_permiso')
-        foto_perfil = request.form.get('foto_perfil')
-        valoracion_media = request.form.get('valoracion_media')
+        fecha_nacimiento = date_converter.formatear_fecha(request.form.get('fecha_nacimiento'), "%Y-%m-%d", "%Y-%m-%d")
+        antiguedad = request.form.get('antiguedad_permiso')
+        if antiguedad:
+            antiguedad_permiso = date_converter.formatear_fecha(antiguedad, "%Y-%m-%d", "%Y-%m-%d")
+        else:
+            antiguedad_permiso = None
         
+        foto_perfil=  request.files['foto_perfil']
+        if foto_perfil:
+            response = cloudinary.uploader.upload(foto_perfil)
+            url= response["url"]
+        else:
+            url = ""
         if nombre_completo and correo and dni and fecha_nacimiento:
-            response = usuario_data.update_usuario(id, nombre_completo, correo, dni, fecha_nacimiento, antiguedad_permiso, foto_perfil, valoracion_media)
+            response = usuario_data.update_usuario(id, nombre_completo, correo, dni, fecha_nacimiento, antiguedad_permiso, url)
 
             if response == "Acierto":
                 return redirect('/app/usuarios/'+id)
