@@ -108,9 +108,10 @@ def update_usuario(id):
             response = usuario_data.update_usuario(id, nombre_completo, correo, dni, fecha_nacimiento, antiguedad_permiso, foto_perfil, valoracion_media)
 
             if response == "Acierto":
-                return redirect('/app/usuarios')
+                return redirect('/app/usuarios/'+id)
             else:
                 return render_template('/usuario/actualizarUsuario.html', error="El usuario no se ha podido actualizar, faltan campos")
+        
 
 #Devuelve una lista de usuarios ordenados alfabeticamente, orden ascendente -> python.ASCENDING , orden descendente -> python.DESCENDING
 @bpclient.route('/app/usuarios/name', methods=['GET'])
@@ -132,6 +133,10 @@ def get_usuario_by_email():
     else:
         return redirect("/app/usuarios")
 
+@bpclient.route('/app/delete/trayecto/<id_trayecto>/pasajero/<id_pasajero>')
+def delete_pasajero_trayecto(id_trayecto, id_pasajero):
+    trayecto_data.delete_pasajero_trayecto(id_trayecto, id_pasajero)
+    return redirect("/app/trayectos/usuarios/contratados/"+session['id'])
 # ---------------------------------------------FIN USUARIO-----------------------------------------------------------
 
 # ---------------------------------------------INICIO TRAYECTO-----------------------------------------------------------
@@ -357,6 +362,11 @@ def get_usuario_trayecto(id):
 def get_trayectos_creados_usuario(id):
     trayectos = trayecto_data.get_trayectos_of_usuario(id)
     return render_template('trayecto/misTrayectos.html', trayectos = list(trayectos))
+
+@bpclient.route('/app/trayectos/usuarios/contratados/<id>')
+def get_trayectos_contratados_usuario(id):
+    trayectos = trayecto_data.get_trayectos_usuario_pasajero(id)
+    return render_template('trayecto/lista_reservas.html', trayectos = list(trayectos))
 # ---------------------------------------------FIN TRAYECTO-----------------------------------------------------------
 
 # --------------------------------------------- VEHICULO -----------------------------------------------------------

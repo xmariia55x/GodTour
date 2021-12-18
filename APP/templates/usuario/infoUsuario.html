@@ -1,45 +1,37 @@
-<!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
-<html>
+{% extends "base.html" %}
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Lista usuarios </title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="">
-</head>
+{% block title %}Mi perfil{% endblock %}
 
+{% block head %}
+{{super()}}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/usuarioStyles.css') }}">
+{% endblock %}
 
-<body>
-    <h1 style="text-align: center">Usuarios</h1>
-        <table class="table" border="1" style="margin: auto;">
-            <thead>
-            <th>Nombre</th>
-            <th>Correo</th>
-            <th>DNI</th>
-            <th>Fecha nacimiento</th>
-            <th>Antiguedad permiso</th>
-            <th>Foto perfil</th>
-            <th>Valoracion media</th>
-            </thead>
-            
-            <tbody>
-            <tr>
-                <td>{{ usuario.nombre_completo}}</td>
-                <td>{{ usuario.correo}}</td>
-                <td>{{ usuario.dni}}</td>
-                <td>{{ usuario.fecha_nacimiento}}</td>
-                <td>{{ usuario.antiguedad_permiso}}</td>
-                <td>{{ usuario.foto_perfil}}</td>
-                <td>{{ usuario.valoracion_media}}</td>
-            </tr>
-            </tbody>
-        </table>
-</body>
+{% block content %}
+<div style="padding: 2% 15%">
+    <div class="cards">
+        <div class="d-flex justify-content-center">
+            <div class="row text-center container">
+                <div class="mx-auto">
+                    <img src="{{ usuario.foto_perfil}}" alt="" width="100"
+                        class="img-fluid mb-3 img-thumbnail shadow-sm">
+                    <h5 class="mb-0">{{ usuario.nombre_completo}} {{ usuario.dni}}</h5>
+                    <span class="small text-muted"> {{ usuario.correo}} </span><br>
+                    <span class="small text-muted">Valoraci&oacute;n {{ usuario.valoracion_media}}</span><br>
 
-</html>
+                    <ul class="social mb-0 list-inline mt-3">
+                        <li class="list-inline-item"><img src="https://img.icons8.com/bubbles/75/000000/edit.png"
+                                onclick="window.location.href='{{ url_for( 'bpclient.update_usuario', id = usuario._id ) }}';" />
+                        </li>
+                        <li class="list-inline-item"><img
+                                src="https://img.icons8.com/bubbles/75/000000/delete-sign.png" />
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+
+{% endblock %}

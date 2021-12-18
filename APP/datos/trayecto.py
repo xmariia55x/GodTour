@@ -129,5 +129,24 @@ def get_trayectos_of_usuario(id):
 # Se le pasa el id de usuario
 # Hay que comprobar
 def get_trayectos_usuario_pasajero(id):
-    trayectos=trayecto_db.find({ObjectId(id):{"$in" : 'pasajeros'}})
-    return trayectos
+    todos_trayectos = find_trayectos()
+    lista_trayectos = [] 
+    for t in todos_trayectos:
+        if ObjectId(id) in t.get("pasajeros"):
+            lista_trayectos.append(t)
+    #id_buscar = str(ObjectId(id))
+    #trayectos=trayecto_db.find({'pasajeros' : {"$in" : id_buscar}})
+    return lista_trayectos
+
+#Elimina al usuario del trayecto especificado con dicho id
+def delete_pasajero_trayecto(id_trayecto, id_pasajero):
+    trayecto = find_trayecto(id_trayecto)
+    pasajeros = trayecto.get("pasajeros")
+    pasajeros.delete(ObjectId(id_pasajero))
+    filter = {"_id": ObjectId(id_trayecto)}
+
+    new_values = {"$set":{ 
+            "pasajeros": pasajeros
+    }}
+    trayecto_db.update_one(filter, new_values)
+
