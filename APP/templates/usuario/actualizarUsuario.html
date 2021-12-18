@@ -1,25 +1,20 @@
-<!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
-<html>
+{% extends "base.html" %}
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>
-        Actualizar Usuario
-    </title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="">
-</head>
+{% block title %}Editar Usuario{% endblock %}
 
-<body>
+{% block head %} 
+{{super()}}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/usuarioStyles.css') }}">
+{% endblock %}
+
+{% block content %}
+
+    <div style="text-align: center;">
+
+    
     <h1>Actualizar Usuario</h1><br>
 
-    <form action="{{url_for('bpclient.update_usuario',id=usuario._id)}}" method="POST">
+    <form action="{{url_for('bpclient.update_usuario',id=usuario._id)}}" method="POST" enctype="multipart/form-data">
         <label>Nombre: </label>
         <input type="text" name="nombre_completo" value="{{usuario.nombre_completo}}" required><br>
         <label>Correo: </label>
@@ -31,10 +26,9 @@
         <label>Antiguedad: </label>
         <input type="date" name="antiguedad_permiso" value="{{usuario.antiguedad_permiso}}"><br>
         <label>Foto: </label>
-        <input type="text" name="foto_perfil" value="{{usuario.foto_perfil}}" ><br>
+         <img src="{{usuario.foto_perfil}}"><br>
+         <input type="file" class="form-control"  id="foto_perfil" name="foto_perfil" >
         <input type="submit" value="Actualizar"/>
     </form>
-
-</body>
-
-</html>
+</div>
+{% endblock %}
