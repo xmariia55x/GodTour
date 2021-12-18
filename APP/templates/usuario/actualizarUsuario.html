@@ -9,10 +9,12 @@
 
 {% block content %}
 
+    <div style="text-align: center;">
 
+    
     <h1>Actualizar Usuario</h1><br>
 
-    <form action="{{url_for('bpclient.update_usuario',id=usuario._id)}}" method="POST">
+    <form action="{{url_for('bpclient.update_usuario',id=usuario._id)}}" method="POST" enctype="multipart/form-data">
         <label>Nombre: </label>
         <input type="text" name="nombre_completo" value="{{usuario.nombre_completo}}" required><br>
         <label>Correo: </label>
@@ -24,8 +26,9 @@
         <label>Antiguedad: </label>
         <input type="date" name="antiguedad_permiso" value="{{usuario.antiguedad_permiso}}"><br>
         <label>Foto: </label>
-        <input type="text" name="foto_perfil" value="{{usuario.foto_perfil}}" ><br>
+         <img src="{{usuario.foto_perfil}}"><br>
+         <input type="file" class="form-control"  id="foto_perfil" name="foto_perfil" >
         <input type="submit" value="Actualizar"/>
     </form>
-
+</div>
 {% endblock %}
