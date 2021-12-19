@@ -171,7 +171,7 @@ def get_trayectos_creador(id):
     return 
 
 #Devuelve un trayecto cuyo id coincide con el que se pasa por parámetro
-@bpclient.route('/app/trayectos/<id>', methods=['GET'])
+@bpclient.route('/app/trayectos/ver/<id>', methods=['GET'])
 def get_trayecto(id):
     trayecto = trayecto_data.find_trayecto(id)
     response = json_util.dumps(trayecto)
@@ -224,7 +224,7 @@ def create_trayecto():
         trayecto_data.create_trayecto(creador, origen_nombre, origen_latitud, origen_longitud, destino_nombre, destino_latitud, destino_longitud,
                                       fecha, hora, duracion, periodicidad, precio, fotos_opcionales, plazas_totales, vehiculo)
     
-    return redirect("/app/trayectos/new")
+    return redirect("/app/trayectos/create")
 
 #Elimina un trayecto cuyo id coincide con el que se pasa por parametro
 @bpclient.route('/app/trayectos/delete/<id>', methods=['GET'])

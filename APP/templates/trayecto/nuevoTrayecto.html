@@ -4,58 +4,57 @@
 
 {% block head %} 
 {{super()}}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/trayectoStyles.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/nuevoTrayectoStyles.css') }}">
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
 <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
-<script defer type="text/javascript" src="../../static/js/infoTrayecto.js"></script>
+<script defer type="text/javascript" src="../../static/js/nuevoTrayecto.js"></script>
 {% endblock %}}
 
 {% block content %}
 <h1 style="text-align: center;">Nuevo trayecto</h1><br>
 <div id="principal">
-    <form action="{{url_for('bpclient.create_trayecto')}}" method="POST" class="mb-3">
-    <input type="hidden" name="creador" value="{{usuario._id}}" />
-    
-    <h3>Origen</h3> <br>
-    <div class="row">
-        <div class="col-3">
-            <label class="form-label">Dirección: </label>
-            <select id="dir_origen_tipo" class="form-select">
-                <option value="Avenida">Avenida</option>
-                <option value="Calle">Calle</option>
-                <option value="Carril">Carril</option>
-                <option value="Camino">Camino</option>
-                <option value="">Otro</option>
-            </select>
+    <form class="mb-3" id="formOrigen" onsubmit="buscarOrigen(this)">
+        <input type="hidden" name="creador" value="{{usuario._id}}" />
+        
+        <h3>Origen</h3> <br>
+        <div class="row">
+            <div class="col-3">
+                <label class="form-label">Dirección: </label>
+                <select id="dir_origen_tipo" class="form-select" name="tipo">
+                    <option value="Avenida">Avenida</option>
+                    <option value="Calle">Calle</option>
+                    <option value="Carril">Carril</option>
+                    <option value="Camino">Camino</option>
+                    <option value="">Otro</option>
+                </select>
+            </div>
+            <div class="col">
+                <label class="form-label">Nombre: </label>  
+                <input type="text" class="form-control" id="dir_origen_nombre" max="5" name="nombre">
+            </div>
+            <div class="col-2">
+                <label class="form-label">Número: </label>
+                <input type="text" class="form-control" id="dir_origen_numero" size="3" min="1" max="1000" name="numero">
+            </div>
         </div>
-        <div class="col">
-            <label class="form-label">Nombre: </label>  
-            <input type="text" class="form-control" id="dir_origen_numero" max="5">
+        <br>
+        <div class="row">
+            <div class="col-5">
+                <label class="form-label">Ciudad: </label>
+                <input type="text" class="form-control" id="dir_origen_ciudad" maxlength="50" name="ciudad">
+            </div>
+            <div class="col-2">
+                <label class="form-label">C.P.: </label>
+                <input type="number" class="form-control" id="dir_origen_cp" min="1" max="99999" name="cp">
+            </div>
         </div>
-        <div class="col-2">
-            <label class="form-label">Número: </label>
-            <input type="text" class="form-control" id="dir_origen_numero" size="3" min="1" max="1000">
-        </div>
-    </div>
-    <br>
-    <div class="row">
-        <div class="col-5">
-            <label class="form-label">Ciudad: </label>
-            <input type="text" class="form-control" id="dir_origen_ciudad" maxlength="50">
-        </div>
-        <div class="col-2">
-            <label class="form-label">C.P.: </label>
-            <input type="number" class="form-control" id="dir_origen_cp" min="1" max="99999">
-        </div>
-    </div>
-    <br>
-    <button id="buscarOrigen" class="btn btn-outline-info btn-xs">Buscar</button>
-
-    <input type="hidden" class="form-control col-xs-3" name="origen_nombre" required max="50">
-    <input type="hidden" class="form-control" name="origen_latitud" step="any" required>
-    <input type="hidden" class="form-control" name="origen_longitud" step="any" required>
-
+        <br>
+        <input type="submit" class="btn btn-outline-info btn-xs" value="Buscar" />
+    </form>
     <br><br>
+    
+    <div id="resultadosOrigen" class="list-group"></div>
+
     <h3>Destino</h3> <br>
     <label class="form-label">Dirección: </label>
     <select id="dir_destino_tipo" class="form-select">
@@ -73,32 +72,35 @@
     <input type="text" class="form-control col-xs-3" id="dir_origen_cp" max="50">
     <button id="buscarDestino" class="btn btn-outline-info btn-lg">Buscar</button>
 
-    <input type="hidden" class="form-control" name="destino_nombre" required max="50">
-    <input type="hidden" class="form-control" name="destino_latitud" step="any" required>
-    <input type="hidden" class="form-control" name="destino_longitud" step="any" required>
-    
-    <br>
-    <label class="form-label">Fecha: </label>
-    <input type="date" class="form-control" name="fecha" required><br>
-    <label class="form-label">Hora: </label>
-    <input type="time" class="form-control" name="hora" required><br>
-    <label class="form-label">Duraci&oacuten: </label>
-    <input type="number" class="form-control" name="duracion" required><br>
-    <label class="form-label">Periodicidad: </label>
-    <input type="number" class="form-control" name="periodicidad" required max="365"><br>
-    <label class="form-label">Plazas totales: </label>
-    <input type="number" class="form-control" name="plazas_totales" required><br>
-    <label class="form-label">Precio: </label>
-    <input type="number" class="form-control" name="precio" step="any" required><br>
-    <label class="form-label">Veh&iacuteculo: </label>
-    <select name="vehiculo" class="form-select">
-        {% for v in vehiculos %}
-        <option value="{{v._id}}">{{v.marca}} {{v.modelo}} - {{v.matricula}}</option>
-        {% endfor %}
-    </select>
-    <br>
-    <br>
-    <input type="submit" class="btn btn-outline-info btn-lg" id="botonCentrado" value="Crear" />
+    <form action="{{url_for('bpclient.create_trayecto')}}" method="POST" class="mb-3">
+        <input type="hidden" name="creador" value="{{usuario._id}}" />
+
+        <input type="hidden" class="form-control" name="destino_nombre" required max="50">
+        <input type="hidden" class="form-control" name="destino_latitud" step="any" required>
+        <input type="hidden" class="form-control" name="destino_longitud" step="any" required>
+        
+        <br>
+        <label class="form-label">Fecha: </label>
+        <input type="date" class="form-control" name="fecha" required><br>
+        <label class="form-label">Hora: </label>
+        <input type="time" class="form-control" name="hora" required><br>
+        <label class="form-label">Duraci&oacuten: </label>
+        <input type="number" class="form-control" name="duracion" required><br>
+        <label class="form-label">Periodicidad: </label>
+        <input type="number" class="form-control" name="periodicidad" required max="365"><br>
+        <label class="form-label">Plazas totales: </label>
+        <input type="number" class="form-control" name="plazas_totales" required><br>
+        <label class="form-label">Precio: </label>
+        <input type="number" class="form-control" name="precio" step="any" required><br>
+        <label class="form-label">Veh&iacuteculo: </label>
+        <select name="vehiculo" class="form-select">
+            {% for v in vehiculos %}
+            <option value="{{v._id}}">{{v.marca}} {{v.modelo}} - {{v.matricula}}</option>
+            {% endfor %}
+        </select>
+        <br>
+        <br>
+        <input type="submit" class="btn btn-outline-info btn-lg" id="botonCentrado" value="Crear" />
     </form>
 </div>
 

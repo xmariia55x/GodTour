@@ -41,3 +41,35 @@ function removeMarkers() {
         map.removeLayer(marcadores[i])
     }
 }
+
+function buscarOrigen(formulario, tipo) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            try{
+                var json_res = JSON.parse(xhttp.responseText);
+                var codigo = "";
+                var divResultados = document.getElementById("resultadosOrigen");
+                console.log("hola");
+                console.log(json_res);
+                if (json_res == []){
+                    throw "excepcion";
+                }
+
+                for (x of json_res) {
+                    codigo += '<button type="button" class="list-group-item list-group-item-action" aria-current="true" onclick=asignarOrigen('+x+')>'+ x["display_name"]+'</button>';
+                }
+                
+                divResultados.innerHTML = codigo;
+            } catch(error) {
+                alert("Dirección no encontrada")
+            }
+        }
+    };
+    xhttp.open("GET", "https://open.mapquestapi.com/nominatim/v1/search.php?q="
+                       +formulario.numero +" "
+                       +formulario.nombre +" "
+                       +formulario.ciudad +" "
+                       +formulario.cp +"&format=json&key=aawYnbqgFdCflcNz0TnpNv21CeKSUq1x", true);
+    xhttp.send();
+}
