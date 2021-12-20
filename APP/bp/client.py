@@ -380,6 +380,41 @@ def get_trayectos_creados_usuario(id):
 def get_trayectos_contratados_usuario(id):
     trayectos = trayecto_data.get_trayectos_usuario_pasajero(id)
     return render_template('trayecto/lista_reservas.html', trayectos = list(trayectos))
+
+@bpclient.route('/app/trayectos/composedQuery')
+def get_composedQuery():
+    listQuerys = []
+    '''
+    origen = request.form.get("origen")
+    if origen is not None:
+        listQuerys.append({'origen': origen})
+    
+    destino = request.form.get("destino")
+    if destino is not None:
+        listQuerys.append({'destino': destino})
+    
+    precio = request.form.get("precio")
+    if precio is not None:
+        listQuerys.append({'precio': precio})
+     
+
+    '''
+    duracion = 405
+    listQuerys.append({'duracion': duracion })
+    period = 7
+    listQuerys.append({'periodicidad': period })
+    precio = 10.5
+    listQuerys.append({'precio': precio })
+    
+    trayectos=trayecto_data.get_trayectos_composedQuery(listQuerys)
+
+    print(trayectos)
+    print(type(trayectos))
+    response=json_util.dumps(trayectos)
+    print(response)    
+    return Response(response,mimetype='application/json')
+    
+
 # ---------------------------------------------FIN TRAYECTO-----------------------------------------------------------
 
 # --------------------------------------------- VEHICULO -----------------------------------------------------------
