@@ -17,41 +17,15 @@ var layer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 var marcadorOrigen = null;
 var marcadorDestino = null;
 
-// This is AJAX FC
-function cargarMapa() {
-    removeMarkers();
-    var xhttp = new XMLHttpRequest();
-    //var text = document.getElementById("texto");
-    xhttp.onreadystatechange = function () {
-        if (this.readyState == 4 && this.status == 200) {
-            /*var json_res = JSON.parse(xhttp.responseText);
-            for (x of json_res) {
-                marcadores.push(L.marker([x.lat, x.lon]).addTo(map).bindPopup("Lat: " + x.lat +
-                    "<br>Lon: " + x.lon +
-                    "<br>Hint: " + x.hint));
-            }*/
-        }
-    };
-    xhttp.open("GET", "/api/logbookByEmail?email=" + text.value, true);
-    xhttp.send();
-}
-
-function removeMarkers() {
-    for (var i = 0; i < marcadores.length; i++) {
-        map.removeLayer(marcadores[i])
-    }
-}
-
 function buscarDirecciones(evento, formulario, tipoBusqueda) {
     evento.preventDefault();
-
     var xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function () {
         if (this.readyState == 4 && this.status == 200) {
             try{
                 var json_res = JSON.parse(xhttp.responseText);
                 var codigo = "";
-                var divResultados = document.getElementById("resultados");
+                var divResultados = document.getElementById("resultados"+tipoBusqueda); //Origen o Destino
                 if (json_res.length == 0){
                     codigo += '<label>No se han encontrado resultados</label>'
                 } else {
@@ -59,12 +33,14 @@ function buscarDirecciones(evento, formulario, tipoBusqueda) {
                 }
 
                 for (x of json_res) {
-                    codigo += '<button type="button" class="list-group-item list-group-item-action" aria-current="true" onclick=asignarOrigen('+x+')>'+ x["display_name"]+'</button>';
+                    codigo += "<button type=\"button\" class=\"list-group-item list-group-item-action\" "
+                              +"data-bs-toggle=\"offcanvas\" data-bs-target=\"#offcanvas"+tipoBusqueda+"\" aria-controls=\"offcanvas"+tipoBusqueda+"\" aria-current=\"true\" "
+                              +"onclick=\"asignarDireccion('"+x.display_name+"', "+x.lat+", "+x.lon+", '"+tipoBusqueda+"')\">"+ x.display_name+"</button>";
                 }
-                
                 divResultados.innerHTML = codigo;
 
                 return false;
+
             } catch(error) {
                 alert("Dirección no encontrada")
             }
@@ -77,4 +53,52 @@ function buscarDirecciones(evento, formulario, tipoBusqueda) {
                        +formulario.ciudad.value + "+"
                        +formulario.cp.value +"&format=json&key=aawYnbqgFdCflcNz0TnpNv21CeKSUq1x", true);
     xhttp.send();
+}
+
+function asignarDireccion(nombre, lat, lon, tipoBusqueda){
+    var offcanvas = document.getElementById('offcanvas'+tipoBusqueda);
+
+    input_nombre = document.getElementById('nombre'+tipoBusqueda);
+    input_latitud = document.getElementById('latitud'+tipoBusqueda);
+    input_longitud = document.getElementById('longitud'+tipoBusqueda);
+
+    input_nombre.value = nombre;
+    input_latitud.value = lat;
+    input_longitud.value = lon;
+
+    var origenIcon = L.icon({
+        iconUrl: 'https://pbs.twimg.com/profile_images/378800000731816968/9ceff12db40406c6640e88e7946be63b_400x400.jpeg',
+        iconSize: [70, 95],
+        iconAnchor: [22, 94],
+        popupAnchor: [-3, -76],
+    });
+
+    if (tipoBusqueda == 'Origen'){
+        if (marcadorOrigen != null)
+            map.removeLayer(marcadorOrigen);
+        marcadorOrigen =  L.marker([lat, lon]).addTo(map).bindPopup("<strong>Origen</strong><br>Lat: " + lat + "<br>Lon: " + lon + "<br>Nombre: " + nombre);
+    } else if (tipoBusqueda == 'Destino'){
+        if (marcadorDestino != null)
+            map.removeLayer(marcadorDestino);
+        marcadorDestino =  L.marker([lat, lon]).addTo(map).bindPopup("<strong>Destino</strong><br>Lat: " + lat + "<br>Lon: " + lon + "<br>Nombre: " + nombre);
+    }
+
+    if (marcadorOrigen != null && marcadorDestino != null){
+        var bounds = L.latLngBounds(marcadorOrigen.getLatLng(), marcadorDestino.getLatLng());
+        map.fitBounds(bounds);
+    }
+}
+
+function validarFormulario(evento, formulario){
+    if (formulario.origen_nombre.value,length == 0){
+        evento.preventDefault();
+        alert("No se ha introducido el origen");
+        return false;
+    } 
+    
+    if (formulario.destino_nombre.value.length == 0){
+        evento.preventDefault();
+        alert("No se ha introducido el destino");
+        return false;
+    }
 }

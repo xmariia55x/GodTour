@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/nuevoTrayectoStyles.css') }}">
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
 <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
-<script defer type="text/javascript" src="../../static/js/nuevoTrayecto.js"></script>
+<script defer type="text/javascript" src="{{ url_for('static', filename='js/nuevoTrayecto.js') }}"></script>
 {% endblock %}}
 
 {% block content %}
@@ -24,7 +24,7 @@
                 Introduce los campos y selecciona una de las coincidencias si las hay.
             </div>
             <br>
-            <form class="mb-3" id="formOrigen" onsubmit="buscarOrigen(event, this, 0)">
+            <form class="mb-3" id="formOrigen" onsubmit="buscarDirecciones(event, this, 'Origen')">
                 <div class="row">
                     <div class="col-3">
                         <label class="form-label">Dirección: </label>
@@ -74,7 +74,7 @@
                 Introduce los campos y selecciona una de las coincidencias si las encuentra.
             </div>
             <br>
-            <form class="mb-3" id="formDestino" onsubmit="buscarOrigen(event, this, 1)">
+            <form class="mb-3" id="formDestino" onsubmit="buscarDirecciones(event, this, 'Destino')">
                 <div class="row">
                     <div class="col-3">
                         <label class="form-label">Dirección: </label>
@@ -116,24 +116,24 @@
 
     <!-----------FORMULARIO------------------>
 
-    <form action="{{url_for('bpclient.create_trayecto')}}" method="POST" class="mb-3">
+    <form action="{{url_for('bpclient.create_trayecto')}}" method="POST" onsubmit="validarFormulario(event, this)" class="mb-3">
         <input type="hidden" name="creador" value="{{usuario._id}}" />
 
         <h4>Origen</h4>
         <div class="row">
             <div class="col">
                 <label class="form-label">Nombre: </label>
-                <input class="form-control" id="ogn" type="text" name="origen_nombre" required max="50"/>
+                <input class="form-control" id="nombreOrigen" type="text" name="origen_nombre" max="50" required readonly />
             </div>
         </div>
         <div class="row">
             <div class="col">
                 <label class="form-label">Latitud: </label>
-                <input class="form-control" type="number" name="origen_latitud" step="any" required />
+                <input class="form-control" id="latitudOrigen" type="number" name="origen_latitud" step="any" required readonly />
             </div>
             <div class="col">
                 <label class="form-label">Longitud: </label>
-                <input class="form-control" type="number" name="origen_longitud" step="any" required />
+                <input class="form-control" id="longitudOrigen" type="number" name="origen_longitud" step="any" required readonly />
             </div>
         </div>
         <br>
@@ -147,17 +147,17 @@
         <div class="row">
             <div class="col">
             <label class="form-label">Nombre: </label>
-            <input class="form-control" type="text" name="destino_nombre" required max="50" />
+            <input class="form-control" id="nombreDestino" type="text" name="destino_nombre" max="50" required readonly />
             </div>
         </div>
         <div class="row">
             <div class="col">
                 <label class="form-label">Latitud: </label>
-                <input class="form-control" type="number" name="destino_latitud" step="any" required />
+                <input class="form-control" id="latitudDestino" type="number" name="destino_latitud" step="any" required readonly />
             </div>
             <div class="col">
                 <label class="form-label">Longitud: </label>
-                <input class="form-control" type="number" name="destino_longitud" step="any" required />
+                <input class="form-control" id="longitudDestino" type="number" name="destino_longitud" step="any" required readonly />
             </div>
         </div>
 
