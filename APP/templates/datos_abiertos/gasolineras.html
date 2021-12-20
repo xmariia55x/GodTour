@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Editando veh&iacute;culo{% endblock %}
+
+{% block head %}
+{{super()}}
+<link rel="stylesheet" href="">
+{% endblock %}
+
+{% block content %}
+<div style="padding: 2% 15%;">
+    <form class="row g-3">
+        <div class="col-auto">
+            <label for="gasolineras_provincias" class="form-label">Buscar gasolineras de una provincia</label>
+        </div>
+        <div class="col-auto">
+            <input class="form-control" list="lista_provincias_gasolineras" id="gasolineras_provincias"
+                placeholder="Escribe una provincia...">
+            <datalist id="lista_provincias_gasolineras">
+                {%for provincia in provincias%}
+                <option value={{provincia}}>
+                    {%endfor%}
+            </datalist>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">Confirm identity</button>
+        </div>
+    </form>
+
+    <form class="row g-3">
+        <div class="col-auto">
+            <label for="gasolineras_municipio" class="form-label">Buscar gasolineras de un municipio</label>
+        </div>
+        <div class="col-auto">
+            <input class="form-control" list="lista_municipios_gasolineras" id="gasolineras_municipio"
+                placeholder="Escribe un municipio...">
+            <datalist id="lista_municipios_gasolineras">
+                {%for municipio in municipios%}
+                <option value={{municipio}}>
+                    {%endfor%}
+            </datalist>
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">Confirm identity</button>
+        </div>
+    </form>
+</div>
+{% endblock %}
