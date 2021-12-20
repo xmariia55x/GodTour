@@ -90,7 +90,8 @@ function asignarDireccion(nombre, lat, lon, tipoBusqueda){
 }
 
 function validarFormulario(evento, formulario){
-    if (formulario.origen_nombre.value,length == 0){
+    console.log(formulario.origen_nombre.value);
+    if (formulario.origen_nombre.value.length == 0){
         evento.preventDefault();
         alert("No se ha introducido el origen");
         return false;
