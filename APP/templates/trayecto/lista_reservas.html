@@ -39,9 +39,9 @@
                                     src="https://img.icons8.com/bubbles/75/000000/information.png"
                                     onclick="window.location.href='{{ url_for('bpclient.get_trayecto', id = trayecto._id ) }}';" />
                             </li>
-                            <li class="list-inline-item">
-                                <img src="https://img.icons8.com/bubbles/75/000000/star.png"/> <!--De momento no se hace nada al valorar-->
-                            </li>
+                            <!--<li class="list-inline-item">
+                                <img src="https://img.icons8.com/bubbles/75/000000/star.png"/> De momento no se hace nada al valorar
+                            </li>-->
                             <li class="list-inline-item"><img
                                     src="https://img.icons8.com/bubbles/75/000000/delete-sign.png"
                                     onclick="window.location.href='{{ url_for( 'bpclient.delete_pasajero_trayecto', id_trayecto = trayecto._id, id_pasajero = session['id'] ) }}';" />
