@@ -2,7 +2,7 @@
 
 {% block title %}Nuevo trayecto{% endblock %}
 
-{% block head %} 
+{% block head %}
 {{super()}}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/nuevoTrayectoStyles.css') }}">
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
@@ -13,85 +13,194 @@
 {% block content %}
 <h1 style="text-align: center;">Nuevo trayecto</h1><br>
 <div id="principal">
-    <form class="mb-3" id="formOrigen" onsubmit="buscarOrigen(this)">
-        <input type="hidden" name="creador" value="{{usuario._id}}" />
-        
-        <h3>Origen</h3> <br>
-        <div class="row">
-            <div class="col-3">
-                <label class="form-label">Dirección: </label>
-                <select id="dir_origen_tipo" class="form-select" name="tipo">
-                    <option value="Avenida">Avenida</option>
-                    <option value="Calle">Calle</option>
-                    <option value="Carril">Carril</option>
-                    <option value="Camino">Camino</option>
-                    <option value="">Otro</option>
-                </select>
-            </div>
-            <div class="col">
-                <label class="form-label">Nombre: </label>  
-                <input type="text" class="form-control" id="dir_origen_nombre" max="5" name="nombre">
-            </div>
-            <div class="col-2">
-                <label class="form-label">Número: </label>
-                <input type="text" class="form-control" id="dir_origen_numero" size="3" min="1" max="1000" name="numero">
-            </div>
-        </div>
-        <br>
-        <div class="row">
-            <div class="col-5">
-                <label class="form-label">Ciudad: </label>
-                <input type="text" class="form-control" id="dir_origen_ciudad" maxlength="50" name="ciudad">
-            </div>
-            <div class="col-2">
-                <label class="form-label">C.P.: </label>
-                <input type="number" class="form-control" id="dir_origen_cp" min="1" max="99999" name="cp">
-            </div>
-        </div>
-        <br>
-        <input type="submit" class="btn btn-outline-info btn-xs" value="Buscar" />
-    </form>
-    <br><br>
     
-    <div id="resultadosOrigen" class="list-group"></div>
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasOrigen" aria-labelledby="offcanvasOrigenLabel" style="width: 35%;">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasOrigenLabel">Buscar origen</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div>
+                Introduce los campos y selecciona una de las coincidencias si las hay.
+            </div>
+            <br>
+            <form class="mb-3" id="formOrigen" onsubmit="buscarOrigen(event, this, 0)">
+                <div class="row">
+                    <div class="col-3">
+                        <label class="form-label">Dirección: </label>
+                        <select id="dir_origen_tipo" class="form-select" name="tipo">
+                            <option value="Avenida">Avenida</option>
+                            <option value="Calle">Calle</option>
+                            <option value="Carril">Carril</option>
+                            <option value="Camino">Camino</option>
+                            <option value="">Otro</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label class="form-label">Nombre: </label>
+                        <input type="text" class="form-control" id="dir_origen_nombre" max="5" name="nombre">
+                    </div>
+                    <div class="col-3">
+                        <label class="form-label">Número: </label>
+                        <input type="text" class="form-control" id="dir_origen_numero" size="3" min="1" max="1000"
+                            name="numero">
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-5">
+                        <label class="form-label">Ciudad: </label>
+                        <input type="text" class="form-control" id="dir_origen_ciudad" maxlength="50" name="ciudad">
+                    </div>
+                    <div class="col-3">
+                        <label class="form-label">C.P.: </label>
+                        <input type="number" class="form-control" id="dir_origen_cp" min="1" max="99999" name="cp">
+                    </div>
+                </div>
+                <br>
+                <input type="submit" class="btn btn-outline-info btn-xs" value="Buscar" />
+            </form>
+            <div id="resultadosOrigen" class="list-group"></div>
+        </div>
+    </div>
 
-    <h3>Destino</h3> <br>
-    <label class="form-label">Dirección: </label>
-    <select id="dir_destino_tipo" class="form-select">
-        <option value="Avenida">Avenida</option>
-        <option value="Calle">Calle</option>
-        <option value="Carril">Carril</option>
-        <option value="Camino">Camino</option>
-        <option value="">Otro</option>
-    </select>
-    <label class="form-label">Número: </label> <br>
-    <input type="text" class="form-control col-xs-3" id="dir_origen_numero" max="50">
-    <label class="form-label">Ciudad: </label> <br>
-    <input type="text" class="form-control col-xs-3" id="dir_origen_ciudad" max="5">
-    <label class="form-label">C.P.: </label> <br>
-    <input type="text" class="form-control col-xs-3" id="dir_origen_cp" max="50">
-    <button id="buscarDestino" class="btn btn-outline-info btn-lg">Buscar</button>
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasDestino" aria-labelledby="offcanvasDestinoLabel" style="width: 35%;">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasDestinoLabel">Buscar destino</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div>
+                Introduce los campos y selecciona una de las coincidencias si las encuentra.
+            </div>
+            <br>
+            <form class="mb-3" id="formDestino" onsubmit="buscarOrigen(event, this, 1)">
+                <div class="row">
+                    <div class="col-3">
+                        <label class="form-label">Dirección: </label>
+                        <select id="dir_destino_tipo" class="form-select" name="tipo">
+                            <option value="Avenida">Avenida</option>
+                            <option value="Calle">Calle</option>
+                            <option value="Carril">Carril</option>
+                            <option value="Camino">Camino</option>
+                            <option value="">Otro</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label class="form-label">Nombre: </label>
+                        <input type="text" class="form-control" id="dir_destino_nombre" max="5" name="nombre">
+                    </div>
+                    <div class="col-3">
+                        <label class="form-label">Número: </label>
+                        <input type="text" class="form-control" id="dir_destino_numero" size="3" min="1" max="1000"
+                            name="numero">
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-5">
+                        <label class="form-label">Ciudad: </label>
+                        <input type="text" class="form-control" id="dir_destino_ciudad" maxlength="50" name="ciudad">
+                    </div>
+                    <div class="col-3">
+                        <label class="form-label">C.P.: </label>
+                        <input type="number" class="form-control" id="dir_destino_cp" min="1" max="99999" name="cp">
+                    </div>
+                </div>
+                <br>
+                <input type="submit" class="btn btn-outline-info btn-xs" value="Buscar" />
+            </form>
+            <div id="resultadosDestino" class="list-group"></div>
+        </div>
+    </div>
+
+    <!-----------FORMULARIO------------------>
 
     <form action="{{url_for('bpclient.create_trayecto')}}" method="POST" class="mb-3">
         <input type="hidden" name="creador" value="{{usuario._id}}" />
 
-        <input type="hidden" class="form-control" name="destino_nombre" required max="50">
-        <input type="hidden" class="form-control" name="destino_latitud" step="any" required>
-        <input type="hidden" class="form-control" name="destino_longitud" step="any" required>
+        <h4>Origen</h4>
+        <div class="row">
+            <div class="col">
+                <label class="form-label">Nombre: </label>
+                <input class="form-control" id="ogn" type="text" name="origen_nombre" required max="50"/>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label class="form-label">Latitud: </label>
+                <input class="form-control" type="number" name="origen_latitud" step="any" required />
+            </div>
+            <div class="col">
+                <label class="form-label">Longitud: </label>
+                <input class="form-control" type="number" name="origen_longitud" step="any" required />
+            </div>
+        </div>
+        <br>
+        
+        <a class="btn btn-outline-info btn-xs" data-bs-toggle="offcanvas" href="#offcanvasOrigen" role="button" aria-controls="offcanvasOrigen"> Buscar origen </a>
         
         <br>
-        <label class="form-label">Fecha: </label>
-        <input type="date" class="form-control" name="fecha" required><br>
-        <label class="form-label">Hora: </label>
-        <input type="time" class="form-control" name="hora" required><br>
-        <label class="form-label">Duraci&oacuten: </label>
-        <input type="number" class="form-control" name="duracion" required><br>
-        <label class="form-label">Periodicidad: </label>
-        <input type="number" class="form-control" name="periodicidad" required max="365"><br>
-        <label class="form-label">Plazas totales: </label>
-        <input type="number" class="form-control" name="plazas_totales" required><br>
-        <label class="form-label">Precio: </label>
-        <input type="number" class="form-control" name="precio" step="any" required><br>
+        <br>
+        
+        <h4>Destino</h4>
+        <div class="row">
+            <div class="col">
+            <label class="form-label">Nombre: </label>
+            <input class="form-control" type="text" name="destino_nombre" required max="50" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label class="form-label">Latitud: </label>
+                <input class="form-control" type="number" name="destino_latitud" step="any" required />
+            </div>
+            <div class="col">
+                <label class="form-label">Longitud: </label>
+                <input class="form-control" type="number" name="destino_longitud" step="any" required />
+            </div>
+        </div>
+
+        <br>
+
+        <a class="btn btn-outline-info btn-xs" data-bs-toggle="offcanvas" href="#offcanvasDestino" role="button" aria-controls="offcanvasDestino"> Buscar destino </a>
+
+        <br>
+        <br>
+
+        <div class="row">
+            <div class="col-4">
+                <label class="form-label">Fecha: </label>
+                <input type="date" class="form-control" name="fecha" required>
+            </div>
+            <div class="col-3">
+                <label class="form-label">Hora: </label>
+                <input type="time" class="form-control" name="hora" required>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-4">
+                <label class="form-label">Duraci&oacuten (minutos): </label>
+                <input type="number" class="form-control col-3" name="duracion" required>
+            </div>
+            <div class="col-4">
+                <label class="form-label">Periodicidad (días): </label>
+                <input type="number" class="form-control" name="periodicidad" required max="365">
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-4">
+                <label class="form-label">Plazas totales: </label>
+                <input type="number" class="form-control" name="plazas_totales" required>
+            </div>
+            <div class="col-4">
+                <label class="form-label">Precio: </label>
+                <input type="number" class="form-control" name="precio" step="any" required>
+            </div>
+        </div>
+        <br>
         <label class="form-label">Veh&iacuteculo: </label>
         <select name="vehiculo" class="form-select">
             {% for v in vehiculos %}
