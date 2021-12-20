@@ -41,3 +41,40 @@ function removeMarkers() {
         map.removeLayer(marcadores[i])
     }
 }
+
+function buscarDirecciones(evento, formulario, tipoBusqueda) {
+    evento.preventDefault();
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            try{
+                var json_res = JSON.parse(xhttp.responseText);
+                var codigo = "";
+                var divResultados = document.getElementById("resultados");
+                if (json_res.length == 0){
+                    codigo += '<label>No se han encontrado resultados</label>'
+                } else {
+                    codigo += '<label>Resultados encontrados:</label>'
+                }
+
+                for (x of json_res) {
+                    codigo += '<button type="button" class="list-group-item list-group-item-action" aria-current="true" onclick=asignarOrigen('+x+')>'+ x["display_name"]+'</button>';
+                }
+                
+                divResultados.innerHTML = codigo;
+
+                return false;
+            } catch(error) {
+                alert("Dirección no encontrada")
+            }
+        }
+    };
+    xhttp.open("GET", "https://nominatim.openstreetmap.org/search?q="
+                       +formulario.numero.value + "+"
+                       +formulario.tipo.value + "+"
+                       +formulario.nombre.value + "+"
+                       +formulario.ciudad.value + "+"
+                       +formulario.cp.value +"&format=json&key=aawYnbqgFdCflcNz0TnpNv21CeKSUq1x", true);
+    xhttp.send();
+}
