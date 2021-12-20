@@ -676,11 +676,9 @@ def get_datos_gasolineras_actualizadas():
     return gasolineras_datos_abiertos
 
 #Devuelve una lista con todas las gasolineras del conjunto de datos abiertos
-@bpclient.route('/gasolineras', methods=['GET'])
-def get_gasolineras():
-    datos_actualizados = get_datos_gasolineras_actualizadas()
-    response = json_util.dumps(datos_actualizados)    
-    return Response(response, mimetype='application/json')
+@bpclient.route('/app/gasolineras', methods=['GET'])
+def get_gasolineras():    
+    return render_template("datos_abiertos/gasolineras.html", provincias = datos_abiertos.provincias, municipios = datos_abiertos.municipios)
 
 #Devuelve una lista con las gasolineras de una localidad pasada por parametro
 #Las gasolineras estan ordenadas segun el precio de la gasolina 95 (de mas barata a mas cara)

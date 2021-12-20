@@ -21,6 +21,7 @@ ultima_actualizacion_gasolineras = datetime.now()
 gasolineras_datos_abiertos = None 
 # trafico_datos_abiertos = None 
 
+
 def get_datos_gasolineras_actualizadas():
     global gasolineras_datos_abiertos, ultima_actualizacion_gasolineras #Llamada a la vbles globales para obtener y actualizar su valor
     proxima_actualizacion = ultima_actualizacion_gasolineras + timedelta(hours = 12) #Comprobamos que los datos se actualizan cada 12 horas
@@ -275,3 +276,55 @@ def get_gasolineras_24horas(provincia):
     gasolineras_json = json.loads(gasolineras_json_string)
 
     return gasolineras_json
+
+
+municipios = ["Madrid","Barcelona","Valencia","Sevilla","Zaragoza","Málaga","Murcia","Palma","Las Palmas de Gran Canaria",
+"Bilbao","Alicante","Córdoba","Valladolid","Vigo","Gijón","Hospitalet de Llobregat","Vitoria","La Coruña","Granada","Elche",
+"Oviedo","Badalona","Tarrasa","Cartagena","Jerez de la Frontera","Sabadell","Móstoles","Santa Cruz de Tenerife","Alcalá de Henares"
+,"Pamplona","Almería","Fuenlabrada","Leganés","San Sebastián","Getafe","Burgos","Santander","Albacete","Castellón de la Plana",
+"Alcorcón","San Cristóbal de la Laguna","Logroño","Badajoz","Huelva","Salamanca","Marbella","Lérida","Dos Hermanas","Tarragona",
+"Torrejón de Ardoz","León","Mataró","Parla","Algeciras","Cádiz","Santa Coloma de Gramanet","Jaén","Alcobendas","Orense","Reus",
+"Telde","Baracaldo","Lugo","Gerona","San Fernando","Cáceres","Santiago de Compostela","Las Rozas de Madrid","Lorca",
+"Roquetas de Mar","Torrevieja","Coslada","El Puerto de Santa María","San Cugat del Vallés","Talavera de la Reina",
+"Cornellá de Llobregat","Ceuta","Melilla","Pozuelo de Alarcón","El Ejido","Guadalajara","Orihuela","Toledo",
+"San Sebastián de los Reyes","San Baudilio de Llobregat","Pontevedra","Chiclana de la Frontera","Avilés","Torrente",
+"Rivas-Vaciamadrid","Palencia","Arona","Guecho","Vélez-Málaga","Fuengirola","Mijas","Gandía","Manresa","Ciudad Real",
+"Alcalá de Guadaíra","Rubí","Valdemoro","Ferrol","Majadahonda","Benidorm","Molina de Segura","Santa Lucía de Tirajana",
+"Torremolinos","Sanlúcar de Barrameda","Ponferrada","Paterna","Estepona","Benalmádena","Villanueva y Geltrú","Viladecans",
+"Sagunto","Zamora","Casteldefels","La Línea de la Concepción","El Prat de Llobregat","Collado Villalba","Irún","Motril","Linares",
+"Granollers","Alcoy","Mérida","Ávila","Aranjuez","Sardañola del Vallés","Arrecife","San Vicente del Raspeig","Cuenca",
+"Arganda del Rey","S. Bartolomé de Tirajana","Torrelavega","Elda","Segovia","Huesca","Utrera","Siero","Mollet del Vallés",
+"Villarreal","Puertollano","Calviá","Ibiza","Boadilla del Monte","Pinto","Colmenar Viejo","Portugalete","Adeje","Santurce",
+"Gavá","Esplugas de Llobregat","Figueras","Alcira","Denia","Mislata","San Feliú de Llobregat","Langreo","Rincón de la Victoria"
+,"Mairena del Aljarafe","Lucena","Granadilla de Abona","Mieres","Basauri","Antequera","La Orotava","Alcantarilla",
+"San Fernando de Henares","Puerto Real","Tres Cantos","Vich","Plasencia","Lloret de Mar","Manacor","Écija","Soria","Blanes",
+"Rentería","Narón","Igualada","Tomelloso","Villafranca del Panadés","Andújar","Miranda de Ebro","Burjasot","Los Realejos",
+"Los Palacios y Villafranca","Villagarcía de Arosa","La Rinconada","Onteniente","Ripollet","Lluchmayor","Arucas","Ronda",
+"Alhaurín de la Torre","Don Benito","Vendrell","Úbeda","Puerto del Rosario","Mazarrón","Burriana","Tudela","Cieza","Teruel",
+"Águilas","Villena","Yecla","Petrel","Tortosa","Marrachí","Almendralejo","Moncada y Reixach","Azuqueca de Henares",
+"San Adrián de Besós","Oleiros","Santa Eulalia del Río","Olot","Santa Pola","Aranda de Duero","Torre Pacheco","Cambrils",
+"Vall de Uxó","Puerto de la Cruz","Villajoyosa","Galapagar","Jávea","San Juan Despí","Castro-Urdiales","San Javier",
+"Barberá del Vallés","Alcázar de San Juan","San Andrés del Rabanedo","Camargo","Arcos de la Frontera","Carballo","Hellín",
+"Valdepeñas","Manises","Aldaya","Arteijo","Lejona","Puente Genil","Chirivella","Salt","Alacuás","Coria del Río","Redondela",
+"Inca","San Roque","Totana","Ingenio","Agüimes","Calpe","Játiva","Ciudadela","Níjar","Culleredo","Rota","Galdácano","Sueca",
+"Sestao","Mahón","Ames","San Pedro de Ribas","Carmona","Sitges","Vinaroz","Morón de la Frontera","Oliva","Crevillente",
+"Premiá de Mar","Algemesí","Durango","San Vicente dels Horts","Almuñécar","Riveira","Martorell","Éibar","Campello","Catarroja",
+"Lepe","San Andrés de la Barca","Lebrija","Novelda","Villaviciosa de Odón","Benicarló","Villarrobledo","Caravaca de la Cruz",
+"Camas","Salou","Cangas de Morrazo","Villanueva de la Serena","Pineda de Mar","Candelaria","Almazora","Jumilla","Marín","Onda",
+"Cuart de Poblet","Almansa","Santa Perpetua de Moguda","Valls","Calafell","Calahorra","Martos","Navalcarnero","Molins de Rey",
+"Adra","Paiporta","Gáldar","Erandio","Icod de los Vinos","San Pedro del Pinatar","Altea","Olesa de Montserrat","Montilla",
+"Alhaurín el Grande","Tacoronte","San José","Ibi","Piélagos","Tomares","Vícar","Cambre","Illescas","Puenteareas",
+"Priego de Córdoba","Muchamiel","Mogán","Liria","Ciempozuelos","Cullera","Castellar del Vallés","Pilar de la Horadada",
+"La Oliva","Barbate","Castrillón","Cártama","Los Barrios","Palafrugell","Alcalá la Real","Zarauz","Mejorada del Campo",
+"Alboraya","San Juan de Alicante","Almonte","El Masnou","Torrelodones","Laguna de Duero","San Antonio Abad","Nerja","Armilla",
+"Coín","Baza","Esparraguera","Mondragón","Isla Cristina","Moncada","Vilaseca","San Felíu de Guixols","La Estrada",
+"Paracuellos de Jarama","Puebla de Vallbona","Alfaz del Pi","Conil de la Frontera","Loja","Medina del Campo","Rojales",
+"Mairena del Alcor","Barañáin","Palma del Río","Bétera","Amposta","Las Torres de Cotillas","San Juan de Aznalfarache","Requena",
+"Maracena","Cabra","Los Llanos de Aridane","Lalín","Ribarroja del Turia","Baena","Calatayud","Teguise","Ayamonte","Alfafar",
+"Alhama de Murcia","Algete","Carcagente","Pájara","Manlleu","Moguer","Guía de Isora","Guadix","Aspe","Tías","Picassent"]
+
+provincias=["Álava", "Albacete", "Alicante", "Almería", "Asturias", "Ávila", "Badajoz", "Barcelona", "Burgos", "Cáceres", "Cádiz", 
+"Cantabria", "Castellón", "Ciudad Real", "Córdoba", "Cuenca", "Gerona", "Granada", "Guadalajara", "Guipúzcoa", "Huelva", "Huesca", 
+"Islas Baleares", "Jaén", "La Coruña", "La Rioja", "Las Palmas", "León", "Lérida", "Lugo", "Madrid", "Málaga", "Murcia", "Navarra",
+"Orense", "Palencia", "Pontevedra", "Salamanca", "Santa Cruz de Tenerife", "Segovia", "Sevilla", "Soria", "Tarragona", "Teruel", 
+"Toledo", "Valencia", "Valladolid", "Vizcaya", "Zamora", "Zaragoza"]
