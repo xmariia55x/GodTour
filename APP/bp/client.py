@@ -413,13 +413,18 @@ def create_vehiculo():
         matricula= request.form.get('matricula')
         color= request.form.get('color')
         plazas= int(request.form.get('plazas'))
-        fotos_vehiculo=  request.files['fotos_vehiculo']
-        response = cloudinary.uploader.upload(fotos_vehiculo)
-        url= response["url"]
-        array_fotos = []
-        array_fotos.append(url)
+        #fotos_vehiculo=  request.files['fotos_vehiculo']
+        fotos_vehiculo = request.files.getlist("fotos_vehiculo")
+        urls = []
+        for foto in fotos_vehiculo:
+            response = cloudinary.uploader.upload(foto)
+            urls.append(response["url"])
+        #response = cloudinary.uploader.upload(fotos_vehiculo)
+        #url= response["url"]
+        #array_fotos = []
+        #array_fotos.append(url)
         if marca and modelo and matricula and color and plazas:
-            vehiculo_data.create_vehiculo(marca, modelo, matricula, color, plazas, array_fotos)
+            vehiculo_data.create_vehiculo(marca, modelo, matricula, color, plazas, urls)
             return redirect('/app/vehiculos')
         else:
             return render_template('vehiculo/nuevoVehiculo.html', error="No se ha podido crear el vehiculo, faltan campos")
@@ -435,12 +440,17 @@ def update_vehiculo(id):
         matricula= request.form.get('matricula')
         color= request.form.get('color')
         plazas= request.form.get('plazas')
-        fotos_vehiculo= request.form.get('fotos_vehiculo')
-        array_fotos = []
-        array_fotos.append(fotos_vehiculo)
-       
+        #fotos_vehiculo= request.form.get('fotos_vehiculo')
+        #array_fotos = []
+        #array_fotos.append(fotos_vehiculo)
+        fotos_vehiculo = request.files.getlist("fotos_vehiculo")
+        urls = []
+        for foto in fotos_vehiculo:
+            response = cloudinary.uploader.upload(foto)
+            urls.append(response["url"])
+
         if marca and modelo and matricula and color and plazas:
-            response = vehiculo_data.update_vehiculo(id, marca, modelo, matricula, color, int(plazas), array_fotos)
+            response = vehiculo_data.update_vehiculo(id, marca, modelo, matricula, color, int(plazas), urls)
             if response == "Acierto":
                 return redirect('/app/vehiculos')
         else:
