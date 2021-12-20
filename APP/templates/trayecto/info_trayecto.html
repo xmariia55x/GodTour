@@ -6,10 +6,10 @@
 
 {% block head %} 
 {{super()}}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/trayectoStyles.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/infoTrayectoStyles.css') }}">
 <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
 <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
-<script defer type="text/javascript" src="../../static/js/infoTrayecto.js"></script>
+<script defer type="text/javascript" src="{{ url_for('static', filename='js/infoTrayecto.js') }}"></script>
 {% endblock %}}
 
 {% block content %}
