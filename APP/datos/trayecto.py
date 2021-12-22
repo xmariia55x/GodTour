@@ -19,7 +19,7 @@ def find_trayectos_creador(id):
 def create_trayecto(creador, origen_nombre, origen_latitud, origen_longitud, destino_nombre, destino_latitud, destino_longitud,
                     fecha, hora, duracion, periodicidad, precio, fotos_opcionales, plazas_totales, vehiculo):
     lista_fotos_trayecto = []
-    for foto in fotos:
+    for foto in fotos_opcionales:
         lista_fotos_trayecto.append(foto)
     trayecto_db.insert_one(
         {

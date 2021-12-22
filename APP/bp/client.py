@@ -218,18 +218,16 @@ def create_trayecto():
         duracion = request.form.get("duracion")
         periodicidad = request.form.get("periodicidad")
         precio = request.form.get("precio")
-        fotos_opcionales = [] #Modificar cuando se manejen las fotos
         plazas_totales = request.form.get("plazas_totales")
         vehiculo = request.form.get("vehiculo")
-
-        print(origen_nombre)
-        print(destino_nombre)
-        print(destino_latitud)
-        print(precio)
-
+        fotos_opcionales = request.files.getlist("fotos_trayecto")
+        urls = []
+        for foto in fotos_opcionales:
+            response = cloudinary.uploader.upload(foto)
+            urls.append(response["url"])
         # Crea el nuevo trayecto
         trayecto_data.create_trayecto(creador, origen_nombre, origen_latitud, origen_longitud, destino_nombre, destino_latitud, destino_longitud,
-                                      fecha, hora, duracion, periodicidad, precio, fotos_opcionales, plazas_totales, vehiculo)
+                                      fecha, hora, duracion, periodicidad, precio, urls, plazas_totales, vehiculo)
     
     return redirect("/app/trayectos/create")
 
