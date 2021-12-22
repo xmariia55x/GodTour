@@ -20,6 +20,16 @@ html, body {
     left: 0;
 }
 
+.labelCampos {
+    display: inline-block!important;
+    color: #0dcaf0;
+    --bs-text-opacity: 1;
+    margin-bottom: 0.5rem!important;
+    display: inline-block!important;
+    font-weight: bolder;
+    box-sizing: border-box;
+}
+
 #logo {
     width: 100px; 
     height: 75px

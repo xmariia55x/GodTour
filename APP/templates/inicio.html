@@ -14,95 +14,71 @@
         <div class="row">
           <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
             <div class="card">
-              <div class="card-header">
-                <div class="input-group input-group-lg">
-                  <input type="text" class="form-control form-control-lg rounded" placeholder="Buscar"
-                    aria-label="Buscar" aria-describedby="basic-addon2" />
-                  <span class="input-group-text border-0" id="basic-addon2"><i class="fas fa-search"></i> <svg
-                      xmlns="http://www.w3.org/2000/svg" width="23" height="23" fill="currentColor" class="bi bi-search"
-                      viewBox="0 0 16 16">
-                      <path
-                        d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-                    </svg></span>
-                </div>
-              </div>
+             
               <div class="card-body p-4">
                 <h6 class="text-muted text-uppercase mt-3 mb-4">Busqueda Avanzada</h6>
+
+                <form action="{{url_for('bpclient.get_composedQuery')}}" method="GET"> 
+
                 <div class="row">
 
-                  <div class="col-md-4 mb-3">
-                    <div class="dropdown">
-                      <a class="btn btn-outline-info btn-lg btn-block dropdown-toggle" href="#" role="button"
-                        id="dropdownMenuLink" data-mdb-toggle="dropdown" aria-expanded="false">
-                        Origen
-                      </a>
-                      <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                      </ul>
-                    </div>
-                  </div>
-
-                  <div class="col-md-4 mb-3">
-                    <div class="dropdown">
-                      <a class="btn btn-outline-info btn-lg btn-block dropdown-toggle" href="#" role="button"
-                        id="dropdownMenuLink3" data-mdb-toggle="dropdown" aria-expanded="false">
-                        Destino
-                      </a>
-                      <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink3">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                      </ul>
-                    </div>
-                  </div>
-                  <div class="col-md-4 mb-3">
-                    <div class="dropdown">
-                      <a class="btn btn-outline-info btn-lg btn-block dropdown-toggle" href="#" role="button"
-                        id="dropdownMenuLink4" data-mdb-toggle="dropdown" aria-expanded="false">
-                        Precio
-                      </a>
-                      <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink4">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                      </ul>
-                    </div>
-                  </div>
+                  <div class="col-auto">
+                    <strong for="origen" class="labelCampos">Origen</strong>
+                    <input class="form-control" list="lista_municipios_gasolineras" id="origen" name="origen">
+                    <datalist id="lista_municipios_gasolineras">
+                        {%for municipio in municipios%}
+                        <option value={{municipio}}>
+                            {%endfor%}
+                    </datalist>
                 </div>
+
+                  <div class="col-auto">
+                    <strong for="destino" class="labelCampos">Destino</strong>
+                    <input class="form-control" list="lista_municipios_gasolineras" id="destino" name="destino">
+                    <datalist id="lista_municipios_gasolineras">
+                        {%for municipio in municipios%}
+                        <option value={{municipio}}>
+                            {%endfor%}
+                    </datalist>
+                </div>
+
+                <div class="col-auto">
+                  <strong for="precio" class="labelCampos">Precio</strong>
+                  <input class="form-control" list="lista_municipios_gasolineras" id="precio" name="precio">
+                  <datalist id="lista_municipios_gasolineras">
+                      {%for municipio in municipios%}
+                      <option value={{municipio}}>
+                          {%endfor%}
+                  </datalist>
+              </div>
+
+                </div><!-- Fin de la primera Row-->
+              </br></br>
+
                 <div class="row">
+
                   <div class="col-md-4 mb-3">
-                    <div class="md-form md-outline input-with-post-icon datepicker" id="falseY">
-                      <input placeholder="Select date" type="date" id="buttons-example" class="form-control">
+                    <div class="md-form md-outline input-with-post-icon datepicker" id="falseY" >
+                      <strong for="fecha" class="labelCampos">Fecha</strong>
+                      <input type="date" id="fecha" class="form-control" name="fecha">
                       <i class="fas fa-calendar input-prefix" tabindex=0></i>
                     </div>
                   </div>
+
                   <div class="col-md-4 mb-3">
-                    <div class="dropdown">
-                      <a class="btn btn-outline-info btn-lg btn-block dropdown-toggle" href="#" role="button"
-                        id="dropdownMenuLink2" data-mdb-toggle="dropdown" aria-expanded="false">
-                        Hora
-                      </a>
-                      <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink2">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                      </ul>
+                    <div class="dropdown" style="text-align: center;">
+                      <strong for="hora" class="labelCampos">Hora</strong></br>
+                      <input type="time" id="hora" name="hora" name="hora">
                     </div>
                   </div>
 
                   <div class="col-md-4 mb-3">
                     <div class="dropdown">
-                      <a class="btn btn-outline-info btn-lg btn-block dropdown-toggle" href="#" role="button"
-                        id="dropdownMenuLink5" data-mdb-toggle="dropdown" aria-expanded="false">
-                        Rango
-                      </a>
-                      <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink5">
-                        <li><a class="dropdown-item" href="#">Action</a></li>
-                        <li><a class="dropdown-item" href="#">Another action</a></li>
-                        <li><a class="dropdown-item" href="#">Something else here</a></li>
-                      </ul>
+                      <strong for="rango" class="labelCampos">Rango</strong></br>
+                      <div class="input-group mb-3">
+                        <input type="text" id="rango" class="form-control" aria-describedby="basic-addon2" name="rango">
+                        <span class="input-group-text" id="basic-addon2">Km</span>
+                      </div>
                     </div>
                   </div>
 
@@ -112,8 +88,10 @@
                   <p class="text-muted mb-0"><span class="text-info"> </span></p>
                   <div>
                     <button type="button" class="btn btn-link text-body" data-mdb-ripple-color="dark">Reset</button>
-                    <button type="button" class="btn btn-info">Buscar</button>
+                    <input type="submit" class="btn btn-info" value="Buscar"></input>
                   </div>
+
+                </form>
                 </div>
               </div>
             </div>

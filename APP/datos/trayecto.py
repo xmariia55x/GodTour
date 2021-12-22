@@ -152,10 +152,5 @@ def delete_pasajero_trayecto(id_trayecto, id_pasajero):
 
 def get_trayectos_composedQuery(lista):
     
-    query = [{'periodicidad': 7}]
-    query.append({'duracion': 405})
-    print(query)
-    results = trayecto_db.find({'$and': query})
+    results = trayecto_db.find({'$and': lista})
     return results
-
-    #return trayectos

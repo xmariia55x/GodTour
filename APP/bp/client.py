@@ -35,7 +35,7 @@ bpclient = Blueprint('bpclient', __name__, template_folder='templates')
 def prueba_Jinja():
     # Esto ira en el login
     session['id'] = "6194e4dbc76e95c373d80508"
-    return render_template("inicio.html")
+    return render_template("inicio.html",municipios = datos_abiertos.municipios)
 
 #Si se quita esto y se ejecuta un GET, en la consola de python salta una excepcion aunque  muestra los vehiculos
 #NO TOCAR!!!!
@@ -389,16 +389,19 @@ def get_trayectos_contratados_usuario(id):
 @bpclient.route('/app/trayectos/composedQuery')
 def get_composedQuery():
     listQuerys = []
-    '''
+    
     origen = request.form.get("origen")
+    print(origen)
     if origen is not None:
         listQuerys.append({'origen': origen})
     
     destino = request.form.get("destino")
+    print(destino)
     if destino is not None:
         listQuerys.append({'destino': destino})
     
     precio = request.form.get("precio")
+    print(precio)
     if precio is not None:
         listQuerys.append({'precio': precio})
      
@@ -411,12 +414,10 @@ def get_composedQuery():
     precio = 10.5
     listQuerys.append({'precio': precio })
     
+'''
     trayectos=trayecto_data.get_trayectos_composedQuery(listQuerys)
 
-    print(trayectos)
-    print(type(trayectos))
-    response=json_util.dumps(trayectos)
-    print(response)    
+    response=json_util.dumps(trayectos)  
     return Response(response,mimetype='application/json')
     
 
