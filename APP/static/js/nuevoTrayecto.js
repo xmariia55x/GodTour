@@ -110,3 +110,18 @@ function validarFormulario(evento, formulario){
         return false;
     }
 }
+
+function actualizarMaxPlazas(){
+    var plazas_totales = document.getElementsByName("plazas_totales")[0];
+    var vehiculo_id = document.getElementsByName("vehiculo")[0].value;
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var json_res = JSON.parse(xhttp.responseText);
+            plazas_totales.setAttribute('max', json_res["plazas"]);
+            plazas_totales.value = json_res["plazas"];   
+        }
+    };
+    xhttp.open("GET", "/api/vehiculos/"+vehiculo_id);
+    xhttp.send();
+}
