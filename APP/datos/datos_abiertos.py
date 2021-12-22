@@ -238,6 +238,42 @@ def get_gasolineras_gasolina95_lowcost_localidad(localidad):
     gasolineras_json_ordenadas = sorted(gasolineras_json, key=lambda k: k['Precio Gasolina 95 E5'], reverse=False)
     return gasolineras_json_ordenadas
 
+def get_gasolineras_gasolina95_lowcost_municipio(municipio):
+    datos_gasolineras = get_datos_gasolineras_actualizadas()
+    lista_gasolineras = []
+    for gasolinera in datos_gasolineras["ListaEESSPrecio"]:
+        if gasolinera["Municipio"].upper() == municipio.upper():
+            lista_gasolineras.append(gasolinera)
+    gasolineras_json_string = json.dumps(lista_gasolineras)
+    gasolineras_json = json.loads(gasolineras_json_string)
+    gasolineras_json_ordenadas = sorted(gasolineras_json, key=lambda k: k['Precio Gasolina 95 E5'], reverse=False)
+    latMin, lonMin, latMax, lonMax = calcularTamMapa(gasolineras_json)
+
+    baratas = []
+    medias = []
+    caras = []
+    
+    for gasolinera in gasolineras_json_ordenadas:
+        precio = float(gasolinera["Precio Gasolina 95 E5"].replace(",", ".")) 
+        if precio < 1.45:
+            baratas.append(gasolinera)
+        elif precio >= 1.45 and precio < 1.50:
+            medias.append(gasolinera)
+        else:
+            caras.append(gasolinera)
+    return baratas, medias, caras, latMin, lonMin, latMax, lonMax
+
+def get_gasolineras_gasolina95_lowcost_provincia(provincia):
+    datos_gasolineras = get_datos_gasolineras_actualizadas()
+    lista_gasolineras = []
+    for gasolinera in datos_gasolineras["ListaEESSPrecio"]:
+        if gasolinera["Provincia"].upper() == provincia.upper():
+            lista_gasolineras.append(gasolinera)
+    gasolineras_json_string = json.dumps(lista_gasolineras)
+    gasolineras_json = json.loads(gasolineras_json_string)
+    gasolineras_json_ordenadas = sorted(gasolineras_json, key=lambda k: k['Precio Gasolina 95 E5'], reverse=False)
+    return gasolineras_json_ordenadas
+
 def get_gasolineras_ubicacion(latitud, longitud, rango):
     datos_gasolineras = get_datos_gasolineras_actualizadas()
     #Si el parametro recibido es nulo, se actualiza con la ubicación actual
@@ -277,6 +313,14 @@ def get_gasolineras_24horas(provincia):
 
     return gasolineras_json
 
+def calcularTamMapa(gasolineras):
+    gasolineras_latitud = sorted(gasolineras, key=lambda k: k['Latitud'], reverse=False)
+    gasolineras_longitud = sorted(gasolineras, key=lambda k: k['Longitud (WGS84)'], reverse=False)
+    latMin = gasolineras_latitud[0]["Latitud"]
+    lonMin = gasolineras_longitud[0]["Longitud (WGS84)"]
+    latMax = gasolineras_latitud[len(gasolineras_latitud) - 1]["Latitud"]
+    lonMax = gasolineras_longitud[len(gasolineras_longitud) - 1]["Longitud (WGS84)"]
+    return latMin, lonMin, latMax, lonMax
 
 municipios = ["Madrid","Barcelona","Valencia","Sevilla","Zaragoza","Málaga","Murcia","Palma","Las Palmas de Gran Canaria",
 "Bilbao","Alicante","Córdoba","Valladolid","Vigo","Gijón","Hospitalet de Llobregat","Vitoria","La Coruña","Granada","Elche",
@@ -328,3 +372,6 @@ provincias=["Álava", "Albacete", "Alicante", "Almería", "Asturias", "Ávila", 
 "Islas Baleares", "Jaén", "La Coruña", "La Rioja", "Las Palmas", "León", "Lérida", "Lugo", "Madrid", "Málaga", "Murcia", "Navarra",
 "Orense", "Palencia", "Pontevedra", "Salamanca", "Santa Cruz de Tenerife", "Segovia", "Sevilla", "Soria", "Tarragona", "Teruel", 
 "Toledo", "Valencia", "Valladolid", "Vizcaya", "Zamora", "Zaragoza"]
+
+
+
