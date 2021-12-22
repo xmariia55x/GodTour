@@ -67,20 +67,27 @@ function asignarDireccion(nombre, lat, lon, tipoBusqueda){
     input_longitud.value = lon;
 
     var origenIcon = L.icon({
-        iconUrl: 'https://pbs.twimg.com/profile_images/378800000731816968/9ceff12db40406c6640e88e7946be63b_400x400.jpeg',
-        iconSize: [70, 95],
-        iconAnchor: [22, 94],
-        popupAnchor: [-3, -76],
+        iconUrl: 'http://localhost:5000/static/images/verde-marker.png',
+        iconSize: [40, 40],
+        iconAnchor:   [22, 40],
+        popupAnchor:  [-3, -76]
+    });
+
+    var destinoIcon = L.icon({
+        iconUrl: 'http://localhost:5000/static/images/rojo-flag.png',
+        iconSize: [40, 40],
+        iconAnchor:   [22, 40],
+        popupAnchor:  [-3, -76]
     });
 
     if (tipoBusqueda == 'Origen'){
         if (marcadorOrigen != null)
             map.removeLayer(marcadorOrigen);
-        marcadorOrigen =  L.marker([lat, lon]).addTo(map).bindPopup("<strong>Origen</strong><br>Lat: " + lat + "<br>Lon: " + lon + "<br>Nombre: " + nombre);
+        marcadorOrigen =  L.marker([lat, lon], {icon : origenIcon}).addTo(map).bindPopup("<strong>Origen</strong><br>Lat: " + lat + "<br>Lon: " + lon + "<br>Nombre: " + nombre);
     } else if (tipoBusqueda == 'Destino'){
         if (marcadorDestino != null)
             map.removeLayer(marcadorDestino);
-        marcadorDestino =  L.marker([lat, lon]).addTo(map).bindPopup("<strong>Destino</strong><br>Lat: " + lat + "<br>Lon: " + lon + "<br>Nombre: " + nombre);
+        marcadorDestino =  L.marker([lat, lon], {icon : destinoIcon}).addTo(map).bindPopup("<strong>Destino</strong><br>Lat: " + lat + "<br>Lon: " + lon + "<br>Nombre: " + nombre);
     }
 
     if (marcadorOrigen != null && marcadorDestino != null){
@@ -102,4 +109,19 @@ function validarFormulario(evento, formulario){
         alert("No se ha introducido el destino");
         return false;
     }
+}
+
+function actualizarMaxPlazas(){
+    var plazas_totales = document.getElementsByName("plazas_totales")[0];
+    var vehiculo_id = document.getElementsByName("vehiculo")[0].value;
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function () {
+        if (this.readyState == 4 && this.status == 200) {
+            var json_res = JSON.parse(xhttp.responseText);
+            plazas_totales.setAttribute('max', json_res["plazas"]);
+            plazas_totales.value = json_res["plazas"];   
+        }
+    };
+    xhttp.open("GET", "/api/vehiculos/"+vehiculo_id);
+    xhttp.send();
 }

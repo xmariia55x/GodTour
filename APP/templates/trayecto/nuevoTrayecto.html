@@ -38,12 +38,11 @@
                     </div>
                     <div class="col">
                         <label class="form-label">Nombre: </label>
-                        <input type="text" class="form-control" id="dir_origen_nombre" max="5" name="nombre">
+                        <input type="text" class="form-control" id="dir_origen_nombre" maxlength="50" name="nombre">
                     </div>
                     <div class="col-3">
                         <label class="form-label">Número: </label>
-                        <input type="text" class="form-control" id="dir_origen_numero" size="3" min="1" max="1000"
-                            name="numero">
+                        <input type="text" class="form-control" id="dir_origen_numero" min="1" name="numero">
                     </div>
                 </div>
                 <br>
@@ -54,7 +53,7 @@
                     </div>
                     <div class="col-3">
                         <label class="form-label">C.P.: </label>
-                        <input type="number" class="form-control" id="dir_origen_cp" min="1" max="99999" name="cp">
+                        <input type="number" class="form-control" id="dir_origen_cp" min="1" name="cp">
                     </div>
                 </div>
                 <br>
@@ -88,12 +87,11 @@
                     </div>
                     <div class="col">
                         <label class="form-label">Nombre: </label>
-                        <input type="text" class="form-control" id="dir_destino_nombre" max="5" name="nombre">
+                        <input type="text" class="form-control" id="dir_destino_nombre" maxlength="50" name="nombre">
                     </div>
                     <div class="col-3">
                         <label class="form-label">Número: </label>
-                        <input type="text" class="form-control" id="dir_destino_numero" size="3" min="1" max="1000"
-                            name="numero">
+                        <input type="text" class="form-control" id="dir_destino_numero" min="1" name="numero">
                     </div>
                 </div>
                 <br>
@@ -104,7 +102,7 @@
                     </div>
                     <div class="col-3">
                         <label class="form-label">C.P.: </label>
-                        <input type="number" class="form-control" id="dir_destino_cp" min="1" max="99999" name="cp">
+                        <input type="number" class="form-control" id="dir_destino_cp" min="1" name="cp">
                     </div>
                 </div>
                 <br>
@@ -123,7 +121,7 @@
         <div class="row">
             <div class="col">
                 <label class="form-label">Nombre: </label>
-                <input class="form-control" id="nombreOrigen" type="text" name="origen_nombre" max="50" required readonly />
+                <input class="form-control" id="nombreOrigen" type="text" name="origen_nombre" required readonly />
             </div>
         </div>
         <div class="row">
@@ -146,8 +144,8 @@
         <h4>Destino</h4>
         <div class="row">
             <div class="col">
-            <label class="form-label">Nombre: </label>
-            <input class="form-control" id="nombreDestino" type="text" name="destino_nombre" max="50" required readonly />
+                <label class="form-label">Nombre: </label>
+                <input class="form-control" id="nombreDestino" type="text" name="destino_nombre" required readonly />
             </div>
         </div>
         <div class="row">
@@ -181,32 +179,40 @@
         <br>
         <div class="row">
             <div class="col-4">
-                <label class="form-label">Duraci&oacuten (minutos): </label>
-                <input type="number" class="form-control col-3" name="duracion" required>
+                <label class="form-label">Duraci&oacute;n (minutos): </label>
+                <input type="number" class="form-control col-3" name="duracion" min="0" required>
             </div>
             <div class="col-4">
                 <label class="form-label">Periodicidad (días): </label>
-                <input type="number" class="form-control" name="periodicidad" required max="365" value="0">
+                <input type="number" class="form-control" name="periodicidad" min="0" max="365" value="0" required>
             </div>
         </div>
         <br>
         <div class="row">
             <div class="col-4">
                 <label class="form-label">Plazas totales: </label>
-                <input type="number" class="form-control" name="plazas_totales" required>
+                <input type="number" class="form-control" name="plazas_totales" min="1" required>
             </div>
             <div class="col-4">
                 <label class="form-label">Precio: </label>
-                <input type="number" class="form-control" name="precio" step="any" required>
+                <input type="number" class="form-control" name="precio" step="any" min="0" required>
             </div>
         </div>
         <br>
-        <label class="form-label">Veh&iacuteculo: </label>
-        <select name="vehiculo" class="form-select">
+        <label class="form-label">Veh&iacute;culo: </label>
+        <select name="vehiculo" class="form-select" onchange="actualizarMaxPlazas()">
+            <option value="" selected disabled>Seleccione el veh&iacute;culo...</option>
             {% for v in vehiculos %}
             <option value="{{v._id}}">{{v.marca}} {{v.modelo}} - {{v.matricula}}</option>
             {% endfor %}
         </select>
+        <br>
+        <div class="form-group row">
+            <label for="fotos_trayecto" class="col-form-label">Fotos del trayecto</label>
+            <div class="col">
+                <input type="file" class="form-control"  id="fotos_trayecto" name="fotos_trayecto"  multiple="multiple" required>
+            </div>
+        </div>
         <br>
         <br>
         <input type="submit" class="btn btn-outline-info btn-lg" id="botonCentrado" value="Crear" />
@@ -214,5 +220,4 @@
 </div>
 
 <div id="map"></div>
-
 {% endblock %}

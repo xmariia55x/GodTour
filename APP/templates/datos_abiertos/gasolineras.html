@@ -4,18 +4,21 @@
 
 {% block head %}
 {{super()}}
-<link rel="stylesheet" href="">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/gasolineras.css') }}">
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+<script defer type="text/javascript" src="{{ url_for('static', filename='js/gasolineras.js') }}"></script>
 {% endblock %}
 
 {% block content %}
 <div style="padding: 2% 15%;">
-    <form class="row g-3">
+    <form class="row g-3" method="POST" action="{{url_for('bpclient.get_gasolineras')}}">
         <div class="col-auto">
             <label for="gasolineras_provincias" class="form-label">Buscar gasolineras de una provincia</label>
         </div>
         <div class="col-auto">
             <input class="form-control" list="lista_provincias_gasolineras" id="gasolineras_provincias"
-                placeholder="Escribe una provincia...">
+                placeholder="Escribe una provincia..." name="provincia_seleccionada">
             <datalist id="lista_provincias_gasolineras">
                 {%for provincia in provincias%}
                 <option value={{provincia}}>
@@ -23,17 +26,17 @@
             </datalist>
         </div>
         <div class="col-auto">
-            <button type="submit" class="btn btn-primary mb-3">Confirm identity</button>
+            <button type="submit" class="btn btn-primary mb-3">Buscar</button>
         </div>
     </form>
 
-    <form class="row g-3">
+    <form class="row g-3" method="POST" action="{{url_for('bpclient.get_gasolineras')}}">
         <div class="col-auto">
             <label for="gasolineras_municipio" class="form-label">Buscar gasolineras de un municipio</label>
         </div>
         <div class="col-auto">
             <input class="form-control" list="lista_municipios_gasolineras" id="gasolineras_municipio"
-                placeholder="Escribe un municipio...">
+                placeholder="Escribe un municipio..." name="municipio_seleccionado">
             <datalist id="lista_municipios_gasolineras">
                 {%for municipio in municipios%}
                 <option value={{municipio}}>
@@ -41,8 +44,18 @@
             </datalist>
         </div>
         <div class="col-auto">
-            <button type="submit" class="btn btn-primary mb-3">Confirm identity</button>
+            <button type="submit" class="btn btn-primary mb-3">Buscar</button>
         </div>
     </form>
+
+    <input type="hidden" id="latMax" value="{{latMax}}" />
+    <input type="hidden" id="lonMax" value="{{lonMax}}" />
+    <input type="hidden" id="latMin" value="{{latMin}}" />
+    <input type="hidden" id="lonMin" value="{{lonMin}}" />
+    <input type="hidden" id="baratas" value="{{baratas}}" />
+    <input type="hidden" id="medias" value="{{medias}}" />
+    <input type="hidden" id="caras" value="{{caras}}" />
+    <div id="map">
+    </div>
 </div>
 {% endblock %}

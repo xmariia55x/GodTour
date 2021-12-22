@@ -22,6 +22,8 @@ import cloudinary
 from cloudinary.uploader import upload
 from cloudinary.utils import cloudinary_url
 
+import json
+
 cloudinary.config(
   cloud_name = 'cloudgodtour',  
   api_key = '435589662959849',  
@@ -277,12 +279,17 @@ def update_trayecto(id):
         fotos_opcionales = [] #Modificar cuando se manejen las fotos
         plazas_totales = request.form.get("plazas_totales")
         vehiculo = request.form.get("vehiculo")
+        fotos_opcionales = request.files.getlist("fotos_trayecto")
+        urls = []
+        for foto in fotos_opcionales:
+            response = cloudinary.uploader.upload(foto)
+            urls.append(response["url"])
         # Un usuario no puede modificar la lista de pasajeros - Se obtiene arriba
         # pasajeros = trayecto["pasajeros"]  #Modificar para edit
 
         # Actualiza el trayecto
         trayecto_data.update_trayecto(id, origen_nombre, origen_latitud, origen_longitud, destino_nombre, destino_latitud, destino_longitud,
-                                      fecha, hora, duracion, periodicidad, precio, fotos_opcionales, plazas_totales, vehiculo, pasajeros)
+                                      fecha, hora, duracion, periodicidad, precio, urls, plazas_totales, vehiculo, pasajeros)
 
     return redirect("/")
 
@@ -717,9 +724,21 @@ def get_datos_gasolineras_actualizadas():
     return gasolineras_datos_abiertos
 
 #Devuelve una lista con todas las gasolineras del conjunto de datos abiertos
-@bpclient.route('/app/gasolineras', methods=['GET'])
+@bpclient.route('/app/gasolineras', methods=['GET', 'POST'])
 def get_gasolineras():    
-    return render_template("datos_abiertos/gasolineras.html", provincias = datos_abiertos.provincias, municipios = datos_abiertos.municipios)
+    if request.method == 'GET':
+        return render_template("datos_abiertos/gasolineras.html", provincias = datos_abiertos.provincias, municipios = datos_abiertos.municipios)
+    else:
+        provincia = request.form.get('provincia_seleccionada')
+        municipio = request.form.get('municipio_seleccionado')
+        #if provincia: 
+        #    gasolineras = datos_abiertos.get_gasolineras_24horas(provincia)
+        
+        if municipio:
+            baratas, medias, caras, latMin, lonMin, latMax, lonMax = datos_abiertos.get_gasolineras_gasolina95_lowcost_municipio(municipio)
+        return render_template("datos_abiertos/gasolineras.html", provincias = datos_abiertos.provincias, municipios = datos_abiertos.municipios, 
+        baratas = json.dumps(baratas), medias = json.dumps(medias), caras = json.dumps(caras), latMin = latMin, lonMin = lonMin, latMax = latMax, lonMax = lonMax)
+
 
 #Devuelve una lista con las gasolineras de una localidad pasada por parametro
 #Las gasolineras estan ordenadas segun el precio de la gasolina 95 (de mas barata a mas cara)
