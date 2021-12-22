@@ -279,12 +279,17 @@ def update_trayecto(id):
         fotos_opcionales = [] #Modificar cuando se manejen las fotos
         plazas_totales = request.form.get("plazas_totales")
         vehiculo = request.form.get("vehiculo")
+        fotos_opcionales = request.files.getlist("fotos_trayecto")
+        urls = []
+        for foto in fotos_opcionales:
+            response = cloudinary.uploader.upload(foto)
+            urls.append(response["url"])
         # Un usuario no puede modificar la lista de pasajeros - Se obtiene arriba
         # pasajeros = trayecto["pasajeros"]  #Modificar para edit
 
         # Actualiza el trayecto
         trayecto_data.update_trayecto(id, origen_nombre, origen_latitud, origen_longitud, destino_nombre, destino_latitud, destino_longitud,
-                                      fecha, hora, duracion, periodicidad, precio, fotos_opcionales, plazas_totales, vehiculo, pasajeros)
+                                      fecha, hora, duracion, periodicidad, precio, urls, plazas_totales, vehiculo, pasajeros)
 
     return redirect("/")
 
