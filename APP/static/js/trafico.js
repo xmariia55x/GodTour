@@ -16,35 +16,35 @@
         // Now add the layer onto the map
         map.addLayer(layer);
 
-        var meteorologica = L.icon({
+        var meteorologicaIcon = L.icon({
             iconUrl: 'http://localhost:5000/static/images/incidencia-meteorologica.png',
             iconSize: [40, 40],
             iconAnchor:   [22, 40],
             popupAnchor:  [-3, -76]
         });
         
-        var montana = L.icon({
+        var montanaIcon = L.icon({
             iconUrl: 'http://localhost:5000/static/images/incidencia-montana.png',
             iconSize: [40, 40],
             iconAnchor:   [22, 40],
             popupAnchor:  [-3, -76]
         });
 
-        var cono = L.icon({
+        var conoIcon = L.icon({
             iconUrl: 'http://localhost:5000/static/images/incidencia-cono.png',
             iconSize: [40, 40],
             iconAnchor:   [22, 40],
             popupAnchor:  [-3, -76]
         });
         
-        var obras = L.icon({
+        var obrasIcon = L.icon({
             iconUrl: 'http://localhost:5000/static/images/incidencia-obras.png',
             iconSize: [40, 40],
             iconAnchor:   [22, 40],
             popupAnchor:  [-3, -76]
         });
 
-        var retencion = L.icon({
+        var retencionIcon = L.icon({
             iconUrl: 'http://localhost:5000/static/images/incidencia-retencion.png',
             iconSize: [40, 40],
             iconAnchor:   [22, 40],
@@ -53,11 +53,10 @@
 
         var marcadores = [];
 
-        function cargarMapa() {
+        function cargarMapaRango() {
             removeMarkers();
             var xhttp = new XMLHttpRequest();
-            var text = document.getElementById("gasolineras_municipio");
-            console.log(text);
+            var text = document.getElementById("rangoKM");
             xhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) {
                     try{
@@ -74,32 +73,14 @@
                         corner2 = L.latLng(latMax, lonMax),
                         bounds = L.latLngBounds(corner1, corner2);
                         map.fitBounds(bounds);
-                        
-                        for (barata of baratas){
-                            var lat = parseFloat(barata["Latitud"].replace(",","."));
-                            var lon = parseFloat(barata["Longitud (WGS84)"].replace(",", "."));
-                            marcadores.push(L.marker([lat, lon], {icon : greenIcon}).addTo(map).bindPopup("Precio: " + barata["Precio Gasolina 95 E5"] + 
-                                                                                                            ", Marca: " + barata["Rótulo"]));
-                        }
-                        for (media of medias){
-                            var lat = parseFloat(media["Latitud"].replace(",","."));
-                            var lon = parseFloat(media["Longitud (WGS84)"].replace(",","."));
-                            marcadores.push(L.marker([lat, lon], {icon : yellowIcon}).addTo(map).bindPopup("Precio: " + media["Precio Gasolina 95 E5"] + 
-                            ", Marca: " + media["Rótulo"]));
-                        }
-                        for (cara of caras) {
-                            var lat = parseFloat(cara["Latitud"].replace(",","."));
-                            var lon = parseFloat(cara["Longitud (WGS84)"].replace(",","."));
-                            marcadores.push(L.marker([lat, lon], {icon : redIcon}).addTo(map).bindPopup("Precio: " + cara["Precio Gasolina 95 E5"] + 
-                            ", Marca: " + cara["Rótulo"]));
-                        }
+                    
                     } catch(error){
-                        alert("No hay gasolineras en el municipio indicado");
+                        alert("No hay incidencias en el rango indicado");
                     }
                 
                 } 
             };
-            xhttp.open("GET", "/api/gasolineras?municipio="+text.value, true);
+            xhttp.open("GET", "/api/incidencias?rango="+text.value, true);
             xhttp.send();
         }
 
@@ -126,48 +107,48 @@
                         bounds = L.latLngBounds(corner1, corner2);
                         map.fitBounds(bounds);
                         
-                        for (v of metereologicas){
-                            var lat = parseFloat(v["geometry"]["coordinates"][1]);
-                            var lon = parseFloat(v["geometry"]["coordinates"][0]);
-                            marcadores.push(L.marker([lat, lon], {icon : meteorologica}).addTo(map).bindPopup("Causa: " + v["properties"]["causa"] + 
-                                                                                                            ", Nivel: " + v["properties"]["nivel"]));
-                        }
+                            //Tiene elementos
+                            for (v of metereologicas){
+                                var lat = parseFloat(v["geometry"]["coordinates"][1]);
+                                var lon = parseFloat(v["geometry"]["coordinates"][0]);
+                                marcadores.push(L.marker([lat, lon], {icon : meteorologicaIcon}).addTo(map).bindPopup("Causa: " + v["properties"]["causa"] + 
+                                                                                                                ", Nivel: " + v["properties"]["nivel"]));
+                            }
+                            for (v of montanas){
+                                var lat = parseFloat(v["geometry"]["coordinates"][1]);
+                                var lon = parseFloat(v["geometry"]["coordinates"][0]);
+                                marcadores.push(L.marker([lat, lon], {icon : montanaIcon}).addTo(map).bindPopup("Causa: " + v["properties"]["causa"] + 
+                                                                                                                ", Nivel: " + v["properties"]["nivel"]));
+                            }
+                            for (v of conos){
+                                var lat = parseFloat(v["geometry"]["coordinates"][1]);
+                                var lon = parseFloat(v["geometry"]["coordinates"][0]);
+                                marcadores.push(L.marker([lat, lon], {icon : conoIcon}).addTo(map).bindPopup("Causa: " + v["properties"]["causa"] + 
+                                                                                                                ", Nivel: " + v["properties"]["nivel"]));
+                            }
+                            for (v of obras){
+                                var lat = parseFloat(v["geometry"]["coordinates"][1]);
+                                var lon = parseFloat(v["geometry"]["coordinates"][0]);
+                                marcadores.push(L.marker([lat, lon], {icon : obrasIcon}).addTo(map).bindPopup("Causa: " + v["properties"]["causa"] + 
+                                                                                                                ", Nivel: " + v["properties"]["nivel"]));
+                            }
                         
-                        for (v of montanas){
-                            var lat = parseFloat(v["geometry"]["coordinates"][1]);
-                            var lon = parseFloat(v["geometry"]["coordinates"][0]);
-                            marcadores.push(L.marker([lat, lon], {icon : greenIcon}).addTo(map).bindPopup("Causa: " + v["properties"]["causa"] + 
-                                                                                                            ", Nivel: " + v["properties"]["nivel"]));
-                        }
-
-                        for (v of conos){
-                            var lat = parseFloat(v["geometry"]["coordinates"][1]);
-                            var lon = parseFloat(v["geometry"]["coordinates"][0]);
-                            marcadores.push(L.marker([lat, lon], {icon : greenIcon}).addTo(map).bindPopup("Causa: " + v["properties"]["causa"] + 
-                                                                                                            ", Nivel: " + v["properties"]["nivel"]));
-                        }
-
-                        for (v of obras){
-                            var lat = parseFloat(v["geometry"]["coordinates"][1]);
-                            var lon = parseFloat(v["geometry"]["coordinates"][0]);
-                            marcadores.push(L.marker([lat, lon], {icon : greenIcon}).addTo(map).bindPopup("Causa: " + v["properties"]["causa"] + 
-                                                                                                            ", Nivel: " + v["properties"]["nivel"]));
-                        }
-
-                        for (v of retenciones){
-                            var lat = parseFloat(v["geometry"]["coordinates"][1]);
-                            var lon = parseFloat(v["geometry"]["coordinates"][0]);
-                            marcadores.push(L.marker([lat, lon], {icon : greenIcon}).addTo(map).bindPopup("Causa: " + v["properties"]["causa"] + 
-                                                                                                            ", Nivel: " + v["properties"]["nivel"]));
-                        }
-
-                    } catch(error){
+                            for (v of retenciones){
+                                var lat = parseFloat(v["geometry"]["coordinates"][1]);
+                                var lon = parseFloat(v["geometry"]["coordinates"][0]);
+                                marcadores.push(L.marker([lat, lon], {icon : retencionIcon}).addTo(map).bindPopup("Causa: " + v["properties"]["causa"] + 
+                                                                                                                ", Nivel: " + v["properties"]["nivel"]));
+                            }
+                        
+                    } 
+                    
+                    catch(error){
                         alert("No hay incidencias en la provincia indicada");
                     }
                 
                 } 
             };
-            xhttp.open("GET", "/api/trafico?provincia="+text.value, true);
+            xhttp.open("GET", "/api/incidencias?provincia="+text.value, true);
             xhttp.send();
         }
 
@@ -176,95 +157,3 @@
                 map.removeLayer(marcadores[i])
             }
         }
-
-/*
-var latMinima = document.getElementById("latMin").value;
-var latMaxima= document.getElementById("latMax").value;
-var lonMinima = document.getElementById("lonMin").value;
-var lonMaxima = document.getElementById("lonMax").value;
-var baratas = document.getElementById("baratas").value;
-var medias = document.getElementById("medias").value;
-var caras = document.getElementById("caras").value;
-
-console.log(latMinima);
-console.log(latMaxima);
-console.log(lonMinima);
-console.log(lonMaxima);
-console.log(baratas);
-console.log(medias);
-console.log(caras);
-
-
-var map = L.map('map');
-var corner1 = L.latLng(latMinima, lonMinima),
-corner2 = L.latLng(latMaxima, lonMaxima),
-bounds = L.latLngBounds(corner1, corner2);
-map.fitBounds(bounds);
-
-
-// {s}, {z}, {x} and {y} are placeholders for map tiles
-// {x} and {y} are the x/y of where you are on the map
-// {z} is the zoom level
-// {s} is the subdomain of cartodb
-var layer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-}).addTo(map);
-
-// Now add the layer onto the map
-// map.addLayer(layer);
-
-//Haremos un for poniendo markers.
-
-var greenIcon = L.icon({
-    iconUrl: 'http://localhost:5000/static/images/verde.png',
-    iconSize: [40, 40],
-    iconAnchor:   [22, 40],
-    popupAnchor:  [-3, -76]
-});
-
-var yellowIcon = L.icon({
-    iconUrl: 'http://localhost:5000/static/images/amarillo.png',
-    iconSize: [40, 40],
-    iconAnchor:   [22, 40],
-    popupAnchor:  [-3, -76]
-});
-
-var redIcon = L.icon({
-    iconUrl: 'http://localhost:5000/static/images/rojo.png',
-    iconSize: [40, 40],
-    iconAnchor:   [22, 40],
-    popupAnchor:  [-3, -76]
-});
-var a = JSON.parse(baratas);
-for(var i = 0; i < a.length; i++) {
-    var parse = a[i];
-    console.log(parse);
-    //var lat = parse["Latitud"];
-   // console.log(lat);
-   
-    //var lon = parse["Longitud (WGS84)"];
-    //console.log(lon);
-    //var precio = parse["Precio Gasolina 95 E5"];
-    //var nombre = parse["Rótulo"];
-    //let marca = L.marker([lat, lon], {icon : greenIcon}).addTo(map).bindPopup("Precio: " + precio + "</br> Nombre: " + nombre);
-}
-
-for(var i = 0; i < medias.length; i++) {
-    var parse = medias[i];
-    var lat = parse["Latitud"];
-    var lon = parse["Longitud (WGS84)"];
-    var precio = parse["Precio Gasolina 95 E5"];
-    var nombre = parse["Rótulo"];
-    let marca = L.marker([lat, lon], {icon : yellowIcon}).addTo(map).bindPopup("Precio: " + precio + ", Nombre: " + nombre);
-}
-
-for(var i = 0; i < caras.length; i++) {
-    var parse = caras[i];
-    var lat = parse["Latitud"];
-    var lon = parse["Longitud (WGS84)"];
-    var precio = parse["Precio Gasolina 95 E5"];
-    var nombre = parse["Rótulo"];
-    let marca = L.marker([lat, lon], {icon : redIcon}).addTo(map).bindPopup("Precio: " + precio + ", Nombre: " + nombre);
-}
-
-*/

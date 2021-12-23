@@ -534,11 +534,10 @@ def get_datos_trafico_actualizados():
     return trafico_datos_abiertos
 
 #Devuelve una lista con las incidencias de trafico del conjunto de datos abiertos
-@bpclient.route('/trafico', methods=['GET'])
+@bpclient.route('/app/trafico', methods=['GET'])
 def get_trafico():
-    datos_trafico = get_datos_trafico_actualizados()
-    response = json_util.dumps(datos_trafico)
-    return Response(response, mimetype='application/json')
+    if request.method == 'GET':
+        return render_template("datos_abiertos/trafico.html", provincias = datos_abiertos.provincias_trafico)
 
 #Devuelve las incidencias de trafico de una provincia
 @bpclient.route('/trafico/by_provincia', methods=['POST'])
@@ -742,21 +741,10 @@ def get_datos_gasolineras_actualizadas():
     return gasolineras_datos_abiertos
 
 #Devuelve una lista con todas las gasolineras del conjunto de datos abiertos
-@bpclient.route('/app/gasolineras', methods=['GET', 'POST'])
+@bpclient.route('/app/gasolineras', methods=['GET'])
 def get_gasolineras():    
     if request.method == 'GET':
         return render_template("datos_abiertos/gasolineras.html", provincias = datos_abiertos.provincias, municipios = datos_abiertos.municipios)
-    else:
-        provincia = request.form.get('provincia_seleccionada')
-        municipio = request.form.get('municipio_seleccionado')
-        #if provincia: 
-        #    gasolineras = datos_abiertos.get_gasolineras_24horas(provincia)
-        
-        if municipio:
-            baratas, medias, caras, latMin, lonMin, latMax, lonMax = datos_abiertos.get_gasolineras_gasolina95_lowcost_municipio(municipio)
-        return render_template("datos_abiertos/gasolineras.html", provincias = datos_abiertos.provincias, municipios = datos_abiertos.municipios, 
-        baratas = baratas, medias = medias, caras = caras, latMin = latMin, lonMin = lonMin, latMax = latMax, lonMax = lonMax)
-
 
 #Devuelve una lista con las gasolineras de una localidad pasada por parametro
 #Las gasolineras estan ordenadas segun el precio de la gasolina 95 (de mas barata a mas cara)

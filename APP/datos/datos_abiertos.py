@@ -83,7 +83,7 @@ def get_incidencias_provincia(provincia):
     incidencias_json = json.loads(incidencias_json_string)
 
     if incidencias_json:
-        latMin, lonMin, latMax, lonMax = calcularTamMapa(incidencias_json)
+        latMin, lonMin, latMax, lonMax = calcularTamMapaTrafico(incidencias_json)
         metereologica = []
         montana = []
         cono = []
@@ -101,7 +101,6 @@ def get_incidencias_provincia(provincia):
                     obras.append(incidencia)
                 else:
                     retencion.append(incidencia)
-
         return metereologica, montana, cono, obras, retencion, latMin, lonMin, latMax, lonMax
     else: 
         return "No hay incidencias"
@@ -379,6 +378,16 @@ def calcularTamMapa(gasolineras):
     latMax = gasolineras_latitud[len(gasolineras_latitud) - 1]["Latitud"]
     lonMax = gasolineras_longitud[len(gasolineras_longitud) - 1]["Longitud (WGS84)"]
     return float(latMin.replace(",",".")), float(lonMin.replace(",",".")), float(latMax.replace(",",".")), float(lonMax.replace(",",".")) 
+
+def calcularTamMapaTrafico(incidencias):
+    incidencias_latitud = sorted(incidencias, key=lambda k: k["geometry"]["coordinates"][1], reverse=False)
+    incidencias_longitud = sorted(incidencias, key=lambda k: k["geometry"]["coordinates"][0], reverse=False)
+    latMin = incidencias_latitud[0]["geometry"]["coordinates"][1]
+    lonMin = incidencias_longitud[0]["geometry"]["coordinates"][0]
+    latMax = incidencias_latitud[len(incidencias_latitud) - 1]["geometry"]["coordinates"][1]
+    lonMax = incidencias_longitud[len(incidencias_longitud) - 1]["geometry"]["coordinates"][0]
+    return float(latMin), float(lonMin), float(latMax), float(lonMax) 
+    
 
 municipios = ["Abengibre","Alatoz","Albacete","Alcadozo","Alcalá del Júcar","Alcaraz","Almansa","Alpera","Barrax","Bonete",
 "Bonillo (El)","Casas de Juan Núñez","Casas-Ibáñez","Caudete","Cenizate","Chinchilla de Monte-Aragón","Elche de la Sierra",
@@ -793,5 +802,11 @@ municipios = ["Abengibre","Alatoz","Albacete","Alcadozo","Alcalá del Júcar","A
 provincias=["Álava", "Albacete", "Alicante", "Almería", "Asturias", "Ávila", "Badajoz", "Barcelona", "Burgos", "Cáceres", "Cádiz", 
 "Cantabria", "Castellón", "Ciudad Real", "Córdoba", "Cuenca", "Gerona", "Granada", "Guadalajara", "Guipúzcoa", "Huelva", "Huesca", 
 "Islas Baleares", "Jaén", "La Coruña", "La Rioja", "Las Palmas", "León", "Lérida", "Lugo", "Madrid", "Málaga", "Murcia", "Navarra",
+"Orense", "Palencia", "Pontevedra", "Salamanca", "Santa Cruz de Tenerife", "Segovia", "Sevilla", "Soria", "Tarragona", "Teruel", 
+"Toledo", "Valencia", "Valladolid", "Vizcaya", "Zamora", "Zaragoza"]
+
+provincias_trafico=["Alava", "Albacete", "Alicante", "Almeria", "Asturias", "Avila", "Badajoz", "Barcelona", "Burgos", "Caceres", "Cadiz", 
+"Cantabria", "Castellon", "Ciudad Real", "Cordoba", "Cuenca", "Gerona", "Granada", "Guadalajara", "Guipuzcoa", "Huelva", "Huesca", 
+"Islas Baleares", "Jaen", "La Coruña", "La Rioja", "Las Palmas", "Leon", "Lerida", "Lugo", "Madrid", "Malaga", "Murcia", "Navarra",
 "Orense", "Palencia", "Pontevedra", "Salamanca", "Santa Cruz de Tenerife", "Segovia", "Sevilla", "Soria", "Tarragona", "Teruel", 
 "Toledo", "Valencia", "Valladolid", "Vizcaya", "Zamora", "Zaragoza"]
