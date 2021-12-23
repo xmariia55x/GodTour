@@ -62,7 +62,17 @@ def calcula_ubicacion():
     return latitude, longitude
 
 # --------------- OPERACIONES TRÁFICO ------------------------#
-
+def get_incidencias_nombre():
+    trafico = descargar_datos_trafico()
+    lista = []
+    for incidencia in trafico["features"]:
+        inc = incidencia["properties"]["tipo"]
+        if inc not in lista:
+            lista.append(inc)
+    with open('salida2.txt', 'w') as f:
+       for line in lista:
+            f.write(line)
+            f.write('\n')
 def get_incidencias_provincia(provincia):
     trafico_actualizado = descargar_datos_trafico()
     lista_incidencias = []
