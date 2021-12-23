@@ -597,8 +597,11 @@ def get_gasolineras():
     longitude = request.args.get("longitude")
     rango = request.args.get("rango")
     provincia = request.args.get("provincia")
+    municipio = request.args.get("municipio")
     if localidad:
         gasolineras = datos_abiertos.get_gasolineras_gasolina95_lowcost_localidad(localidad) #FUNCIONA
+    elif municipio:
+        gasolineras = datos_abiertos.get_gasolineras_gasolina95_lowcost_municipio(municipio) #FUNCIONA
     elif provincia:
         gasolineras = datos_abiertos.get_gasolineras_24horas(provincia) #FUNCIONA
     elif latitude and longitude and rango:
@@ -614,11 +617,6 @@ def get_gasolineras():
         response = json_util.dumps(gasolineras)    
         return Response(response, mimetype='application/json')
 
-@bpserver.route('/api/gasolineras/prueba', methods=['GET'])
-def get_gasolineras_2():
-    municipio = request.args.get("municipio")
-    response = json_util.dumps(datos_abiertos.get_gasolineras_gasolina95_lowcost_municipio(municipio))
-    return Response(response, mimetype='application/json')
 #Devuelve una lista con las gasolineras de una localidad pasada por parametro
 #Las gasolineras estan ordenadas segun el precio de la gasolina 95 (de mas barata a mas cara)
 '''@bpserver.route('/api/gasolineras/gasolina95_low_cost', methods=['GET'])
