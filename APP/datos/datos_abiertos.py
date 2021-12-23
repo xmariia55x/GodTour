@@ -71,8 +71,30 @@ def get_incidencias_provincia(provincia):
             lista_incidencias.append(incidencia)
     incidencias_json_string = json.dumps(lista_incidencias)
     incidencias_json = json.loads(incidencias_json_string)
-    return incidencias_json
 
+    if incidencias_json:
+        latMin, lonMin, latMax, lonMax = calcularTamMapa(incidencias_json)
+        metereologica = []
+        montana = []
+        cono = []
+        obras = []
+        retencion = []
+        
+        for incidencia in incidencias_json:
+                if incidencia["properties"]["tipo"].upper() == "METEOROLOGICA" :    
+                    metereologica.append(incidencia)
+                elif incidencia["properties"]["tipo"].upper() == "PUERTOS DE MONTA?A" :    
+                    montana.append(incidencia)
+                elif incidencia["properties"]["tipo"].upper() == "CONO" :    
+                    cono.append(incidencia)
+                elif incidencia["properties"]["tipo"].upper() == "OBRAS" :
+                    obras.append(incidencia)
+                else:
+                    retencion.append(incidencia)
+
+        return metereologica, montana, cono, obras, retencion, latMin, lonMin, latMax, lonMax
+    else: 
+        return "No hay incidencias"
 
 def get_incidencias_rango(latitud, longitud, rango):
     trafico_actualizado = descargar_datos_trafico()
