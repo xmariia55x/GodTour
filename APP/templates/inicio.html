@@ -24,7 +24,7 @@
 
                   <div class="col-auto">
                     <strong for="origen" class="labelCampos">Origen</strong>
-                    <input class="form-control" list="lista_municipios_gasolineras" id="origen" name="origen">
+                    <input type="text" class="form-control" list="lista_municipios_gasolineras" id="origen" name="origen">
                     <datalist id="lista_municipios_gasolineras">
                         {%for municipio in municipios%}
                         <option value={{municipio}}>
@@ -34,7 +34,7 @@
 
                   <div class="col-auto">
                     <strong for="destino" class="labelCampos">Destino</strong>
-                    <input class="form-control" list="lista_municipios_gasolineras" id="destino" name="destino">
+                    <input type="text" class="form-control" list="lista_municipios_gasolineras" id="destino" name="destino">
                     <datalist id="lista_municipios_gasolineras">
                         {%for municipio in municipios%}
                         <option value={{municipio}}>
@@ -44,7 +44,7 @@
 
                 <div class="col-auto">
                   <strong for="precio" class="labelCampos">Precio</strong>
-                  <input class="form-control" list="lista_municipios_gasolineras" id="precio" name="precio">
+                  <input type="text" class="form-control" list="lista_municipios_gasolineras" id="precio" name="precio">
                   <datalist id="lista_municipios_gasolineras">
                       {%for municipio in municipios%}
                       <option value={{municipio}}>

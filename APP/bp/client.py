@@ -410,6 +410,23 @@ def get_composedQuery():
     print(precio)
     if precio is not None:
         listQuerys.append({'precio': precio})
+
+
+    fecha = request.form.get("fecha")
+    print(fecha)
+    if fecha is not None:
+        listQuerys.append({'fecha': fecha})
+    
+    hora = request.form.get("hora")
+    print(hora)
+    if hora is not None:
+        listQuerys.append({'hora': hora})
+    
+    rango = request.form.get("rango")
+    print(rango)
+    if rango is not None:
+        listQuerys.append({'rango': rango})
+     
      
 
     '''
