@@ -47,6 +47,10 @@ def create_trayecto(creador, origen_nombre, origen_latitud, origen_longitud, des
 def update_trayecto(id, origen_nombre, origen_latitud, origen_longitud, destino_nombre, destino_latitud, destino_longitud,
                     fecha, hora, duracion, periodicidad, precio, fotos_opcionales, plazas_totales, vehiculo, pasajeros):
     filter = {"_id": ObjectId(id)}
+    
+    lista_fotos_trayecto = []
+    for foto in fotos_opcionales:
+        lista_fotos_trayecto.append(foto)
 
     new_values = {"$set":{
             "destino": 
@@ -63,7 +67,7 @@ def update_trayecto(id, origen_nombre, origen_latitud, origen_longitud, destino_
                 },
             "periodicidad": int(periodicidad),
             "precio": float(precio),
-            "fotos_opcionales": fotos_opcionales,
+            "fotos_opcionales": lista_fotos_trayecto,
             "plazas_totales": int(plazas_totales),
             "vehiculo": ObjectId(vehiculo), 
             "pasajeros": pasajeros

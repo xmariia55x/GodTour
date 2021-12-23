@@ -2,62 +2,254 @@
 
 {% block title %}Editar trayecto{% endblock %}
 
-{% set disabled = "disabled" if trayecto.pasajeros|length > 0 else "" %}
+{% block head %}
+{{super()}}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/nuevoTrayectoStyles.css') }}">
+<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+<script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+<script defer type="text/javascript" src="{{ url_for('static', filename='js/nuevoTrayecto.js') }}"></script>
+{% endblock %}}
 
 {% block content %}
-<h1>Editar trayecto</h1><br>
+<h1 style="text-align: center;">Editar trayecto</h1><br>
+<div id="principal">
+    
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasOrigen" aria-labelledby="offcanvasOrigenLabel" style="width: 35%;">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasOrigenLabel">Buscar origen</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div>
+                Introduce los campos y selecciona una de las coincidencias si las hay.
+            </div>
+            <br>
+            <form class="mb-3" id="formOrigen" onsubmit="buscarDirecciones(event, this, 'Origen')">
+                <div class="row">
+                    <div class="col-3">
+                        <label class="form-label">Dirección: </label>
+                        <select id="dir_origen_tipo" class="form-select" name="tipo">
+                            <option value="Avenida">Avenida</option>
+                            <option value="Calle">Calle</option>
+                            <option value="Carril">Carril</option>
+                            <option value="Camino">Camino</option>
+                            <option value="">Otro</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label class="form-label">Nombre: </label>
+                        <input type="text" class="form-control" id="dir_origen_nombre" maxlength="50" name="nombre">
+                    </div>
+                    <div class="col-3">
+                        <label class="form-label">Número: </label>
+                        <input type="text" class="form-control" id="dir_origen_numero" min="1" name="numero">
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-5">
+                        <label class="form-label">Ciudad: </label>
+                        <input type="text" class="form-control" id="dir_origen_ciudad" maxlength="50" name="ciudad">
+                    </div>
+                    <div class="col-3">
+                        <label class="form-label">C.P.: </label>
+                        <input type="number" class="form-control" id="dir_origen_cp" min="1" name="cp">
+                    </div>
+                </div>
+                <br>
+                <input type="submit" class="btn btn-outline-info btn-xs" value="Buscar" />
+            </form>
+            <div id="resultadosOrigen" class="list-group"></div>
+        </div>
+    </div>
 
-<form action="{{url_for('bpclient.update_trayecto', id = trayecto._id)}}" method="POST" class="form-floating"> 
-    Origen:
-    <input id="ogn" type="text" name="origen_nombre" required max="50" value="{{trayecto.origen.nombre}}" />
-    <label for="ogn">Nombre: </label>
-    <label>Latitud: </label>
-    <input type="number" name="origen_latitud" step="any" required value="{{trayecto.origen.latitud}}" />
-    <label>Longitud: </label>
-    <input type="number" name="origen_longitud" step="any" required value="{{trayecto.origen.longitud}}" />
-    <br>
-    Destino:
-    <label>Nombre: </label>
-    <input type="text" name="destino_nombre" required max="50" value="{{trayecto.destino.nombre}}" />
-    <label>Latitud: </label>
-    <input type="number" name="destino_latitud" step="any" required value="{{trayecto.destino.latitud}}" />
-    <label>Longitud: </label>
-    <input type="number" name="destino_longitud" step="any" required value="{{trayecto.destino.longitud}}" />
-    <br>
-    <label>Fecha: </label>
-    <input type="date" name="fecha" required value="{{fecha}}" /><br>
-    <label>Hora: </label>
-    <input type="time" name="hora" required value="{{hora}}" /><br>
-    <label>Duraci&oacuten: </label>
-    <input type="number" name="duracion" required min="1" value="{{trayecto.duracion}}" /><br>
-    <label>Periodicidad: </label>
-    <input type="number" name="periodicidad" required min="0" max="365" value="{{trayecto.periodicidad}}" /><br>
-    <label>Plazas totales: </label>
-    <input type="number" name="plazas_totales" required min="{{trayecto.pasajeros|length}}"
-        value="{{trayecto.plazas_totales}}" /><br>
-    <label>Precio: </label>
-    <input type="number" name="precio" step="any" required min="0" value="{{trayecto.precio}}" /><br>
-    <label>Veh&iacuteculo: </label>
-    <select name="vehiculo">
-        {% for v in vehiculos %}
-        {% set selected = "" %}
-        {% if v == trayecto.vehiculo %}
-        {% set selected = "selected" %}
-        {% else %}
-        {% set selected = "" %}
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasDestino" aria-labelledby="offcanvasDestinoLabel" style="width: 35%;">
+        <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="offcanvasDestinoLabel">Buscar destino</h5>
+            <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div>
+                Introduce los campos y selecciona una de las coincidencias si las encuentra.
+            </div>
+            <br>
+            <form class="mb-3" id="formDestino" onsubmit="buscarDirecciones(event, this, 'Destino')">
+                <div class="row">
+                    <div class="col-3">
+                        <label class="form-label">Dirección: </label>
+                        <select id="dir_destino_tipo" class="form-select" name="tipo">
+                            <option value="Avenida">Avenida</option>
+                            <option value="Calle">Calle</option>
+                            <option value="Carril">Carril</option>
+                            <option value="Camino">Camino</option>
+                            <option value="">Otro</option>
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label class="form-label">Nombre: </label>
+                        <input type="text" class="form-control" id="dir_destino_nombre" maxlength="50" name="nombre">
+                    </div>
+                    <div class="col-3">
+                        <label class="form-label">Número: </label>
+                        <input type="text" class="form-control" id="dir_destino_numero" min="1" name="numero">
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-5">
+                        <label class="form-label">Ciudad: </label>
+                        <input type="text" class="form-control" id="dir_destino_ciudad" maxlength="50" name="ciudad">
+                    </div>
+                    <div class="col-3">
+                        <label class="form-label">C.P.: </label>
+                        <input type="number" class="form-control" id="dir_destino_cp" min="1" name="cp">
+                    </div>
+                </div>
+                <br>
+                <input type="submit" class="btn btn-outline-info btn-xs" value="Buscar" />
+            </form>
+            <div id="resultadosDestino" class="list-group"></div>
+        </div>
+    </div>
+
+    <!-----------FORMULARIO------------------>
+
+    <form action="{{url_for('bpclient.update_trayecto', id = trayecto._id)}}" method="POST" onsubmit="validarFormulario(event, this)" class="mb-3"
+    enctype="multipart/form-data">
+        <input type="hidden" name="creador" value="{{usuario._id}}" />
+
+        <h4>Origen</h4>
+        <div class="row">
+            <div class="col">
+                <label class="form-label">Nombre: </label>
+                <input class="form-control" id="nombreOrigen" type="text" name="origen_nombre" 
+                required readonly value="{{trayecto.origen.nombre}}" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label class="form-label">Latitud: </label>
+                <input class="form-control" id="latitudOrigen" type="number" name="origen_latitud" step="any" 
+                required readonly value="{{trayecto.origen.latitud}}" />
+            </div>
+            <div class="col">
+                <label class="form-label">Longitud: </label>
+                <input class="form-control" id="longitudOrigen" type="number" name="origen_longitud" step="any" 
+                required readonly value="{{trayecto.origen.longitud}}" />
+            </div>
+        </div>
+        <br>
+        
+        <a class="btn btn-outline-info btn-xs" data-bs-toggle="offcanvas" href="#offcanvasOrigen" role="button" aria-controls="offcanvasOrigen"> Buscar origen </a>
+        
+        <br>
+        <br>
+        
+        <h4>Destino</h4>
+        <div class="row">
+            <div class="col">
+                <label class="form-label">Nombre: </label>
+                <input class="form-control" id="nombreDestino" type="text" name="destino_nombre" 
+                required readonly value="{{trayecto.destino.nombre}}" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label class="form-label">Latitud: </label>
+                <input class="form-control" id="latitudDestino" type="number" name="destino_latitud" step="any" 
+                required readonly value="{{trayecto.destino.latitud}}" />
+            </div>
+            <div class="col">
+                <label class="form-label">Longitud: </label>
+                <input class="form-control" id="longitudDestino" type="number" name="destino_longitud" step="any" 
+                required readonly value="{{trayecto.destino.longitud}}" />
+            </div>
+        </div>
+
+        <br>
+
+        <a class="btn btn-outline-info btn-xs" data-bs-toggle="offcanvas" href="#offcanvasDestino" role="button" aria-controls="offcanvasDestino"> Buscar destino </a>
+
+        <br>
+        <br>
+
+        <div class="row">
+            <div class="col-4">
+                <label class="form-label">Fecha: </label>
+                <input type="date" class="form-control" name="fecha" required value="{{fecha}}" />
+            </div>
+            <div class="col-4">
+                <label class="form-label">Hora: </label>
+                <input type="time" class="form-control" name="hora" required value="{{hora}}" />
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-4">
+                <label class="form-label">Duraci&oacute;n (minutos): </label>
+                <input type="number" class="form-control col-3" name="duracion" min="0" required value="{{trayecto.duracion}}" />
+            </div>
+            <div class="col-4">
+                <label class="form-label">Periodicidad (días): </label>
+                <input type="number" class="form-control" name="periodicidad" min="0" max="365" value="0" required value="{{trayecto.periodicidad}}" />
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-4">
+                <label class="form-label">Plazas totales: </label>
+                <input type="number" class="form-control" name="plazas_totales" min="1" required value="{{trayecto.plazas_totales}}" />
+            </div>
+            <div class="col-4">
+                <label class="form-label">Precio: </label>
+                <input type="number" class="form-control" name="precio" step="any" min="0" required value="{{trayecto.precio}}" />
+            </div>
+        </div>
+        <br>
+        <label class="form-label">Veh&iacute;culo: </label>
+        <select name="vehiculo" class="form-select" onchange="actualizarMaxPlazas()">
+            {% for v in vehiculos %}
+                {% set selected = "" %}
+                {% if v == trayecto.vehiculo %}
+                    {% set selected = "selected" %}
+                {% else %}
+                    {% set selected = "" %}
+                {% endif %}
+                <option value="{{v._id}}" {{selected}}>{{v.marca}} {{v.modelo}} - {{v.matricula}}</option>
+            {% endfor %}
+        </select>
+        <br>
+        {% if trayecto.fotos_opcionales|count > 0 %}
+        <div class="row">
+            <label class="col-form-label">Fotos guardadas:</label>
+            {% for image_url in trayecto.fotos_opcionales %}
+            <div class="col">
+                <img src="{{image_url}}" width="100" height="100" />
+                <input type="checkbox" value="{{image_url}}" name="imagenes" checked />
+            </div>
+            {% endfor %}
+        </div>
         {% endif %}
-        <option value="{{v._id}}" {{selected}}>{{v.marca}} {{v.modelo}} - {{v.matricula}}</option>
-        {% endfor %}
-    </select>
-    <br>
-    <label>Pasajeros: </label>
-    <ul>
-        {% for p in pasajeros %}
-        <li>{{p.nombre_completo}} - {{p.correo}}</li>
-        {% endfor %}
-    </ul>
-    <br>
-    <br>
-    <input type="submit" value="Editar" />
-</form>
+        <div class="form-group row">
+            <label for="fotos_trayecto" class="col-form-label">Añadir más fotos</label>
+            <div class="col">
+                <input type="file" class="form-control"  id="fotos_trayecto" name="fotos_trayecto" multiple="multiple" required>
+            </div>
+        </div>
+        {% if pasajeros|count > 0 %}
+        <br>
+        <label>Pasajeros: </label>
+        <ul>
+            {% for p in pasajeros %}
+            <li>{{p.nombre_completo}} - {{p.correo}}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        <br>
+        <br>
+        <input type="submit" class="btn btn-outline-info btn-lg" id="botonCentrado" value="Actualizar" />
+    </form>
+</div>
+
+<div id="map"></div>
 {% endblock %}

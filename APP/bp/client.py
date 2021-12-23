@@ -277,8 +277,9 @@ def update_trayecto(id):
         fotos_opcionales = [] #Modificar cuando se manejen las fotos
         plazas_totales = request.form.get("plazas_totales")
         vehiculo = request.form.get("vehiculo")
+        imagenes_guardadas = request.form.getlist("imagenes")
         fotos_opcionales = request.files.getlist("fotos_trayecto")
-        urls = []
+        urls = imagenes_guardadas
         for foto in fotos_opcionales:
             response = cloudinary.uploader.upload(foto)
             urls.append(response["url"])
