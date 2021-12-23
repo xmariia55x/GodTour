@@ -17,6 +17,23 @@ var layer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 var marcadorOrigen = null;
 var marcadorDestino = null;
 
+window.onload = function () {
+    if (document.getElementById("nombreOrigen").value.length > 0){
+        
+        var oLat = document.getElementById("latitudOrigen").value; 
+        var oLon = document.getElementById("longitudOrigen").value;
+        var oNombre = document.getElementById("nombreOrigen").value;
+        
+        var dLat = document.getElementById("latitudDestino").value; 
+        var dLon = document.getElementById("longitudDestino").value;
+        var dNombre = document.getElementById("nombreDestino").value;
+
+        asignarDireccion(oNombre, oLat, oLon, "Origen");
+        asignarDireccion(dNombre, dLat, dLon, "Destino");
+    }
+}
+
+
 function buscarDirecciones(evento, formulario, tipoBusqueda) {
     evento.preventDefault();
     var xhttp = new XMLHttpRequest();
@@ -105,10 +122,20 @@ function validarFormulario(evento, formulario){
     } 
     
     if (formulario.destino_nombre.value.length == 0){
-        evento.preventDefault();
         alert("No se ha introducido el destino");
+    }
+    
+    var select = document.getElementById("select-vehiculo");
+    var selectedOperation = select.options[select.selectedIndex].getAttribute("plazas");
+
+    if (document.getElementsByName("plazas_totales")[0].value > selectedOperation){
+        evento.preventDefault();
+        alert("Se ha superado el límite máximo de plazas del vehículo. Seleccione un número menor o igual que "+selectedOperation);
         return false;
     }
+    //var selectedOperation = select.options[select.selectedIndex].data-plazas;
+
+    alert("Actualizado con éxito");
 }
 
 function actualizarMaxPlazas(){

@@ -207,7 +207,7 @@
         </div>
         <br>
         <label class="form-label">Veh&iacute;culo: </label>
-        <select name="vehiculo" class="form-select" onchange="actualizarMaxPlazas()">
+        <select name="vehiculo" id="select-vehiculo" class="form-select" onchange="actualizarMaxPlazas()">
             {% for v in vehiculos %}
                 {% set selected = "" %}
                 {% if v == trayecto.vehiculo %}
@@ -215,7 +215,7 @@
                 {% else %}
                     {% set selected = "" %}
                 {% endif %}
-                <option value="{{v._id}}" {{selected}}>{{v.marca}} {{v.modelo}} - {{v.matricula}}</option>
+                <option value="{{v._id}}" plazas="{{v.plazas}}" {{selected}}>{{v.marca}} {{v.modelo}} - {{v.matricula}}</option>
             {% endfor %}
         </select>
         <br>
@@ -233,7 +233,7 @@
         <div class="form-group row">
             <label for="fotos_trayecto" class="col-form-label">Añadir más fotos</label>
             <div class="col">
-                <input type="file" class="form-control"  id="fotos_trayecto" name="fotos_trayecto" multiple="multiple" required>
+                <input type="file" class="form-control"  id="fotos_trayecto" name="fotos_trayecto" multiple="multiple" >
             </div>
         </div>
         {% if pasajeros|count > 0 %}
