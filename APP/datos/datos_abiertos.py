@@ -255,12 +255,23 @@ def get_gasolineras_gasolina95_lowcost_municipio(municipio):
     
     for gasolinera in gasolineras_json_ordenadas:
         precio = float(gasolinera["Precio Gasolina 95 E5"].replace(",", ".")) 
-        if precio < 1.45:
+        
+        gasolinera_json_string = json.dumps(gasolinera)
+        gasolinera = json.loads(gasolinera_json_string)
+
+        if precio < 1.45:    
             baratas.append(gasolinera)
         elif precio >= 1.45 and precio < 1.50:
             medias.append(gasolinera)
         else:
             caras.append(gasolinera)
+
+    
+    #medias_json_string = json.dumps(medias)
+    #medias = json.loads(medias_json_string)
+
+    #caras_json_string = json.dumps(caras)
+    #caras = json.loads(caras_json_string)
     return baratas, medias, caras, latMin, lonMin, latMax, lonMax
 
 def get_gasolineras_gasolina95_lowcost_provincia(provincia):

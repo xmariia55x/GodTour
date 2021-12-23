@@ -61,11 +61,15 @@ var redIcon = L.icon({
 
 for(var i = 0; i < baratas.length; i++) {
     var parse = baratas[i];
-    var lat = parse["Latitud"];
-    var lon = parse["Longitud (WGS84)"];
-    var precio = parse["Precio Gasolina 95 E5"];
-    var nombre = parse["Rótulo"];
-    let marca = L.marker([lat, lon], {icon : greenIcon}).addTo(map).bindPopup("Precio: " + precio + "</br> Nombre: " + nombre);
+    console.log(parse);
+    //var lat = parse["Latitud"];
+   // console.log(lat);
+   
+    //var lon = parse["Longitud (WGS84)"];
+    //console.log(lon);
+    //var precio = parse["Precio Gasolina 95 E5"];
+    //var nombre = parse["Rótulo"];
+    //let marca = L.marker([lat, lon], {icon : greenIcon}).addTo(map).bindPopup("Precio: " + precio + "</br> Nombre: " + nombre);
 }
 
 for(var i = 0; i < medias.length; i++) {

@@ -735,7 +735,7 @@ def get_gasolineras():
         if municipio:
             baratas, medias, caras, latMin, lonMin, latMax, lonMax = datos_abiertos.get_gasolineras_gasolina95_lowcost_municipio(municipio)
         return render_template("datos_abiertos/gasolineras.html", provincias = datos_abiertos.provincias, municipios = datos_abiertos.municipios, 
-        baratas = json.dumps(baratas), medias = json.dumps(medias), caras = json.dumps(caras), latMin = latMin, lonMin = lonMin, latMax = latMax, lonMax = lonMax)
+        baratas = baratas, medias = medias, caras = caras, latMin = latMin, lonMin = lonMin, latMax = latMax, lonMax = lonMax)
 
 
 #Devuelve una lista con las gasolineras de una localidad pasada por parametro
