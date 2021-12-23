@@ -3,7 +3,7 @@
 
 // The first parameter are the coordinates of the center of the map
         // The second parameter is the zoom level
-        var map = L.map('map').setView([36.7213028, -4.4216366], 11);
+        var map = L.map('map').setView([40.463667, -3.74922], 6);
         
         // {s}, {z}, {x} and {y} are placeholders for map tiles
         // {x} and {y} are the x/y of where you are on the map
