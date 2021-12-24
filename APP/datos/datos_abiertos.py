@@ -129,7 +129,28 @@ def get_incidencias_rango(latitud, longitud, rango):
                 lista_incidencias.append(incidencia)
     incidencias_json_string = json.dumps(lista_incidencias)
     incidencias_json = json.loads(incidencias_json_string)
-    return incidencias_json
+
+    if incidencias_json:
+        metereologica = []
+        montana = []
+        cono = []
+        obras = []
+        retencion = []
+        
+        for incidencia in incidencias_json:
+                if incidencia["properties"]["tipo"].upper() == "METEOROLOGICA" :    
+                    metereologica.append(incidencia)
+                elif incidencia["properties"]["tipo"].upper() == "PUERTOS DE MONTA?A" :    
+                    montana.append(incidencia)
+                elif incidencia["properties"]["tipo"].upper() == "CONO" :    
+                    cono.append(incidencia)
+                elif incidencia["properties"]["tipo"].upper() == "OBRAS" :
+                    obras.append(incidencia)
+                else:
+                    retencion.append(incidencia)
+        return metereologica, montana, cono, obras, retencion, latitud_min, longitud_min, latitud_max, longitud_max
+    else: 
+        return "No hay incidencias"
 
 #FUNCIONA
 def get_incidencias_causa(latitud, longitud, rango, causa_solicitada):
