@@ -506,19 +506,17 @@ def update_vehiculo(id):
         matricula= request.form.get('matricula')
         color= request.form.get('color')
         plazas= request.form.get('plazas')
-        #fotos_vehiculo= request.form.get('fotos_vehiculo')
-        #array_fotos = []
-        #array_fotos.append(fotos_vehiculo)
-        fotos_vehiculo = request.files.getlist("fotos_vehiculo")
-        urls = []
-        for foto in fotos_vehiculo:
-            response = cloudinary.uploader.upload(foto)
-            urls.append(response["url"])
-
+        imagenes_guardadas = request.form.getlist("imagenes")
+        fotos_opcionales = request.files.getlist("fotos_vehiculo")
+        urls = imagenes_guardadas
+        for foto in fotos_opcionales:
+            if foto.filename:
+                response = cloudinary.uploader.upload(foto)
+                urls.append(response["url"])
         if marca and modelo and matricula and color and plazas:
             response = vehiculo_data.update_vehiculo(id, marca, modelo, matricula, color, int(plazas), urls)
             if response == "Acierto":
-                return redirect('/app/vehiculos')
+                return redirect('/')
         else:
             return render_template('vehiculo/editarVehiculo.html', error="El vehiculo no se ha podido actualizar, faltan campos") 
 
