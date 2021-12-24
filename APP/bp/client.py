@@ -223,13 +223,14 @@ def create_trayecto():
         fotos_opcionales = request.files.getlist("fotos_trayecto")
         urls = []
         for foto in fotos_opcionales:
-            response = cloudinary.uploader.upload(foto)
-            urls.append(response["url"])
+            if foto.filename:
+                response = cloudinary.uploader.upload(foto)
+                urls.append(response["url"])
         # Crea el nuevo trayecto
         trayecto_data.create_trayecto(creador, origen_nombre, origen_latitud, origen_longitud, destino_nombre, destino_latitud, destino_longitud,
                                       fecha, hora, duracion, periodicidad, precio, urls, plazas_totales, vehiculo)
     
-    return redirect("/app/trayectos/create")
+    return redirect("/")
 
 #Elimina un trayecto cuyo id coincide con el que se pasa por parametro
 @bpclient.route('/app/trayectos/delete/<id>', methods=['GET'])
@@ -292,7 +293,7 @@ def update_trayecto(id):
         trayecto_data.update_trayecto(id, origen_nombre, origen_latitud, origen_longitud, destino_nombre, destino_latitud, destino_longitud,
                                       fecha, hora, duracion, periodicidad, precio, urls, plazas_totales, vehiculo, pasajeros)
 
-    return redirect("/")
+    return redirect("/app/trayectos/creador/"+trayecto["creador"])
 
 #Devuelve los trayectos cuyo destino coincide con el que se pasa por parámetro 
 @bpclient.route('/app/trayectos/trayecto_by_destino', methods=['POST'])

@@ -122,12 +122,14 @@ function validarFormulario(evento, formulario){
     } 
     
     if (formulario.destino_nombre.value.length == 0){
+        evento.preventDefault();
         alert("No se ha introducido el destino");
+        return false;
     }
     
     var select = document.getElementById("select-vehiculo");
     var selectedOperation = select.options[select.selectedIndex].getAttribute("plazas");
-
+    console.log(selectedOperation);
     if (document.getElementsByName("plazas_totales")[0].value > selectedOperation){
         evento.preventDefault();
         alert("Se ha superado el límite máximo de plazas del vehículo. Seleccione un número menor o igual que "+selectedOperation);

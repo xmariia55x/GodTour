@@ -204,7 +204,7 @@
         <select name="vehiculo" class="form-select" onchange="actualizarMaxPlazas()">
             <option value="" selected disabled>Seleccione el veh&iacute;culo...</option>
             {% for v in vehiculos %}
-            <option value="{{v._id}}">{{v.marca}} {{v.modelo}} - {{v.matricula}}</option>
+            <option value="{{v._id}}" plazas="{{v.plazas}}">{{v.marca}} {{v.modelo}} - {{v.matricula}}</option>
             {% endfor %}
         </select>
         <br>
