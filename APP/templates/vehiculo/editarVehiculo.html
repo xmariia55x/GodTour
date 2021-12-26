@@ -8,51 +8,29 @@
 {% endblock %}
 
 {% block content %}
-<div style="padding: 2% 15%">
+<div id = "principal">
     <h1 style="text-align: center">Editando veh&iacute;culo</h1>
     {%if error%}
     <h2>{{error}}</h2>
     {%endif%}
-    <div class="cards">
-        <form action="{{url_for('bpclient.update_vehiculo', id = vehiculo._id)}}" method="POST"
-            enctype="multipart/form-data">
-            <div class="form-group row">
-                <label for="marca" class="col-sm-2 col-form-label">Marca</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" id="marca" name="marca" value="{{vehiculo.marca}}" required>
-                </div>
-            </div>
+    <div>
+        <form action="{{url_for('bpclient.update_vehiculo', id = vehiculo._id)}}" method="POST" enctype="multipart/form-data">
+            
+            <label class="form-label">Marca: </label>
+            <input type="text" class="form-control col-xs-3" id="marca" name="marca" value="{{vehiculo.marca}}" required></br>
 
-            <div class="form-group row">
-                <label for="modelo" class="col-sm-2 col-form-label">Modelo</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" id="modelo" name="modelo" value="{{vehiculo.modelo}}"
-                        required>
-                </div>
-            </div>
+            <label class="form-label">Modelo: </label>
+            <input type="text" class="form-control col-xs-3" id="modelo" name="modelo" value="{{vehiculo.modelo}}" required></br>
 
-            <div class="form-group row">
-                <label for="matricula" class="col-sm-2 col-form-label">Matr&iacute;cula</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" id="matricula" name="matricula"
-                        value="{{vehiculo.matricula}}" required>
-                </div>
-            </div>
+            <label class="form-label">Matr&iacute;cula: </label>
+            <input type="text" class="form-control col-xs-3" id="matricula" name="matricula" value="{{vehiculo.matricula}}" required></br>
 
-            <div class="form-group row">
-                <label for="color" class="col-sm-2 col-form-label">Color</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" id="color" name="color" value="{{vehiculo.color}}" required>
-                </div>
-            </div>
+            <label class="form-label">Color: </label>
+            <input type="text" class="form-control col-xs-3" id="color" name="color" value="{{vehiculo.color}}" required></br>
 
-            <div class="form-group row">
-                <label for="plazas" class="col-sm-2 col-form-label">Plazas</label>
-                <div class="col-sm-10">
-                    <input type="text" class="form-control" id="plazas" name="plazas" value="{{vehiculo.plazas}}"
-                        required>
-                </div>
-            </div>
+            <label class="form-label">Plazas: </label>
+            <input type="text" class="form-control col-xs-3" id="plazas" name="plazas" value="{{vehiculo.plazas}}" required></br>
+            
             {% if vehiculo.fotos_vehiculo|count > 0 %}
             <div class="form-group row">
                 <label class="col-form-label">Fotos guardadas:</label>
@@ -73,7 +51,7 @@
             </div>
             <br>
             <div class="col text-center">
-                <input class="btn btn-outline-primary" type="submit" value="Guardar cambios ">
+                <input class="btn btn-outline-info" type="submit" value="Guardar cambios ">
             </div>
 
         </form>

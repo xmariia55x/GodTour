@@ -25,12 +25,6 @@
     margin-left:-5px;
     margin-right:-5px;
 }
-#content {
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
 
 .cards{
     display: flex;
@@ -42,4 +36,27 @@
 
 .separarCards{
     padding: 3%; 
+}
+
+#btnCrearVehiculo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 2%;
+}
+
+#principal {
+    padding: 2% 15%;
+}
+
+#parteIzquierda {
+    width: 50%;
+    float: left;
+}
+
+#parteDerecha {
+    float: left;
+    width: 50%;
+    padding-left: 4%;
+    padding-top: 4%;
 }

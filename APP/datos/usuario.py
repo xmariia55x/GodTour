@@ -68,8 +68,24 @@ def update_usuario(id, nombre_completo, correo, dni, fecha_nacimiento, antigueda
 def delete_usuario(id):
     usuario_db.delete_one({'_id': ObjectId(id)})
 
+def add_vehiculo_to_usuario(id_usuario, vehiculos):
+    filter = {"_id": ObjectId(id_usuario)}
+    new_values = {"$set":{
+            "vehiculos": vehiculos  }}
+    result = usuario_db.update_one(filter, new_values)
+    if result.matched_count == 0:
+        return "Fallo"
+    else:
+        return "Acierto"
 
-
+def delete_vehiculo_usuario(id_usuario, id_vehiculo):
+    usuario_completo = usuario_db.find_one({'_id': ObjectId(id_usuario)})
+    vehiculos = usuario_completo.get('vehiculos')
+    vehiculos.remove(ObjectId(id_vehiculo))
+    filter = {"_id": ObjectId(id_usuario)}
+    new_values = {"$set":{
+            "vehiculos": vehiculos  }}
+    result = usuario_db.update_one(filter, new_values)
 #----------QUERIES-------------
 
 
@@ -89,5 +105,13 @@ def find_vehiculos_usuario(id):
     lista_vehiculos = []
     for vehiculo in vehiculos:
         lista_vehiculos.append(vehiculo_db.find_one({'_id': ObjectId(vehiculo)}))
+    return lista_vehiculos
+
+def find_vehiculos_usuario_by_id(id):
+    usuario_completo = usuario_db.find_one({'_id': ObjectId(id)})
+    vehiculos = usuario_completo.get('vehiculos')
+    lista_vehiculos = []
+    for vehiculo in vehiculos:
+        lista_vehiculos.append(ObjectId(vehiculo_db.find_one({'_id': ObjectId(vehiculo)}).get('_id')))
     return lista_vehiculos
 

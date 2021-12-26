@@ -9,9 +9,6 @@
 {% block content %}
 <div style="padding: 2% 15%">
     <h1 style="text-align: center">Mis veh&iacute;culos</h1>
-    <form action="{{url_for('bpclient.create_vehiculo')}}" method="GET">
-        <input class="btn btn-outline-info" type="submit" value="Crear nuevo veh&iacute;culo">
-    </form>
     <br>
 
 
@@ -54,8 +51,18 @@
             </div>
         </div>
         {% endfor %}
+
     </div>
+
+    <div id="btnCrearVehiculo">
+        <form action="{{url_for('bpclient.create_vehiculo')}}" method="GET">
+            <input class="btn btn-outline-info" type="submit" value="Crear nuevo veh&iacute;culo">
+        </form>
+    </div>
+
     {%else%}
+
+    
     <div class="alert alert-danger" role="alert">
         A&uacute;n no tienes veh&iacute;culos
     </div>
