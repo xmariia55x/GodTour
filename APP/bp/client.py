@@ -1,4 +1,5 @@
 from logging import NullHandler
+from urllib.parse import urlparse
 from flask import Flask, request, jsonify, Response, session, redirect, Blueprint,send_from_directory
 from flask.templating import render_template
 from flask_pymongo import PyMongo
@@ -7,6 +8,7 @@ import sys
 from bson import json_util
 from bson.objectid import ObjectId
 from pymongo import message
+from pymongo.uri_parser import parse_userinfo
 from werkzeug.wrappers import response
 from datetime import datetime, timedelta
 #Importamos los metodos para las fechas
@@ -395,54 +397,45 @@ def get_trayectos_contratados_usuario(id):
     trayectos = trayecto_data.get_trayectos_usuario_pasajero(id)
     return render_template('trayecto/lista_reservas.html', trayectos = list(trayectos))
 
-@bpclient.route('/app/trayectos/composedQuery')
+@bpclient.route('/app/trayectos/composedQuery',methods=["POST"])
 def get_composedQuery():
     listQuerys = []
-    
+
     origen = request.form.get("origen")
     print(origen)
-    if origen is not None:
-        listQuerys.append({'origen': origen})
+    if origen != "":
+        listQuerys.append({'origen.nombre': origen})
     
     destino = request.form.get("destino")
     print(destino)
-    if destino is not None:
-        listQuerys.append({'destino': destino})
+    if destino != "":
+        listQuerys.append({'destino.nombre': destino})
     
-    precio = request.form.get("precio")
+    precio = int(request.form.get("precio"))
     print(precio)
-    if precio is not None:
+    if precio != "":
         listQuerys.append({'precio': precio})
 
 
     fecha = request.form.get("fecha")
     print(fecha)
-    if fecha is not None:
+    if fecha != "":
         listQuerys.append({'fecha': fecha})
     
     hora = request.form.get("hora")
     print(hora)
-    if hora is not None:
+    if hora != "":
         listQuerys.append({'hora': hora})
     
     rango = request.form.get("rango")
     print(rango)
-    if rango is not None:
+    if rango != "":
         listQuerys.append({'rango': rango})
      
-     
+    print(listQuerys)
 
-    '''
-    duracion = 405
-    listQuerys.append({'duracion': duracion })
-    period = 7
-    listQuerys.append({'periodicidad': period })
-    precio = 10.5
-    listQuerys.append({'precio': precio })
-    
-'''
     trayectos=trayecto_data.get_trayectos_composedQuery(listQuerys)
-
+    print(trayectos)
     response=json_util.dumps(trayectos)  
     return Response(response,mimetype='application/json')
     
