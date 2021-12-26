@@ -16,6 +16,7 @@ def create_vehiculo(marca, modelo, matricula, color, plazas, fotos):
         for foto in fotos:
             lista_fotos_vehiculo.append(foto)
     id = vehiculo_db.insert_one({"marca": marca, "modelo": modelo, "matricula": matricula, "color": color,"plazas": plazas, "fotos_vehiculo": lista_fotos_vehiculo})
+    return id.inserted_id
 
 def update_vehiculo(id, marca, modelo, matricula, color, plazas, fotos_vehiculo):
     lista_fotos_vehiculo = []

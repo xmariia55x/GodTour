@@ -450,7 +450,7 @@ def get_composedQuery():
 # ---------------------------------------------FIN TRAYECTO-----------------------------------------------------------
 
 # --------------------------------------------- VEHICULO -----------------------------------------------------------
-
+##Este por ahora no haria falta
 @bpclient.route('/app/vehiculos', methods=['GET'])
 def get_vehiculos():
     vehiculos = vehiculo_data.find_vehiculos()
@@ -490,9 +490,12 @@ def create_vehiculo():
         #url= response["url"]
         #array_fotos = []
         #array_fotos.append(url)
+        vehiculos = usuario_data.find_vehiculos_usuario_by_id(session['id'])
         if marca and modelo and matricula and color and plazas:
-            vehiculo_data.create_vehiculo(marca, modelo, matricula, color, plazas, urls)
-            return redirect('/app/vehiculos')
+            id = vehiculo_data.create_vehiculo(marca, modelo, matricula, color, plazas, urls)
+            vehiculos.append(ObjectId(id))
+            usuario_data.add_vehiculo_to_usuario(session['id'], vehiculos)
+            return redirect('/app/vehiculos/usuarios/' + session['id'])
         else:
             return render_template('vehiculo/nuevoVehiculo.html', error="No se ha podido crear el vehiculo, faltan campos")
 
@@ -524,7 +527,8 @@ def update_vehiculo(id):
 @bpclient.route('/app/vehiculos/delete/<id>', methods=['GET'])
 def delete_vehiculo(id):
     vehiculo_data.delete_vehiculo(id)
-    return redirect("/app/vehiculos")
+    usuario_data.delete_vehiculo_usuario(session['id'] , id)
+    return redirect('/app/vehiculos/usuarios/' + session['id'])
 # ---------------------------------------------FIN VEHICULO -----------------------------------------------------------
 
 # --------------------------------------------- DATOS ABIERTOS - TRAFICO -----------------------------------------------------------
