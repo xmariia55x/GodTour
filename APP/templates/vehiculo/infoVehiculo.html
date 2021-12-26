@@ -7,45 +7,56 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/vehiculoStyles.css') }}">
 {% endblock %}
 {% block content %}
-{%if error%}
-<h2>{{error}}</h2>
-{%endif%}
-{%if vehiculo %}
-<div style="padding: 2% 15%">
-    <div class="cards">
-        <div class="d-flex justify-content-center">
-            <div class="row text-center container">
-                <div class="mx-auto">
-                    
-                        <div class="bg-white rounded shadow-sm py-5 px-4">
-                            {% if vehiculo.fotos_vehiculo | first is not none %}
-                            <img src="{{vehiculo.fotos_vehiculo | first}}" alt="" width="100"
-                                class="img-fluid mb-3 img-thumbnail shadow-sm">
-                            {%else%}
-                            <img src="https://img.icons8.com/bubbles/100/000000/car.png" alt="" width="100"
-                                class="img-fluid mb-3 img-thumbnail shadow-sm">
-                            {%endif%}
-                            <h5 class="mb-0">{{ vehiculo.marca }} {{ vehiculo.modelo }}</h5>
-                            <span class="small text-muted">Color {{ vehiculo.color}}</span><br>
-                            <span class="small text-muted">Matricula {{ vehiculo.matricula}}</span><br>
-                            <span class="small text-muted">{{ vehiculo.plazas}} plazas</span><br>
+<div id="principal">
+    <h1 style="text-align: center">Información del veh&iacute;culo</h1>
+    {%if error%}
+    h2>{{error}}</h2>
+    {%endif%}
+    {%if vehiculo %}
+    <div id="parteIzquierda">
+        <label class="form-label">Marca: </label>
+            <input type="text" class="form-control col-xs-3" id="marca" name="marca" value="{{vehiculo.marca}}" readonly></br>
 
-                            <ul class="social mb-0 list-inline mt-3">
-                                <li class="list-inline-item"><img
-                                        src="https://img.icons8.com/bubbles/75/000000/edit.png"
-                                        onclick="window.location.href='{{ url_for( 'bpclient.update_vehiculo', id = vehiculo._id ) }}';" />
-                                </li>
-                                <li class="list-inline-item"><img
-                                        src="https://img.icons8.com/bubbles/75/000000/delete-sign.png"
-                                        onclick="window.location.href='{{ url_for( 'bpclient.delete_vehiculo', id = vehiculo._id ) }}';" />
-                                </li>
-                            </ul>
-                        </div>
-                    
-                </div>
-            </div>
-        </div>
+            <label class="form-label">Modelo: </label>
+            <input type="text" class="form-control col-xs-3" id="modelo" name="modelo" value="{{vehiculo.modelo}}" readonly></br>
+
+            <label class="form-label">Matr&iacute;cula: </label>
+            <input type="text" class="form-control col-xs-3" id="matricula" name="matricula" value="{{vehiculo.matricula}}" readonly></br>
+
+            <label class="form-label">Color: </label>
+            <input type="text" class="form-control col-xs-3" id="color" name="color" value="{{vehiculo.color}}" readonly></br>
+
+            <label class="form-label">Plazas: </label>
+            <input type="text" class="form-control col-xs-3" id="plazas" name="plazas" value="{{vehiculo.plazas}}" readonly></br>
     </div>
+    
+    <div id="parteDerecha">{% if vehiculo.fotos_vehiculo|count > 0 %}
+        <label class="form-label">Fotos del veh&iacute;culo: </label>
+        <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+              <div class="carousel-item active">
+                <img src="{{vehiculo.fotos_vehiculo[0]}}" class="d-block w-100">
+              </div>
+              {% for i in range(1,vehiculo.fotos_vehiculo | length) %}
+              <div class="carousel-item">
+                <img src="{{vehiculo.fotos_vehiculo[i]}}" class="d-block w-100">
+              </div>
+              {% endfor %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          </div>
+        </div>
+        {% endif %}
+        <br>
+    </div>        
+       
 </div>
 {%endif%}
 {% endblock %}
