@@ -412,9 +412,10 @@ def get_composedQuery():
     if destino != "":
         listQuerys.append({'destino.nombre': { "$regex": destino + '.*', "$options" :'i'}})
     
-    precio = float(request.form.get("precio"))
+    precio = request.form.get("precio")
     print(precio)
     if precio != "":
+        precio = float(precio)
         listQuerys.append({'precio': {'$lte': precio}})
 
 
