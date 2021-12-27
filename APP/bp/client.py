@@ -422,17 +422,10 @@ def get_composedQuery():
     fecha = request.form.get("fecha")
     print(fecha)
     if fecha != "":
-        listQuerys.append({'fecha': fecha})
+        stampMin =  date_converter.date_to_timestamp(fecha, "00:00")
+        stampMax =  date_converter.date_to_timestamp(fecha, "23:59")
+        listQuerys.append({'timestamp': { '$gt' :  stampMin, '$lt' : stampMax}})
     
-    hora = request.form.get("hora")
-    print(hora)
-    if hora != "":
-        listQuerys.append({'hora': hora})
-    
-    rango = request.form.get("rango")
-    print(rango)
-    if rango != "":
-        listQuerys.append({'rango': rango})
      
     print(listQuerys)
 
