@@ -36,13 +36,10 @@ bpclient = Blueprint('bpclient', __name__, template_folder='templates')
 
 #PRUEBA JINJA
 @bpclient.route('/')
-def prueba_Jinja():
+def init():
     # Esto ira en el login
     session['id'] = "6194e4dbc76e95c373d80508"
     return render_template("inicio.html",municipios = datos_abiertos.municipios, trayectos = trayecto_data.find_trayectos())
-
-#Si se quita esto y se ejecuta un GET, en la consola de python salta una excepcion aunque  muestra los vehiculos
-#NO TOCAR!!!!
 
 @bpclient.route('/favicon.ico')
 def favicon():
@@ -91,7 +88,7 @@ def create_usuario():
 @bpclient.route('/app/usuarios/delete/<id>', methods=['GET'])
 def delete_usuario(id):
     usuario_data.delete_usuario(id) #Eliminar los vehiculos del usuario y los trayectos donde el usuario es creador y pasajero
-    return redirect("/app/usuarios")
+    return redirect("/")
 
 #Actualiza la informacion del usuario cuyo id coincide con el que se pasa por parametro
 @bpclient.route('/app/usuarios/update/<id>', methods=['GET','POST'])
@@ -128,28 +125,7 @@ def update_usuario(id):
                 return redirect('/app/usuarios/'+id)
             else:
                 return render_template('/usuario/actualizarUsuario.html', error="El usuario no se ha podido actualizar, faltan campos")
-        
-
-#Devuelve una lista de usuarios ordenados alfabeticamente, orden ascendente -> python.ASCENDING , orden descendente -> python.DESCENDING
-@bpclient.route('/app/usuarios/name', methods=['GET'])
-def get_usuario_ordered_by_name():
-   usuarios = usuario_data.find_usuarios_ordered_by_name()
-   return render_template("/usuario/listaUsuarios.html",usuarios = list(usuarios)) 
-   
-#Devuelve un usuario a partir de (parte de) su correo electronico pasado por parametro
-@bpclient.route('/app/usuarios/email', methods=['POST'])
-def get_usuario_by_email():
-    email = request.form.get('correo')
-    if email:
-        usuarios = usuario_data.find_usuarios_by_email(email)
-        
-        if usuarios is None:
-            return render_template('/usuarios/listaUsuarios.html', error="No se han encontrado usuarios con el correo")
-        else:     
-            return render_template('/usuarios/listaUsuarios.html', usuarios = list(usuarios))
-    else:
-        return redirect("/app/usuarios")
-
+         
 @bpclient.route('/app/delete/trayecto/<id_trayecto>/pasajero/<id_pasajero>')
 def delete_pasajero_trayecto(id_trayecto, id_pasajero):
     trayecto_data.delete_pasajero_trayecto(id_trayecto, id_pasajero)
@@ -160,7 +136,7 @@ def delete_pasajero_trayecto(id_trayecto, id_pasajero):
 
 
 #Devuelve una lista de trayectos
-@bpclient.route('/app/trayectos', methods=['GET'])
+'''@bpclient.route('/app/trayectos', methods=['GET'])
 def get_trayectos():
     trayectos = trayecto_data.find_trayectos()
     # print(list(trayectos))
@@ -173,12 +149,11 @@ def get_trayectos_creador(id):
     #response = json_util.dumps(trayectos_creador)
     #return Response(response, mimetype='application/json')
     return 
-
+'''
 #Devuelve un trayecto cuyo id coincide con el que se pasa por parámetro
 @bpclient.route('/app/trayectos/ver/<id>', methods=['GET'])
 def get_trayecto(id):
     trayecto = trayecto_data.find_trayecto(id)
-    response = json_util.dumps(trayecto)
     pasajeros = trayecto["pasajeros"]
     fecha_format, hora_format = date_converter.timestamp_to_date(trayecto["timestamp"])
     
@@ -191,11 +166,7 @@ def get_trayecto(id):
         pasajero = usuario_data.find_usuario(p)
         lista_pasajeros.append(pasajero)
 
-    print(lista_pasajeros)
-    if response == 'null':
-        return not_found("No se han encontrado trayectos con el id: " + id)
-    else:     
-        return render_template("trayecto/info_trayecto.html", trayecto = trayecto, fecha = fecha_format, hora= hora_format, pasajeros = lista_pasajeros,vehiculo=vehiculo)
+    return render_template("trayecto/info_trayecto.html", trayecto = trayecto, fecha = fecha_format, hora= hora_format, pasajeros = lista_pasajeros,vehiculo=vehiculo)
 
 @bpclient.route('/app/trayectos/create', methods=["GET", "POST"])
 def create_trayecto():
@@ -238,7 +209,7 @@ def create_trayecto():
 @bpclient.route('/app/trayectos/delete/<id>', methods=['GET'])
 def delete_trayecto(id):
     trayecto_data.delete_trayecto(id)
-    return redirect("/trayecto")
+    return redirect("/")
 
 #Actualiza la informacion del trayecto cuyo id coincide con el que se pasa por parametro
 @bpclient.route('/app/trayectos/update/<id>', methods=['GET', 'POST'])
@@ -288,104 +259,12 @@ def update_trayecto(id):
             if foto.filename:
                 response = cloudinary.uploader.upload(foto)
                 urls.append(response["url"])
-        # Un usuario no puede modificar la lista de pasajeros - Se obtiene arriba
-        # pasajeros = trayecto["pasajeros"]  #Modificar para edit
 
         # Actualiza el trayecto
         trayecto_data.update_trayecto(id, origen_nombre, origen_latitud, origen_longitud, destino_nombre, destino_latitud, destino_longitud,
                                       fecha, hora, duracion, periodicidad, precio, urls, plazas_totales, vehiculo, pasajeros)
 
     return redirect("/app/trayectos/creador/"+trayecto["creador"])
-
-#Devuelve los trayectos cuyo destino coincide con el que se pasa por parámetro 
-@bpclient.route('/app/trayectos/trayecto_by_destino', methods=['POST'])
-def get_trayecto_destino():
-    destino_nombre = request.json['destino_nombre'].upper()
-    
-    if destino_nombre:
-        trayecto = trayecto_db.find({'destino.nombre': destino_nombre})
-        response = json_util.dumps(trayecto)
-        if response == '[]':
-            return not_found("No se han encontrado trayectos con destino " + destino_nombre)
-        else:     
-            return Response(response, mimetype='application/json')
-    else:
-        return not_found("No se ha indicado un destino")
-
-#Devuelve los trayectos cuyo origen coincide con el que se pasa por parámetro 
-@bpclient.route('/app/trayectos/trayecto_by_origen', methods=['POST'])
-def get_trayecto_origen():
-    origen_nombre = request.json['origen.nombre'].upper()
-    
-    if origen_nombre:
-        trayecto = trayecto_db.find({'origen.nombre': origen_nombre})
-        response = json_util.dumps(trayecto)
-        if response == '[]':
-            return not_found("No se han encontrado trayectos con origen " + origen_nombre)
-        else:     
-            return Response(response, mimetype='application/json')
-    else:
-        return not_found("No se ha indicado un origen")
-    
-#Devuelve los trayectos cuyos origenes y destinos coinciden con los pasados por parámetro 
-@bpclient.route('/app/trayectos/trayecto_by_origen_destino', methods=['POST'])
-def get_trayecto_origen_destino():
-    origen_nombre = request.json['origen'].upper()
-    destino_nombre = request.json['destino'].upper()
-    if origen_nombre and destino_nombre:
-        trayecto = trayecto_db.find({'origen.nombre': origen_nombre, 'destino.nombre': destino_nombre})
-        response = json_util.dumps(trayecto)
-        if response == '[]':
-            return not_found("No se han encontrado trayectos con origen " + origen_nombre + " y destino " + destino_nombre)
-        else:     
-            return Response(response, mimetype='application/json')
-    else:
-        return not_found("No se han indicado trayectos con origen " + origen_nombre + " y destino " + destino_nombre)
-
-#Devuelve los trayectos ordenados por la fecha y hora
-@bpclient.route('/app/trayectos/trayecto_by_fecha_hora', methods=['POST'])
-def get_trayecto_fecha_hora():
-    fecha = request.json['origen'].upper()
-    hora = request.json['destino'].upper()
-    if origen_nombre and destino_nombre:
-        trayecto = trayecto_db.find({'origen.nombre': origen_nombre, 'destino.nombre': destino_nombre})
-        response = json_util.dumps(trayecto)
-        if response == '[]':
-            return not_found("No se han encontrado trayectos con origen " + origen_nombre + " y destino " + destino_nombre)
-        else:     
-            return Response(response, mimetype='application/json')
-    else:
-        return not_found("No se han indicado trayectos con origen " + origen_nombre + " y destino " + destino_nombre)
-
-#Devuelve los trayectos cuyo precio es menor que la cantidad indicada por parametro
-@bpclient.route('/app/trayectos/trayecto_by_precio', methods=['POST'])
-def get_trayecto_precio():
-    precio = request.json['precio']
-    if precio:
-        trayecto = trayecto_db.find({'precio': { "$lt" : precio }})
-        response = json_util.dumps(trayecto)
-        if response == '[]':
-            return not_found("Trayectos con precio menor a " + str(precio) + " no encontrados")
-        else:     
-            return Response(response, mimetype='application/json')
-    else:
-        return not_found("No se ha indicado un precio")
-'''
-#Devuelve los usuarios de un trayecto a partir del id del trayecto indicado por parametro
-@bpclient.route('/usuario/by_trayecto/<id>', methods=['GET'])
-def get_usuario_trayecto(id):
-    trayecto = trayecto_db.find_one({'_id': ObjectId(id)})
-    pasajeros = trayecto.get("pasajeros")
-    lista_pasajeros = []
-    for pasajero in pasajeros:
-        usuario = usuario_db.find_one({'_id': pasajero})
-        lista_pasajeros.append(usuario)
-    response = json_util.dumps(lista_pasajeros)
-    if response == '[]':
-        return not_found("El trayecto con id: " + id + " no tiene usuarios")
-    else:     
-        return Response(response, mimetype='application/json')
-'''
 
 @bpclient.route('/app/trayectos/usuarios/creados/<id>')
 def get_trayectos_creados_usuario(id):
@@ -438,20 +317,18 @@ def get_composedQuery():
 
     trayectos=trayecto_data.get_trayectos_composedQuery(listQuerys)
     print(trayectos)
-    #response=json_util.dumps(trayectos)  
     return render_template("inicio.html",municipios = datos_abiertos.municipios, trayectos=list(trayectos))
-    #return Response(response,mimetype='application/json')
     
 
 # ---------------------------------------------FIN TRAYECTO-----------------------------------------------------------
 
 # --------------------------------------------- VEHICULO -----------------------------------------------------------
 ##Este por ahora no haria falta
-@bpclient.route('/app/vehiculos', methods=['GET'])
+'''@bpclient.route('/app/vehiculos', methods=['GET'])
 def get_vehiculos():
     vehiculos = vehiculo_data.find_vehiculos()
     return render_template('vehiculo/vehiculos.html', vehiculos = list(vehiculos))
-
+'''
 #Devuelve los vehiculos del usuario con dicho id
 @bpclient.route('/app/vehiculos/usuarios/<id>', methods=['GET'])
 def get_vehiculos_usuario(id):
@@ -482,10 +359,6 @@ def create_vehiculo():
         for foto in fotos_vehiculo:
             response = cloudinary.uploader.upload(foto)
             urls.append(response["url"])
-        #response = cloudinary.uploader.upload(fotos_vehiculo)
-        #url= response["url"]
-        #array_fotos = []
-        #array_fotos.append(url)
         vehiculos = usuario_data.find_vehiculos_usuario_by_id(session['id'])
         if marca and modelo and matricula and color and plazas:
             id = vehiculo_data.create_vehiculo(marca, modelo, matricula, color, plazas, urls)
@@ -528,299 +401,20 @@ def delete_vehiculo(id):
 # ---------------------------------------------FIN VEHICULO -----------------------------------------------------------
 
 # --------------------------------------------- DATOS ABIERTOS - TRAFICO -----------------------------------------------------------
-def get_datos_trafico_actualizados():
-    trafico_datos_abiertos = datos_abiertos.descargar_datos_trafico()
-    return trafico_datos_abiertos
 
-#Devuelve una lista con las incidencias de trafico del conjunto de datos abiertos
+#Redirige al usuario a la plantilla correspondiente para visualizar los datos de trafico
 @bpclient.route('/app/trafico', methods=['GET'])
 def get_trafico():
-    if request.method == 'GET':
-        return render_template("datos_abiertos/trafico.html", provincias = datos_abiertos.provincias_trafico)
-
-#Devuelve las incidencias de trafico de una provincia
-@bpclient.route('/trafico/by_provincia', methods=['POST'])
-def get_incidencias_provincia():
-    provincia = request.json["provincia"]
-    if provincia:
-        trafico_actualizado = get_datos_trafico_actualizados()
-        incidencias_trafico = datos_abiertos.get_incidencias_provincia(provincia, trafico_actualizado)
-        response = json_util.dumps(incidencias_trafico)    
-        if response == '[]':
-            return not_found("No hay incidencias en " + provincia) 
-        else: 
-            return Response(response, mimetype='application/json')
-    else:
-        return not_found("No se ha indicado provincia")
-        
-@bpclient.route('/trafico/rango', methods=['POST'])
-def get_trafico_in_rango():
-    latitude = None
-    longitude = None
-
-    try : 
-        latitude = float(request.json["latitude"])
-        longitude = float(request.json["longitude"])
-    except :
-        print("Latitud, longitud o rango no introducidos")
-    
-    rango = float(request.json["rango"])
-    
-    lista = None
-    trafico_actualizado = get_datos_trafico_actualizados()
-    if latitude and longitude:
-        lista = datos_abiertos.get_incidencias_rango(latitude, longitude, rango, trafico_actualizado)
-    else:
-        lista = datos_abiertos.get_incidencias_rango(None, None, rango, trafico_actualizado)
-        
-    response = json_util.dumps(lista)
-
-    if response == '[]':
-        return not_found("No se han encontrado incidencias de trafico en un rango de " + str(rango) + " kms")
-    else:
-        return Response(response, mimetype='application/json')
-
-@bpclient.route('/trafico/nieve', methods=['POST'])
-def get_trafico_nieve():
-    latitude = None
-    longitude = None
-
-    try : 
-        latitude = float(request.json["latitude"])
-        longitude = float(request.json["longitude"])
-    except :
-        print("Latitud y longitud no introducidas")
-    
-    rango = float(request.json["rango"])
-    lista = None
-    trafico_actualizado = get_datos_trafico_actualizados()
-    if latitude and longitude:
-        lista = datos_abiertos.get_incidencias_nieve(latitude, longitude, rango, trafico_actualizado)
-    else:
-        lista = datos_abiertos.get_incidencias_nieve(None, None, rango, trafico_actualizado)
-        
-    response = json_util.dumps(lista)
-
-    if response == '[]':
-        return not_found("No se han encontrado incidencias de nieve trafico a " + str(rango) + " kms")
-    else:
-        return Response(response, mimetype='application/json')    
-
-@bpclient.route('/trafico/obras', methods=['POST'])
-def get_trafico_obras():
-    latitude = None
-    longitude = None
-
-    try : 
-        latitude = float(request.json["latitude"])
-        longitude = float(request.json["longitude"])
-    except :
-        print("Latitud y longitud no introducidas")
-    
-    rango = float(request.json["rango"])
-    lista = None
-    trafico_actualizado = get_datos_trafico_actualizados()
-    if latitude and longitude:
-        lista = datos_abiertos.get_incidencias_obras(latitude, longitude, rango, trafico_actualizado)
-    else:
-        lista = datos_abiertos.get_incidencias_obras(None, None, rango, trafico_actualizado)
-        
-    response = json_util.dumps(lista)
-
-    if response == '[]':
-        return not_found("No se han encontrado incidencias de obras trafico a " + str(rango) + " kms")
-    else:
-        return Response(response, mimetype='application/json')  
-
-@bpclient.route('/trafico/cortes', methods=['POST'])
-def get_trafico_cortes():
-    latitude = None
-    longitude = None
-
-    try : 
-        latitude = float(request.json["latitude"])
-        longitude = float(request.json["longitude"])
-    except :
-        print("Latitud y longitud no introducidas")
-    
-    rango = float(request.json["rango"])
-    lista = None
-    trafico_actualizado = get_datos_trafico_actualizados()
-    if latitude and longitude:
-        lista = datos_abiertos.get_incidencias_cortes(latitude, longitude, rango, trafico_actualizado)
-    else:
-        lista = datos_abiertos.get_incidencias_cortes(None, None, rango, trafico_actualizado)
-        
-    response = json_util.dumps(lista)
-
-    if response == '[]':
-        return not_found("No se han encontrado incidencias de cortes de trafico a " + str(rango) + " kms")
-    else:
-        return Response(response, mimetype='application/json')  
-
-@bpclient.route('/trafico/clima', methods=['POST'])
-def get_trafico_clima():
-    latitude = None
-    longitude = None
-
-    try : 
-        latitude = float(request.json["latitude"])
-        longitude = float(request.json["longitude"])
-    except :
-        print("Latitud y longitud no introducidas")
-    
-    rango = float(request.json["rango"])
-    lista = None
-    trafico_actualizado = get_datos_trafico_actualizados()
-    if latitude and longitude:
-        lista = datos_abiertos.get_incidencias_clima(latitude, longitude, rango, trafico_actualizado)
-    else:
-        lista = datos_abiertos.get_incidencias_clima(None, None, rango, trafico_actualizado)
-        
-    response = json_util.dumps(lista)
-
-    if response == '[]':
-        return not_found("No se han encontrado incidencias climatologicas a " + str(rango) + " kms")
-    else:
-        return Response(response, mimetype='application/json')  
+    return render_template("datos_abiertos/trafico.html", provincias = datos_abiertos.provincias_trafico)
 
 # --------------------------------------------- FIN DATOS ABIERTOS - TRAFICO -------------------------------------------------------
 
-# ---------------------------------------------MANEJO DE ERRORES-----------------------------------------------------------
-
-#Error 400
-@bpclient.errorhandler(400)
-def not_found(error=None):
-    response = jsonify({
-        'message': 'Bad request: ' + request.url,
-        'status': 400
-    })
-    response.status_code = 400
-    return response
-
-#Error 404
-@bpclient.errorhandler(404)
-def not_found(error=None):
-    if error is None : 
-        response = jsonify({
-        'message': 'Recurso no encontrado: ' + request.url,
-        'status': 404
-        })
-        #response = json.dumps({'message': 'Recurso no encontrado: ' + request.url})
-        #return Response(response, status=404, mimetype='application/json')
-    else: 
-        #response = json_util.dumps({'message': error})
-        
-        response = jsonify({
-        'message': error,
-        'status': 404
-        })
-
-        #return Response(response, status=404, mimetype='application/json')
-    response.status_code = 404
-    return response
-
-#Error 500
-@bpclient.errorhandler(500)
-def server_error(error):
-    response = jsonify({
-        'message': 'Error del servidor: ' + request.url,
-        'status': 500
-    })
-    response.status_code = 500
-    return response
-
 # --------------------------------------------- DATOS ABIERTOS - GASOLINERA -----------------------------------------------------------
-def get_datos_gasolineras_actualizadas():
-    global ultima_actualizacion_gasolineras, gasolineras_datos_abiertos #Llamada a la vbles globales para obtener y actualizar su valor
-    proxima_actualizacion = ultima_actualizacion_gasolineras + timedelta(hours = 24) #Comprobamos que los datos se actualizan cada 24 horas
-    if ultima_actualizacion_gasolineras > proxima_actualizacion: #Descargar los datos y actualizar en caso de que este desactualizado
-        ultima_actualizacion_gasolineras = proxima_actualizacion
-        gasolineras_datos_abiertos = datos_abiertos.descargar_gasolineras()
-    return gasolineras_datos_abiertos
 
-#Devuelve una lista con todas las gasolineras del conjunto de datos abiertos
+#Redirige al usuario a la plantilla correspondiente para visualizar los datos de las gasolineras
 @bpclient.route('/app/gasolineras', methods=['GET'])
 def get_gasolineras():    
-    if request.method == 'GET':
-        return render_template("datos_abiertos/gasolineras.html", provincias = datos_abiertos.provincias, municipios = datos_abiertos.municipios)
+    return render_template("datos_abiertos/gasolineras.html", provincias = datos_abiertos.provincias, municipios = datos_abiertos.municipios)
 
-#Devuelve una lista con las gasolineras de una localidad pasada por parametro
-#Las gasolineras estan ordenadas segun el precio de la gasolina 95 (de mas barata a mas cara)
-@bpclient.route('/gasolineras/gasolina95_low_cost', methods=['POST'])
-def get_gasolineras_gasolina95_lowcost():
-    localidad = request.json["localidad"]
-    if localidad:
-        datos_actualizados = get_datos_gasolineras_actualizadas()
-        gasolineras_lowcost = datos_abiertos.get_gasolineras_gasolina95_lowcost_localidad(localidad, datos_actualizados)
-        response = json_util.dumps(gasolineras_lowcost) 
-        if response == '[]':
-            return not_found("No se han encontrado gasolineras en " + localidad)
-        else:     
-            return Response(response, mimetype='application/json')
-    else:
-        return not_found("No se ha especificado una localidad")
-    
-# Devuelve una lista de gasolineras de un rango X en km de una ubicación pasada por parámetro o la ubicación real
-@bpclient.route('/gasolineras/rango', methods=['POST'])
-def get_gasolineras_rango():  
-    #PRUEBA
-    '''
-    {
-        "latitude": 36.73428,
-        "longitude": -4.56591,
-        "rango": 5
-    }
-    '''
-    latitude = None
-    longitude = None
 
-    try : 
-        latitude = request.json["latitude"]
-        longitude = request.json["longitude"]
-    except :
-        print("Latitud y longitud no introducidas")
-
-    rango_km = float(request.json["rango"])
-    consulta = None
-
-    rango = rango_km / 111.12  # Paso de km a grados
-
-    gasolineras_actualizadas = get_datos_gasolineras_actualizadas()
-    # Si no le pasa ubicacion por parametro se pasa None en los campos para que calcule la ubicacion actual
-    if latitude and longitude:
-        consulta = datos_abiertos.get_gasolineras_ubicacion(gasolineras_actualizadas, latitude, longitude, rango)
-    else:
-        consulta = datos_abiertos.get_gasolineras_ubicacion(gasolineras_actualizadas, None, None, rango)
-    
-    response = json_util.dumps(consulta)
-
-    # Controla los errores
-    if response == '[]':
-        return not_found("No hay gasolineras en el rango de " + str(rango_km) +" kms")
-    else:
-        return Response(response, mimetype='application/json')
-    
-# Devuelve las gasolineras abiertas 24 horas de una provincia pasada por parametro
-@bpclient.route('/gasolineras/provincia_24_horas', methods=['POST'])
-def get_gasolineras_provincia_24horas():
-    # PRUEBA
-    '''
-    {
-        "Provincia" : "Málaga"
-    }
-    '''
-    provincia = request.json["Provincia"]
-    if provincia:
-        gasolineras_actualizadas = get_datos_gasolineras_actualizadas()
-        consulta = datos_abiertos.get_gasolineras_24horas(gasolineras_actualizadas, provincia)
-        response = json_util.dumps(consulta)
-        
-        if response == '[]':
-            return not_found("No se han encontrado gasolineras abiertas 24 horas en " + provincia)
-        else:
-            return Response(response, mimetype='application/json')  
-    else:
-        return not_found("No se ha indicado una provincia")  
-    
-# ---------------------------------------------FIN DATOS ABIERTOS-----------------------------------------------------------
+# --------------------------------------------- FIN DATOS ABIERTOS - GASOLINERA -----------------------------------------------------------
