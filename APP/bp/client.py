@@ -39,7 +39,7 @@ bpclient = Blueprint('bpclient', __name__, template_folder='templates')
 def init():
     # Esto ira en el login
     session['id'] = "6194e4dbc76e95c373d80508"
-    return render_template("inicio.html",municipios = datos_abiertos.municipios, trayectos = trayecto_data.find_trayectos())
+    return render_template("inicio.html",municipios = datos_abiertos.municipios, trayectos = list(trayecto_data.find_trayectos()))
 
 @bpclient.route('/favicon.ico')
 def favicon():
@@ -281,35 +281,31 @@ def get_composedQuery():
     listQuerys = []
 
     origen = request.form.get("origen")
-    print(origen)
     if origen != "":
         listQuerys.append({'origen.nombre': { "$regex": origen + '.*', "$options" :'i'}})
         
     
     destino = request.form.get("destino")
-    print(destino)
     if destino != "":
         listQuerys.append({'destino.nombre': { "$regex": destino + '.*', "$options" :'i'}})
     
     precio = request.form.get("precio")
-    print(precio)
     if precio != "":
         precio = float(precio)
         listQuerys.append({'precio': {'$lte': precio}})
 
 
     fecha = request.form.get("fecha")
-    print(fecha)
     if fecha != "":
         stampMin =  date_converter.date_to_timestamp(fecha, "00:00")
         stampMax =  date_converter.date_to_timestamp(fecha, "23:59")
         listQuerys.append({'timestamp': { '$gt' :  stampMin, '$lt' : stampMax}})
     
-     
-    print(listQuerys)
 
     trayectos=trayecto_data.get_trayectos_composedQuery(listQuerys)
-    print(trayectos)
+    if origen == "" and destino == "" and precio == "" and fecha == "":
+        trayectos = trayecto_data.find_trayectos()
+    
     return render_template("inicio.html",municipios = datos_abiertos.municipios, trayectos=list(trayectos))
     
 

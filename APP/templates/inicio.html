@@ -75,14 +75,14 @@
               ">
     </div>
 
-    <div style="text-align: center;">
+    <div style="text-align: center; padding-top: 2%;">
     <a class="btn btn-outline-info btn-xs" data-bs-toggle="offcanvas" href="#offcanvasOrigen" role="button" aria-controls="offcanvasOrigen"> Busqueda Avanzada </a>
     </div>
 
 
     <div class="cards" >
 
-
+      {%if trayectos | count > 0 %}
       {% for trayecto in trayectos %}
 
       <div class="d-flex justify-content-center">
@@ -125,10 +125,15 @@
           </div>
       </div>
       {% endfor %}
+      {%else%}
+        <div class="alert alert-danger" role="alert">
+            No se han encontrado trayectos
+        </div>
+      {%endif%}
   </div>
   </div>
 </section>
-
+{% endblock %}
 <script>
 
   $('.datepicker').datepicker({
@@ -138,4 +143,3 @@
   })
 </script>
 
-{% endblock %}
