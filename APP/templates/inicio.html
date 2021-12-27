@@ -24,7 +24,7 @@
 
       <form action="{{url_for('bpclient.get_composedQuery')}}" method="POST">
         <div class="row">
-            <div class="col-3">
+            <div class="col">
               <strong for="origen" class="labelCampos">Origen</strong>
               <input type="text" class="form-control" list="lista_municipios_gasolineras" id="origen" name="origen">
               <datalist id="lista_municipios_gasolineras">
@@ -54,13 +54,6 @@
               <input type="date" id="fecha" class="form-control" name="fecha">
               <i class="fas fa-calendar input-prefix" tabindex=0></i>
             </div>
-            <div class="col-3">
-              <strong for="rango" class="labelCampos">Rango</strong></br>
-              <input type="text" class="form-control" id="rango" name="rango">
-            </div>
-            <div class="col-3">
-              
-          </div>
         </div>
         <br>
         <input type="submit" class="btn btn-outline-info btn-xs" value="Buscar" />
@@ -88,6 +81,8 @@
 
 
     <div class="cards" >
+
+
       {% for trayecto in trayectos %}
 
       <div class="d-flex justify-content-center">
