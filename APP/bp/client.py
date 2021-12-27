@@ -39,7 +39,7 @@ bpclient = Blueprint('bpclient', __name__, template_folder='templates')
 def prueba_Jinja():
     # Esto ira en el login
     session['id'] = "6194e4dbc76e95c373d80508"
-    return render_template("inicio.html",municipios = datos_abiertos.municipios, trayectos = trayecto_data.find_trayectos)
+    return render_template("inicio.html",municipios = datos_abiertos.municipios, trayectos = trayecto_data.find_trayectos())
 
 #Si se quita esto y se ejecuta un GET, en la consola de python salta una excepcion aunque  muestra los vehiculos
 #NO TOCAR!!!!

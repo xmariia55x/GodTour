@@ -4,102 +4,89 @@
 
 {% block head %}
     {{super()}}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/trayectoStyles.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/infoTrayectoStyles.css') }}">
 {% endblock %}
 
 {% block content %}
 <link href="{{ url_for('static', filename='css/inicio.css') }}" rel="stylesheet" type="text/css">
 
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasOrigen" aria-labelledby="offcanvasOrigenLabel" style="width: 35%;">
+  <div class="offcanvas-header">
+      <h5 class="offcanvas-title" id="offcanvasOrigenLabel">Buscar trayectos</h5>
+      <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+      <div>
+          Introduce los campos y selecciona una de las coincidencias si las hay.
+      </div>
+      <br>
+
+      <form action="{{url_for('bpclient.get_composedQuery')}}" method="POST">
+        <div class="row">
+            <div class="col-3">
+              <strong for="origen" class="labelCampos">Origen</strong>
+              <input type="text" class="form-control" list="lista_municipios_gasolineras" id="origen" name="origen">
+              <datalist id="lista_municipios_gasolineras">
+                  {%for municipio in municipios%}
+                  <option value={{municipio}}>
+                      {%endfor%}
+              </datalist>
+            </div>
+            <div class="col">
+              <strong for="destino" class="labelCampos">Destino</strong>
+              <input type="text" class="form-control" list="lista_municipios_gasolineras" id="destino" name="destino">
+              <datalist id="lista_municipios_gasolineras">
+                  {%for municipio in municipios%}
+                  <option value={{municipio}}>
+                      {%endfor%}
+              </datalist>
+            </div>
+            <div class="col-3">
+              <strong for="precio" class="labelCampos">Precio</strong>
+              <input type="text" class="form-control" id="precio" name="precio">
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-5">
+              <strong for="fecha" class="labelCampos">Fecha</strong>
+              <input type="date" id="fecha" class="form-control" name="fecha">
+              <i class="fas fa-calendar input-prefix" tabindex=0></i>
+            </div>
+            <div class="col-3">
+              <strong for="rango" class="labelCampos">Rango</strong></br>
+              <input type="text" class="form-control" id="rango" name="rango">
+            </div>
+            <div class="col-3">
+              
+          </div>
+        </div>
+        <br>
+        <input type="submit" class="btn btn-outline-info btn-xs" value="Buscar" />
+    </form>
+
+      
+      <div id="resultadosOrigen" class="list-group"></div>
+  </div>
+</div>
+
+
+
+
 <section class="intro">
+  
+  
   <div class="bg-image h-100" style="
                 background-color: #d9eff5;
               ">
-    <div class="mask d-flex align-items-center h-100" style="background-color: white;">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-10 col-lg-8 col-xl-7 mx-auto">
-            <div class="card">
-             
-              <div class="card-body p-4">
-                <h6 class="text-muted text-uppercase mt-3 mb-4">Busqueda Avanzada</h6>
-
-                <form action="{{url_for('bpclient.get_composedQuery')}}" method="POST"> 
-
-                <div class="row">
-
-                  <div class="col-auto">
-                    <strong for="origen" class="labelCampos">Origen</strong>
-                    <input type="text" class="form-control" list="lista_municipios_gasolineras" id="origen" name="origen">
-                    <datalist id="lista_municipios_gasolineras">
-                        {%for municipio in municipios%}
-                        <option value={{municipio}}>
-                            {%endfor%}
-                    </datalist>
-                </div>
-
-                  <div class="col-auto">
-                    <strong for="destino" class="labelCampos">Destino</strong>
-                    <input type="text" class="form-control" list="lista_municipios_gasolineras" id="destino" name="destino">
-                    <datalist id="lista_municipios_gasolineras">
-                        {%for municipio in municipios%}
-                        <option value={{municipio}}>
-                            {%endfor%}
-                    </datalist>
-                </div>
-
-                <div class="col-auto">
-                  <strong for="precio" class="labelCampos">Precio</strong>
-                  <input type="text" class="form-control" id="precio" name="precio">
-
-              </div>
-
-                </div><!-- Fin de la primera Row-->
-              </br></br>
-
-                <div class="row">
-
-                  <div class="col-md-4 mb-3">
-                    <div class="md-form md-outline input-with-post-icon datepicker" id="falseY" >
-                      <strong for="fecha" class="labelCampos">Fecha</strong>
-                      <input type="date" id="fecha" class="form-control" name="fecha">
-                      <i class="fas fa-calendar input-prefix" tabindex=0></i>
-                    </div>
-                  </div>
-
-                  <div class="col-md-4 mb-3">
-                    <div class="dropdown" style="text-align: center;">
-                      <strong for="hora" class="labelCampos">Hora</strong></br>
-                      <input type="time" id="hora" name="hora" name="hora">
-                    </div>
-                  </div>
-
-                  <div class="col-md-4 mb-3">
-                    <div class="dropdown">
-                      <strong for="rango" class="labelCampos">Rango</strong></br>
-                      <div class="input-group mb-3">
-                        <input type="text" id="rango" class="form-control" aria-describedby="basic-addon2" name="rango">
-                        <span class="input-group-text" id="basic-addon2">Km</span>
-                      </div>
-                    </div>
-                  </div>
-
-
-                </div>
-                <div class="d-flex justify-content-between align-items-center mt-4">
-                  <p class="text-muted mb-0"><span class="text-info"> </span></p>
-                  <div>
-                    <button type="button" class="btn btn-link text-body" data-mdb-ripple-color="dark">Reset</button>
-                    <button type="submit" class="btn btn-info" >Buscar</button>
-                  </div>
-
-                </form>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
+
+    <div style="text-align: center;">
+    <a class="btn btn-outline-info btn-xs" data-bs-toggle="offcanvas" href="#offcanvasOrigen" role="button" aria-controls="offcanvasOrigen"> Busqueda Avanzada </a>
+    </div>
+
+
     <div class="cards" >
       {% for trayecto in trayectos %}
 
