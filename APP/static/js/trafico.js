@@ -54,6 +54,8 @@ var retencionIcon = L.icon({
 var marcadores = [];
 
 function cargarMapaRango() {
+    var spinner = document.getElementById("spinner");
+    spinner.style.display = 'block';
     removeMarkers();
     var xhttp = new XMLHttpRequest();
     var text = document.getElementById("rangoKM");
@@ -110,6 +112,7 @@ function cargarMapaRango() {
             } catch (error) {
                 alert("No hay incidencias en un rango de " + text.value + " KMs.");
             }
+            spinner.style.display = 'none';
 
         }
     };
@@ -118,6 +121,8 @@ function cargarMapaRango() {
 }
 
 function cargarMapaProvincias() {
+    var spinner = document.getElementById("spinner");
+    spinner.style.display = 'block';
     removeMarkers();
     var xhttp = new XMLHttpRequest();
     var text = document.getElementById("trafico_provincia");
@@ -176,6 +181,8 @@ function cargarMapaProvincias() {
             catch (error) {
                 alert("No hay incidencias en la provincia indicada");
             }
+
+            spinner.style.display = 'none';
 
         }
     };
