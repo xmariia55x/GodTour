@@ -39,7 +39,7 @@ bpclient = Blueprint('bpclient', __name__, template_folder='templates')
 def prueba_Jinja():
     # Esto ira en el login
     session['id'] = "6194e4dbc76e95c373d80508"
-    return render_template("inicio.html",municipios = datos_abiertos.municipios)
+    return render_template("inicio.html",municipios = datos_abiertos.municipios, trayectos = trayecto_data.find_trayectos)
 
 #Si se quita esto y se ejecuta un GET, en la consola de python salta una excepcion aunque  muestra los vehiculos
 #NO TOCAR!!!!
@@ -404,17 +404,18 @@ def get_composedQuery():
     origen = request.form.get("origen")
     print(origen)
     if origen != "":
-        listQuerys.append({'origen.nombre': origen})
+        listQuerys.append({'origen.nombre': { "$regex": origen + '.*', "$options" :'i'}})
+        
     
     destino = request.form.get("destino")
     print(destino)
     if destino != "":
-        listQuerys.append({'destino.nombre': destino})
+        listQuerys.append({'destino.nombre': { "$regex": destino + '.*', "$options" :'i'}})
     
     precio = int(request.form.get("precio"))
     print(precio)
     if precio != "":
-        listQuerys.append({'precio': precio})
+        listQuerys.append({'precio': {'$lte': precio}})
 
 
     fecha = request.form.get("fecha")
@@ -436,8 +437,9 @@ def get_composedQuery():
 
     trayectos=trayecto_data.get_trayectos_composedQuery(listQuerys)
     print(trayectos)
-    response=json_util.dumps(trayectos)  
-    return Response(response,mimetype='application/json')
+    #response=json_util.dumps(trayectos)  
+    return render_template("inicio.html",municipios = datos_abiertos.municipios, trayectos=list(trayectos))
+    #return Response(response,mimetype='application/json')
     
 
 # ---------------------------------------------FIN TRAYECTO-----------------------------------------------------------
