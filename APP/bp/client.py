@@ -264,7 +264,7 @@ def update_trayecto(id):
         trayecto_data.update_trayecto(id, origen_nombre, origen_latitud, origen_longitud, destino_nombre, destino_latitud, destino_longitud,
                                       fecha, hora, duracion, periodicidad, precio, urls, plazas_totales, vehiculo, pasajeros)
 
-    return redirect("/app/trayectos/creador/"+trayecto["creador"])
+    return redirect("/app/trayectos/usuarios/creados/"+str(trayecto["creador"]))
 
 @bpclient.route('/app/trayectos/usuarios/creados/<id>')
 def get_trayectos_creados_usuario(id):
