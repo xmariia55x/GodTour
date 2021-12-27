@@ -40,6 +40,8 @@
         var marcadores = [];
 
         function cargarMapa() {
+            var spinner = document.getElementById("spinner");
+            spinner.style.display = 'block';
             removeMarkers();
             var xhttp = new XMLHttpRequest();
             var text = document.getElementById("gasolineras_municipio");
@@ -82,7 +84,7 @@
                     } catch(error){
                         alert("No hay gasolineras en el municipio indicado");
                     }
-                
+                    spinner.style.display = 'none';
                 } 
             };
             xhttp.open("GET", "/api/gasolineras?municipio="+text.value, true);
@@ -90,6 +92,8 @@
         }
 
         function cargarMapaProvincias() {
+            var spinner = document.getElementById("spinner");
+            spinner.style.display = 'block';
             removeMarkers();
             var xhttp = new XMLHttpRequest();
             var text = document.getElementById("gasolineras_provincia");
@@ -131,7 +135,8 @@
                     } catch(error){
                         alert("No hay gasolineras en la provincia indicada");
                     }
-                
+
+                    spinner.style.display = 'none';
                 } 
             };
             xhttp.open("GET", "/api/gasolineras?provincia="+text.value, true);
