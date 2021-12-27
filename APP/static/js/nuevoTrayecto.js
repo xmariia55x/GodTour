@@ -63,12 +63,10 @@ function buscarDirecciones(evento, formulario, tipoBusqueda) {
             }
         }
     };
-    xhttp.open("GET", "https://nominatim.openstreetmap.org/search?q="
-                       +formulario.numero.value + "+"
-                       +formulario.tipo.value + "+"
-                       +formulario.nombre.value + "+"
-                       +formulario.ciudad.value + "+"
-                       +formulario.cp.value +"&format=json&key=aawYnbqgFdCflcNz0TnpNv21CeKSUq1x", true);
+    xhttp.open("GET", "https://nominatim.openstreetmap.org/search?"
+                       +"street=" + formulario.numero.value + "+" +formulario.tipo.value + "+" +formulario.nombre.value + "&"
+                       +"city=" + formulario.ciudad.value + "&"
+                       +"postalcode="+ formulario.cp.value +"&format=json&key=aawYnbqgFdCflcNz0TnpNv21CeKSUq1x", true);
     xhttp.send();
 }
 

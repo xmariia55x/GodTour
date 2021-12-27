@@ -5,6 +5,23 @@ var latOrigen = document.getElementById("latOrigen").value;
 var lonOrigen = document.getElementById("lonOrigen").value;
 var latDestino = document.getElementById("latDestino").value;
 var lonDestino = document.getElementById("lonDestino").value;
+var dirOrigen = document.getElementById("dir_origen").value;
+var dirDestino = document.getElementById("dir_destino").value;
+
+var origenIcon = L.icon({
+    iconUrl: 'http://localhost:5000/static/images/verde-marker.png',
+    iconSize: [40, 40],
+    iconAnchor:   [22, 40],
+    popupAnchor:  [-3, -76]
+});
+
+var destinoIcon = L.icon({
+    iconUrl: 'http://localhost:5000/static/images/rojo-flag.png',
+    iconSize: [40, 40],
+    iconAnchor:   [22, 40],
+    popupAnchor:  [-3, -76]
+});
+
 
 var map = L.map('map');
 var corner1 = L.latLng(latOrigen, lonOrigen),
@@ -24,5 +41,5 @@ var layer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 // Now add the layer onto the map
 // map.addLayer(layer);
 
-let marcaOrigen = L.marker([latOrigen, lonOrigen]).addTo(map).bindPopup("Origen");
-let marcaDestino = L.marker([latDestino, lonDestino]).addTo(map).bindPopup("Destino");
+let marcaOrigen = L.marker([latOrigen, lonOrigen], {icon : origenIcon}).addTo(map).bindPopup("Origen: " + dirOrigen);
+let marcaDestino = L.marker([latDestino, lonDestino], {icon : destinoIcon}).addTo(map).bindPopup("Destino: " + dirDestino);

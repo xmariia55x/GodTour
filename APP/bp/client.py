@@ -90,7 +90,7 @@ def create_usuario():
 #Elimina un usuario cuyo id coincide con el que se pasa por parametro
 @bpclient.route('/app/usuarios/delete/<id>', methods=['GET'])
 def delete_usuario(id):
-    usuario_data.delete_usuario(id)
+    usuario_data.delete_usuario(id) #Eliminar los vehiculos del usuario y los trayectos donde el usuario es creador y pasajero
     return redirect("/app/usuarios")
 
 #Actualiza la informacion del usuario cuyo id coincide con el que se pasa por parametro
