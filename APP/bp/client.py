@@ -24,6 +24,8 @@ import cloudinary
 from cloudinary.uploader import upload
 from cloudinary.utils import cloudinary_url
 
+#Login 
+
 import json
 
 cloudinary.config(
@@ -34,7 +36,6 @@ cloudinary.config(
 
 bpclient = Blueprint('bpclient', __name__, template_folder='templates')
 
-#PRUEBA JINJA
 @bpclient.route('/')
 def init():
     # Esto ira en el login
@@ -45,9 +46,12 @@ def init():
 def favicon():
     return "/static/images/favicon.ico", 200
 
+# -----------------------------------------------------ADMINISTRADOR-------------------------------------------------------------
+@bpclient.route('/app/admin', methods=['GET'])
+def administrador():
+    return render_template("/administrador/administrador.html") 
+# -----------------------------------------------------FIN ADMINISTRADOR-------------------------------------------------------------
 # -----------------------------------------------------USUARIO-------------------------------------------------------------
-
-
 #Devuelve una lista con los usuarios
 @bpclient.route('/app/usuarios', methods=['GET'])
 def get_usuarios():

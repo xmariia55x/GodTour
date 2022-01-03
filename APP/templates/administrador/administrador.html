@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block title %}Administrador{% endblock %}
+
+{% block head %}
+{{super()}}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/administradorStyles.css') }}">
+{% endblock %}
+{% block content %}
+<div style="padding: 2% 15%">
+    <div class="cards">
+        <div class="d-flex justify-content-center">
+            <div class="row separarCardsAdministrador">
+                <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="/static/images/icono-usuarios.png">
+                    <div class="card-body">
+                      <a href="#" class="btn btn-info">Ver usuarios</a>
+                    </div>
+                  </div>
+                  <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="/static/images/icono-coche.png">
+                    <div class="card-body">
+                      <a href="#" class="btn btn-info">Ver veh&iacute;culos</a>
+                    </div>
+                  </div>
+                  <div class="card" style="width: 18rem;">
+                    <img class="card-img-top" src="/static/images/icono-trayecto.png">
+                    <div class="card-body">
+                      <a href="#" class="btn btn-info">Ver trayectos</a>
+                    </div>
+                  </div>
+            </div>
+        </div>
+    </div>
+    
+    
+</div>
+
+{%endblock%}
+
