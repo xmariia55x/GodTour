@@ -72,14 +72,18 @@ def login():
         usuario = usuario_data.find_usuario_by_email(user_email)
         print(user_email)
         print(usuario)
-        user_name = idinfo['name']
-        user_picture = idinfo['picture']
 
         if usuario is None:
-            print("NUEVO USUARIO")
+            # El usuario no está registrado, lo mandamos a la pantalla de registro
+            user_name = idinfo['name']
+            user_picture = idinfo['picture']
         else:
+            # El usuario está ya registrado
             # Meter el usuario obtenido en sesión
-            print("EL USUARIO YA ESTÁ REGISTRADO")
+            session['id'] = usuario.get('_id')
+            session['usuario'] = usuario
+            return "/"
+
 
     except ValueError:
     # Invalid token
