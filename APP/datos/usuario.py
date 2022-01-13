@@ -88,8 +88,9 @@ def delete_vehiculo_usuario(id_usuario, id_vehiculo):
     result = usuario_db.update_one(filter, new_values)
 #----------QUERIES-------------
 
-
-
+def find_usuario_by_email(email):
+    usuario = usuario_db.find_one({ 'correo': { "$regex": email + '.*', "$options" :'i' }})
+    return usuario
 
 def find_usuarios_by_email(email):
     usuario = usuario_db.find({ 'correo': { "$regex": email + '.*', "$options" :'i' }})
