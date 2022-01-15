@@ -16,27 +16,27 @@
   {%endif%}
   {%if vehiculo %}
   <div id="parteIzquierda">
-    <label class="form-label">Marca: </label>
+    <label class="form-label">Marca </label>
     <input type="text" class="form-control col-xs-3" id="marca" name="marca" value="{{vehiculo.marca}}" readonly></br>
 
-    <label class="form-label">Modelo: </label>
+    <label class="form-label">Modelo </label>
     <input type="text" class="form-control col-xs-3" id="modelo" name="modelo" value="{{vehiculo.modelo}}"
       readonly></br>
 
-    <label class="form-label">Matr&iacute;cula: </label>
+    <label class="form-label">Matr&iacute;cula </label>
     <input type="text" class="form-control col-xs-3" id="matricula" name="matricula" value="{{vehiculo.matricula}}"
       readonly></br>
 
-    <label class="form-label">Color: </label>
+    <label class="form-label">Color </label>
     <input type="text" class="form-control col-xs-3" id="color" name="color" value="{{vehiculo.color}}" readonly></br>
 
-    <label class="form-label">Plazas: </label>
+    <label class="form-label">Plazas </label>
     <input type="text" class="form-control col-xs-3" id="plazas" name="plazas" value="{{vehiculo.plazas}}"
       readonly></br>
   </div>
 
   <div id="parteDerecha">{% if vehiculo.fotos_vehiculo|count > 0 %}
-    <label class="form-label">Fotos del veh&iacute;culo: </label>
+    <label class="form-label">Fotos del veh&iacute;culo </label>
     <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
       <div class="carousel-inner">
         <div class="carousel-item active">

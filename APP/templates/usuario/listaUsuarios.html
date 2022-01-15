@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='css/usuarioStyles.css') }}">
 {% endblock %}
 {% block content %}
-<div style="padding: 2% 15%">
+<div id="principal">
     <h1 style="text-align: center">Usuarios registrados</h1>
     {%if administrador is not none and administrador == 1 %}
     {% set admin = administrador %}

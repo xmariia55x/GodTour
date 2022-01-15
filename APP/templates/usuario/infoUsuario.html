@@ -7,41 +7,48 @@
 {% set titulo = 'Mi perfil' %}
 {%endif%}
 {% block title %}{{titulo}}{% endblock %}
-
+{%if usuario.foto_perfil is none%}
+{%set picture = '/static/images/perfil-del-usuario.png'%}
+{%else%}
+{%set picture = usuario.foto_perfil%}
+{%endif%}
 {% block head %}
 {{super()}}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/usuarioStyles.css') }}">
 {% endblock %}
 
 {% block content %}
-<div style="padding: 2% 15%">
-    <div class="cards">
-        <div class="d-flex justify-content-center">
-            <div class="row text-center container">
-                <div class="mx-auto">
-                    <img src="{{ usuario.foto_perfil}}" alt="" width="100"
-                        class="img-fluid mb-3 img-thumbnail shadow-sm">
-                    <h5 class="mb-0">{{ usuario.nombre_completo}} - {{ usuario.correo}}</h5>
-                    <span class="small text-muted">DNI {{ usuario.dni}} </span><br>
-                    <span class="small text-muted">Fecha de nacimiento {{fecha_nacimiento}}</span> <br>
-                    <span class="small text-muted">Fecha del permiso {{fecha_permiso}}</span> <br>
-                    <span class="small text-muted">Valoraci&oacute;n {{ usuario.valoracion_media}}</span><br>
-                    
-                    {%if admin == 0%}
-                    <ul class="social mb-0 list-inline mt-3">
-                        <li class="list-inline-item"><img src="https://img.icons8.com/bubbles/75/000000/edit.png"
-                                onclick="window.location.href='{{ url_for( 'bpclient.update_usuario', id = usuario._id ) }}';" />
-                        </li>
-                        <li class="list-inline-item"><img
-                                src="https://img.icons8.com/bubbles/75/000000/delete-sign.png" />
-                        </li>
-                    </ul>
-                    {%endif%}
-                </div>
+<div id="principal">
+    <div id="parteIzquierda">
+        <label class="form-label">Nombre </label>
+        <input type="text" class="form-control col-xs-3" id="nombre" name="nombre" value="{{ usuario.nombre_completo}}" readonly></br>
+    
+        <label class="form-label">Correo electr&oacute;nico </label>
+        <input type="email" class="form-control col-xs-3" id="correo" name="correo" value="{{ usuario.correo}}"
+          readonly></br>
+    
+        <label class="form-label">Fecha de nacimiento </label>
+        <input type="date" class="form-control col-xs-3" id="fecha_nacimiento" name="fecha_nacimiento" value="{{fecha_nacimiento}}"
+          readonly></br>
+    
+        <label class="form-label">Fecha del permiso </label>
+        <input type="date" class="form-control col-xs-3" id="fecha_permiso" name="fecha_permiso" value="{{fecha_permiso}}" readonly></br>
+    
+        <label class="form-label">Valoraci&oacute;n </label>
+        <input type="text" class="form-control col-xs-3" id="valoracion" name="valoracion" value="{{ usuario.valoracion_media}}"
+          readonly></br>
+    </div>
+
+    <div id="parteDerecha">
+        <label class="form-label">Foto de perfil </label>
+        <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img src="{{picture}}" class="d-block w-100">
             </div>
+          </div>
         </div>
     </div>
-</div>
 </div>
 
 {% endblock %}
