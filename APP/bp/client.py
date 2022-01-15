@@ -1,3 +1,4 @@
+#from crypt import methods
 from logging import NullHandler
 from urllib.parse import urlparse
 from flask import Flask, request, jsonify, Response, session, redirect, Blueprint,send_from_directory
@@ -315,6 +316,11 @@ def update_trayecto(id):
                                       fecha, hora, duracion, periodicidad, precio, urls, plazas_totales, vehiculo, pasajeros)
 
     return redirect("/app/trayectos/usuarios/creados/"+str(trayecto["creador"]))
+
+@bpclient.route('/app/trayectos/reservar/<id>', methods=["GET"])
+def reserva_trayecto(id):
+    trayecto = trayecto_data.find_trayecto(id)
+    return render_template('trayecto/reservar_trayecto.html', trayecto = trayecto)
 
 @bpclient.route('/app/trayectos/usuarios/creados/<id>')
 def get_trayectos_creados_usuario(id):
