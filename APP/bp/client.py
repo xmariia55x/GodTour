@@ -142,10 +142,14 @@ def create_usuario():
             return render_template('usuario/nuevoUsuario.html', error="No se ha podido crear el usuario, faltan campos")
 
 #Elimina un usuario cuyo id coincide con el que se pasa por parametro
-@bpclient.route('/app/usuarios/delete/<id>', methods=['GET'])
-def delete_usuario(id):
+@bpclient.route('/app/usuarios/delete/<id>/<administrador>', methods=['GET'])
+def delete_usuario(id, administrador):
+    admin_value = int(administrador)
     usuario_data.delete_usuario(id) #Eliminar los vehiculos del usuario y los trayectos donde el usuario es creador y pasajero
-    return redirect("/")
+    if admin_value == 1:
+        return redirect('/app/administrador/usuarios')
+    else:
+        return redirect("/")
 
 #Actualiza la informacion del usuario cuyo id coincide con el que se pasa por parametro
 @bpclient.route('/app/usuarios/update/<id>/<administrador>', methods=['GET','POST'])
