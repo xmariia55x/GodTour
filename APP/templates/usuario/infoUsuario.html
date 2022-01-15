@@ -1,6 +1,12 @@
 {% extends "base.html" %}
-
-{% block title %}Mi perfil{% endblock %}
+{%if administrador is not none and administrador == 1 %}
+{% set admin = administrador %}
+{% set titulo = 'Datos usuario' %}
+{%else%}
+{% set admin = 0 %}
+{% set titulo = 'Mi perfil' %}
+{%endif%}
+{% block title %}{{titulo}}{% endblock %}
 
 {% block head %}
 {{super()}}
@@ -15,10 +21,13 @@
                 <div class="mx-auto">
                     <img src="{{ usuario.foto_perfil}}" alt="" width="100"
                         class="img-fluid mb-3 img-thumbnail shadow-sm">
-                    <h5 class="mb-0">{{ usuario.nombre_completo}} {{ usuario.dni}}</h5>
-                    <span class="small text-muted"> {{ usuario.correo}} </span><br>
+                    <h5 class="mb-0">{{ usuario.nombre_completo}} - {{ usuario.correo}}</h5>
+                    <span class="small text-muted">DNI {{ usuario.dni}} </span><br>
+                    <span class="small text-muted">Fecha de nacimiento {{fecha_nacimiento}}</span> <br>
+                    <span class="small text-muted">Fecha del permiso {{fecha_permiso}}</span> <br>
                     <span class="small text-muted">Valoraci&oacute;n {{ usuario.valoracion_media}}</span><br>
-
+                    
+                    {%if admin == 0%}
                     <ul class="social mb-0 list-inline mt-3">
                         <li class="list-inline-item"><img src="https://img.icons8.com/bubbles/75/000000/edit.png"
                                 onclick="window.location.href='{{ url_for( 'bpclient.update_usuario', id = usuario._id ) }}';" />
@@ -27,6 +36,7 @@
                                 src="https://img.icons8.com/bubbles/75/000000/delete-sign.png" />
                         </li>
                     </ul>
+                    {%endif%}
                 </div>
             </div>
         </div>
