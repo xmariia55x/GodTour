@@ -8,6 +8,9 @@
         integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
     <link href="{{ url_for('static', filename='css/base.css') }}" rel="stylesheet" type="text/css">
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.ico') }}">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <meta name="google-signin-client_id" content="892536618714-0r5ftehtfat890vn603mu7jtq80bcnfd.apps.googleusercontent.com">
+    <script defer type="text/javascript" src="{{ url_for('static', filename='js/base.js') }}"></script>
     {% endblock %}
 </head>
 
@@ -37,6 +40,7 @@
                                 <a class="nav-link active" aria-current="page" href="/app/trafico">Consultar datos de tr&aacute;fico</a>
                             </li>
                         </ul>
+                        <div class="g-signin2" data-onsuccess="onSignIn"></div>
                         <div class="dropdown d-flex">
                             <ul class="nav-item dropdown">
                                 <a href="#" class="nav-link dropdown-toggle link-info" data-bs-toggle="dropdown">Mis datos</a>
