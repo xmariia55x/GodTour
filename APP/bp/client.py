@@ -206,7 +206,7 @@ def get_trayecto(id):
     trayecto = trayecto_data.find_trayecto(id)
     pasajeros = trayecto["pasajeros"]
     fecha_format, hora_format = date_converter.timestamp_to_date(trayecto["timestamp"])
-    
+
     # Esto no se trae nada de la bd
 
     vehiculo= vehiculo_data.find_vehiculo(trayecto["vehiculo"])
@@ -216,7 +216,10 @@ def get_trayecto(id):
         pasajero = usuario_data.find_usuario(p)
         lista_pasajeros.append(pasajero)
 
-    return render_template("trayecto/info_trayecto.html", trayecto = trayecto, fecha = fecha_format, hora= hora_format, pasajeros = lista_pasajeros,vehiculo=vehiculo)
+    print(type(trayecto["creador"]))
+    print(type(session["id"]))
+
+    return render_template("trayecto/info_trayecto.html", trayecto = trayecto, fecha = fecha_format, hora= hora_format, pasajeros = lista_pasajeros,vehiculo=vehiculo, session = session)
 
 @bpclient.route('/app/trayectos/create', methods=["GET", "POST"])
 def create_trayecto():

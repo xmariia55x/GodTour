@@ -69,9 +69,12 @@
       Boton para reservar el trayecto
     -->
 
+    {%if trayecto.creador | string() != session.id %}
       <div class="col text-center">
         <input class="btn btn-outline-info" type="submit" value="Reservar">
+        </br>
       </div>
+    {%endif%}
   
     <!--
       Prueba para PayPal
