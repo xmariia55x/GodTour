@@ -105,13 +105,17 @@ def get_usuarios():
     return render_template("/usuario/listaUsuarios.html",usuarios = list(usuarios), administrador = 1) 
 
 #Devuelve un usuario cuyo id coincide con el que se pasa por parámetro
-@bpclient.route('/app/usuarios/<id>', methods=['GET'])
-def get_usuario(id):
+@bpclient.route('/app/usuarios/<id>/<administrador>', methods=['GET'])
+def get_usuario(id, administrador):
     usuario = usuario_data.find_usuario(id)
+    admin_value = int(administrador)
+    fecha_nacimiento_format, hora_nacimiento_format = date_converter.timestamp_to_date(usuario["fecha_nacimiento"])
+    fecha_permiso_format, hora_permiso_format = date_converter.timestamp_to_date(usuario["antiguedad_permiso"])
     if usuario is None:
         return render_template('usuario/listaUsuarios.html', error="No se ha encontrado el usuario")
     else:
-        return render_template("usuario/infoUsuario.html",usuario = usuario)
+        return render_template("usuario/infoUsuario.html",usuario = usuario, administrador = admin_value, 
+        fecha_nacimiento = fecha_nacimiento_format, fecha_permiso = fecha_permiso_format)
 
 #Crea un nuevo usuario
 @bpclient.route('/app/usuarios/create', methods=['GET', 'POST'])

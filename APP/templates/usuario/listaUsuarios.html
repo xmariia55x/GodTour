@@ -1,60 +1,74 @@
-<!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
-<html>
+{% extends "base.html" %}
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>Lista usuarios </title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="">
-</head>
+{% block title %}Usuarios{% endblock %}
 
+{% block head %}
+{{super()}}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/usuarioStyles.css') }}">
+{% endblock %}
+{% block content %}
+<div style="padding: 2% 15%">
+    <h1 style="text-align: center">Usuarios registrados</h1>
+    {%if administrador is not none and administrador == 1 %}
+    {% set admin = administrador %}
+    {%else%}
+    {% set admin = 0 %}
+    {%endif%}
 
-<body>
-    <h1 style="text-align: center">Usuarios</h1>
     {%if usuarios |count >0%}
-    <table class="table" border="1" style="margin: auto;">
-        <thead>
-            <th>Nombre</th>
-            <th>Correo</th>
-            <th>DNI</th>
-            <th>Fecha nacimiento</th>
-            <th>Antiguedad permiso</th>
-            <th>Foto perfil</th>
-            <th>Valoracion media</th>
-            <th>Info</th>
-            <th>Eliminar</th>
-            <th>Actualizar</th>
-        </thead>
+    <div class="cards">
+        {% for usuario in usuarios %}
 
-        <tbody>
-            {% for i in usuarios %}
-            <tr>
-                <td>{{ i.nombre_completo}}</td>
-                <td>{{ i.correo}}</td>
-                <td>{{ i.dni}}</td>
-                <td>{{ i.fecha_nacimiento}}</td>
-                <td>{{ i.antiguedad_permiso}}</td>
-                <td>{{ i.foto_perfil}}</td>
-                <td>{{ i._id}}</td>
-                <td><a href="{{ url_for('bpclient.get_usuario', id = i._id) }}"> Info </a></td>
-                <td><a href="{{ url_for('bpclient.delete_usuario', id = i._id) }}"> Borrar </a></td>
-                <td><a href="{{ url_for('bpclient.update_usuario', id = i._id) }}"> Actualizar </a></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+        <div class="d-flex justify-content-center">
+            <div class="row text-center container separarCards">
+                <div class="mx-auto">
+                    <div class="bg-white rounded shadow-sm py-5 px-4">
+                        {% if usuario.foto_perfil is not none %}
+                        <img src="{{usuario.foto_perfil}}" alt="" width="100"
+                            class="img-fluid mb-3 img-thumbnail shadow-sm">
+                        {%else%}
+                        <img src="/static/images/perfil-del-usuario.png" alt="" width="100"
+                            class="img-fluid mb-3 img-thumbnail shadow-sm">
+                        {%endif%}
 
-    <form action="{{ url_for('bpclient.create_usuario') }}" method="GET">
-        <input type="submit" value="Crear"/>
-    </form>
+                        <h5 class="mb-0">{{ usuario.nombre_completo }} - {{ usuario.correo }}</h5>
+                        <span class="small text-muted">DNI {{usuario.dni}}</span><br>
+                        <span class="small text-muted">Valoracion {{usuario.valoracion_media}}</span><br>
+
+                        <ul class="social mb-0 list-inline mt-3">
+                            <li class="list-inline-item"><img
+                                    src="https://img.icons8.com/bubbles/75/000000/information.png"
+                                    onclick="window.location.href='{{ url_for( 'bpclient.get_usuario', id = usuario._id , administrador = admin) }}';" />
+                            </li>
+                            <li class="list-inline-item"><img src="https://img.icons8.com/bubbles/75/000000/edit.png"
+                                    onclick="window.location.href='{{ url_for( 'bpclient.update_usuario', id = usuario._id, administrador = admin ) }}';" />
+                            </li>
+                            <li class="list-inline-item"><img
+                                    src="https://img.icons8.com/bubbles/75/000000/delete-sign.png"
+                                    onclick="window.location.href='{{ url_for( 'bpclient.delete_usuario', id = usuario._id, administrador = admin ) }}';" />
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+    {%else%}
+
+    <div class="alert alert-danger" role="alert">
+        A&uacute;n no hay usuarios registrados
+    </div>
+    {% endif %}
 
 
-    {% endif %} </body>
-
-</html>
+    <div id="btnCrearUsuario">
+        <form action="{{url_for('bpclient.create_usuario', administrador = admin )}}" method="GET">
+            <input class="btn btn-outline-info" type="submit" value="Crear nuevo usuario">
+        </form>
+    </div>
+ 
+</div>
+{%endblock%}
