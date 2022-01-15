@@ -132,6 +132,11 @@ def get_trayectos_of_usuario(id):
     trayectos = trayecto_db.find({'creador':ObjectId(id)})
     return trayectos
 
+
+def get_trayectos_of_not_usuario(id):
+    trayectos = trayecto_db.find({'creador': { "$ne": ObjectId(id)}})
+    return trayectos
+
 # Devuelve los trayectos donde un usuario es pasajero
 # Se le pasa el id de usuario
 # Hay que comprobar
