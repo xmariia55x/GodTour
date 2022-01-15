@@ -501,7 +501,7 @@ def update_vehiculo(id, administrador):
             vehiculo=vehiculo, administrador = admin_value, usuarios = list(users)) 
 
 @bpclient.route('/app/vehiculos/delete/<id>/<administrador>', methods=['GET'])
-def delete_vehiculo(id, administrador):
+def delete_vehiculo(id, administrador): #HABRIA QUE ELIMINAR LOS TRAYECTOS DONDE EL VEHICULO PARTICIPA
     admin_value = int(administrador)
     if admin_value == 1:
         usuario_data.delete_vehiculo_from_usuarios_list(id)
