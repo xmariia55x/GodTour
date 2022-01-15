@@ -6,6 +6,10 @@ db = client.get_default_database()
 trayecto_db = db['Trayecto']
 usuario_db = db['Usuario']
 vehiculo_db = db['Vehiculo']
+conversacion_db = db['Conversacion']
 
 def disconnect_database():
     client.close()
+
+
+

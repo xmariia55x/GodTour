@@ -18,6 +18,7 @@ import fechas as date_converter
 import datos.trayecto as trayecto_data
 import datos.usuario as usuario_data
 import datos.vehiculo as vehiculo_data
+import datos.conversacion as conversacion_data
 import datos.datos_abiertos as datos_abiertos
 
 #Subir archivos
@@ -98,6 +99,16 @@ def login():
 def administrador():
     return render_template("/administrador/administrador.html") 
 # -----------------------------------------------------FIN ADMINISTRADOR-------------------------------------------------------------
+
+# ---------------------------------------------CONVERSACION-----------------------------------------------------------
+
+@bpclient.route('/app/Conversacion/<trayecto>', methods=['GET'])
+def get_conversacion_trayecto(trayecto):
+    listaConversaciones = conversacion_data.find_conversaciones_trayecto(trayecto) #Pasa el traecto actual como parametro
+    return render_template('conversacion/conversacionesTrayecto.html', listaConversaciones = list(listaConversaciones))
+
+# ---------------------------------------------FIN CONVERSACION-----------------------------------------------------------
+
 # -----------------------------------------------------USUARIO-------------------------------------------------------------
 #Devuelve una lista con los usuarios
 @bpclient.route('/app/administrador/usuarios', methods=['GET'])

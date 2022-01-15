@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Mis reservas{% endblock %}
+
+{% block head %} 
+{{super()}}
+
+
+
+
+<!-- ADAPTAR TODO A LAS CONVERSACIONES -->
+
+
+
+
+
+
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/trayectoStyles.css') }}">
+{% endblock %}
+
+{% block content %}
+<div style="padding: 2% 15%">
+    <h1 style="text-align: center">Trayectos reservados</h1>
+    {%if trayectos | count > 0%}
+    <div class="cards" >
+
+
+        {% for conversacion in listaConversaciones %}
+        <div class="d-flex justify-content-center">
+            <div class="row text-center container separarCards">
+                <div class="mx-auto">
+                    <div  class="bg-white rounded shadow-sm py-5 px-4">
+                       
+                        <h5 class="mb-0">Origen: {{ trayecto.origen.nombre }} </h5>
+                        <h5 class="mb-0">Destino: {{ trayecto.destino.nombre }} </h5>
+                        <span class="small text-muted">Duracion {{ trayecto.duracion }}</span><br>
+                        <span class="small text-muted">Precio {{ trayecto.precio}}</span><br>
+                        <span class="small text-muted">Plazas totales: {{ trayecto.plazas}} </span><br>
+
+                        <ul class="social mb-0 list-inline mt-3">
+                            <li class="list-inline-item"><img
+                                    src="https://img.icons8.com/bubbles/75/000000/information.png"
+                                    onclick="window.location.href='{{ url_for('bpclient.get_trayecto', id = trayecto._id ) }}';" />
+                            </li>
+                            <!--<li class="list-inline-item">
+                                <img src="https://img.icons8.com/bubbles/75/000000/star.png"/> De momento no se hace nada al valorar
+                            </li>-->
+                            <li class="list-inline-item"><img
+                                    src="https://img.icons8.com/bubbles/75/000000/delete-sign.png"
+                                    onclick="window.location.href='{{ url_for( 'bpclient.delete_pasajero_trayecto', id_trayecto = trayecto._id, id_pasajero = session['id'] ) }}';" />
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+        
+    </div>
+    {%else%}
+    <div class="alert alert-danger" role="alert">
+        A&uacute;n no has reservado ning&uacute;n trayecto
+    </div>
+    {%endif%}
+</div>
+{% endblock %}
