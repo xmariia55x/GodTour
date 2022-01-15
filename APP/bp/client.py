@@ -431,11 +431,17 @@ def update_vehiculo(id, administrador):
             response = vehiculo_data.update_vehiculo(id, marca, modelo, matricula, color, int(plazas), urls)
             if admin_value == 1:
                 usuario = request.form.get('usuario_seleccionado')
-                vehiculos = usuario_data.find_vehiculos_usuario_by_id(usuario)
-                vehiculos.append(ObjectId(id))
-                usuario_data.add_vehiculo_to_usuario(usuario, vehiculos)
+                if usuario != "---":
+                    vehiculos = usuario_data.find_vehiculos_usuario_by_id(usuario)
+                    oid = ObjectId(id)
+                    if not oid in vehiculos:
+                        vehiculos.append(oid)
+                        usuario_data.add_vehiculo_to_usuario(usuario, vehiculos)
             if response == "Acierto":
-                return redirect('/')
+                if admin_value == 1:
+                    return redirect('/app/administrador/vehiculos')
+                else:
+                    return redirect('/')
         else:
             return render_template('vehiculo/editarVehiculo.html', error="El vehiculo no se ha podido actualizar, faltan campos") 
 
