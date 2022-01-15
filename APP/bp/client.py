@@ -379,10 +379,15 @@ def get_vehiculo(id):
     else: 
         return render_template('vehiculo/infoVehiculo.html', vehiculo=vehiculo)    
 
-@bpclient.route('/app/vehiculos/create', methods=["GET","POST"])
-def create_vehiculo():
+@bpclient.route('/app/vehiculos/create/<administrador>', methods=["GET","POST"])
+def create_vehiculo(administrador):
+    admin_value = int(administrador)
+    users = usuario_data.find_usuarios()
     if request.method == 'GET':
-        return render_template('vehiculo/nuevoVehiculo.html')
+        if admin_value == 1:
+            return render_template('vehiculo/nuevoVehiculo.html', administrador = admin_value, usuarios = list(users))    
+        else:
+            return render_template('vehiculo/nuevoVehiculo.html')
     else:
         marca= request.form.get('marca')
         modelo= request.form.get('modelo')
@@ -397,10 +402,22 @@ def create_vehiculo():
             urls.append(response["url"])
         vehiculos = usuario_data.find_vehiculos_usuario_by_id(session['id'])
         if marca and modelo and matricula and color and plazas:
-            id = vehiculo_data.create_vehiculo(marca, modelo, matricula, color, plazas, urls)
-            vehiculos.append(ObjectId(id))
-            usuario_data.add_vehiculo_to_usuario(session['id'], vehiculos)
-            return redirect('/app/vehiculos/usuarios/' + session['id'])
+            if admin_value == 1:
+                usuario = request.form.get('usuario_seleccionado')
+                if usuario != "---":
+                    id = vehiculo_data.create_vehiculo(marca, modelo, matricula, color, plazas, urls)
+                    vehiculos_usuario = usuario_data.find_vehiculos_usuario_by_id(usuario)
+                    vehiculos_usuario.append(ObjectId(id))
+                    usuario_data.add_vehiculo_to_usuario(usuario, vehiculos_usuario)
+                    return redirect('/app/administrador/vehiculos')
+                else:
+                    return render_template('vehiculo/nuevoVehiculo.html', error="Se debe asignar el vehiculo a un usuario", 
+                    administrador = 1, usuarios = list(users))
+            else:
+                id = vehiculo_data.create_vehiculo(marca, modelo, matricula, color, plazas, urls)
+                vehiculos.append(ObjectId(id))
+                usuario_data.add_vehiculo_to_usuario(session['id'], vehiculos)
+                return redirect('/app/vehiculos/usuarios/' + session['id'])
         else:
             return render_template('vehiculo/nuevoVehiculo.html', error="No se ha podido crear el vehiculo, faltan campos")
 

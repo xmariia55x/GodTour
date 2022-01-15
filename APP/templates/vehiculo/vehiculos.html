@@ -61,14 +61,13 @@
     </div>
 
     <div id="btnCrearVehiculo">
-        <form action="{{url_for('bpclient.create_vehiculo')}}" method="GET">
+        <form action="{{url_for('bpclient.create_vehiculo', administrador = admin )}}" method="GET">
             <input class="btn btn-outline-info" type="submit" value="Crear nuevo veh&iacute;culo">
         </form>
     </div>
 
     {%else%}
 
-    
     <div class="alert alert-danger" role="alert">
         A&uacute;n no tienes veh&iacute;culos
     </div>
