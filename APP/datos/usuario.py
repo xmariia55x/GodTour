@@ -116,3 +116,9 @@ def find_vehiculos_usuario_by_id(id):
         lista_vehiculos.append(ObjectId(vehiculo_db.find_one({'_id': ObjectId(vehiculo)}).get('_id')))
     return lista_vehiculos
 
+def delete_vehiculo_from_usuarios_list(id_vehiculo):
+    usuarios = usuario_db.find()
+    for usuario in usuarios:
+       if ObjectId(id_vehiculo) in usuario.get('vehiculos'): 
+        delete_vehiculo_usuario(usuario.get('_id'), id_vehiculo)
+    
