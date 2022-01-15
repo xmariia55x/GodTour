@@ -110,13 +110,15 @@ def get_usuarios():
 def get_usuario(id, administrador):
     usuario = usuario_data.find_usuario(id)
     admin_value = int(administrador)
+    vehiculos = usuario_data.find_vehiculos_usuario(id)
     fecha_nacimiento_format, hora_nacimiento_format = date_converter.timestamp_to_date(usuario["fecha_nacimiento"])
-    fecha_permiso_format, hora_permiso_format = date_converter.timestamp_to_date(usuario["antiguedad_permiso"])
     if usuario is None:
         return render_template('usuario/listaUsuarios.html', error="No se ha encontrado el usuario")
     else:
+        if(usuario["antiguedad_permiso"] is not None):
+            fecha_permiso_format, hora_permiso_format = date_converter.timestamp_to_date(usuario["antiguedad_permiso"])
         return render_template("usuario/infoUsuario.html",usuario = usuario, administrador = admin_value, 
-        fecha_nacimiento = fecha_nacimiento_format, fecha_permiso = fecha_permiso_format)
+        fecha_nacimiento = fecha_nacimiento_format, fecha_permiso = fecha_permiso_format, vehiculos = list(vehiculos))
 
 #Crea un nuevo usuario
 @bpclient.route('/app/usuarios/create', methods=['GET', 'POST'])
@@ -146,16 +148,21 @@ def delete_usuario(id):
     return redirect("/")
 
 #Actualiza la informacion del usuario cuyo id coincide con el que se pasa por parametro
-@bpclient.route('/app/usuarios/update/<id>', methods=['GET','POST'])
-def update_usuario(id):
+@bpclient.route('/app/usuarios/update/<id>/<administrador>', methods=['GET','POST'])
+def update_usuario(id, administrador):
+    admin_value = int(administrador)
+    usuario = usuario_data.find_usuario(id)
+    fecha_format, hora_format = date_converter.timestamp_to_date(usuario["fecha_nacimiento"])
+    fecha_permiso = None
+    if(usuario["antiguedad_permiso"] is not None):
+        fecha_permiso, hora_permiso = date_converter.timestamp_to_date(usuario["antiguedad_permiso"])
     if request.method == 'GET':
-        usuario = usuario_data.find_usuario(id)
-        fecha_format, hora_format = date_converter.timestamp_to_date(usuario["fecha_nacimiento"])
-        if(usuario["antiguedad_permiso"] is not None):
-            fecha_permiso, hora_permiso = date_converter.timestamp_to_date(usuario["antiguedad_permiso"])
-            return render_template('usuario/actualizarUsuario.html', usuario=usuario, fecha_nacimiento = fecha_format, fecha_permiso = fecha_permiso)    
+        if fecha_permiso != None: 
+            return render_template('usuario/actualizarUsuario.html', usuario=usuario, administrador=admin_value, 
+            fecha_nacimiento = fecha_format, fecha_permiso = fecha_permiso)      
         else:
-            return render_template('usuario/actualizarUsuario.html', usuario=usuario, fecha_nacimiento = fecha_format)    
+            return render_template('usuario/actualizarUsuario.html', usuario=usuario, administrador = admin_value, 
+            fecha_nacimiento = fecha_format)    
     else:    
         nombre_completo = request.form.get('nombre_completo')
         correo = request.form.get('correo')
@@ -173,13 +180,22 @@ def update_usuario(id):
             url= response["url"]
         else:
             url = ""
+        
         if nombre_completo and correo and dni and fecha_nacimiento:
             response = usuario_data.update_usuario(id, nombre_completo, correo, dni, fecha_nacimiento, antiguedad_permiso, url)
-
             if response == "Acierto":
-                return redirect('/app/usuarios/'+id)
-            else:
-                return render_template('/usuario/actualizarUsuario.html', error="El usuario no se ha podido actualizar, faltan campos")
+                if admin_value == 1:
+                    return redirect('/app/administrador/usuarios')
+                else:
+                    return redirect('/app/usuarios/'+id)
+        else:
+                if fecha_permiso != None: 
+                    return render_template('usuario/actualizarUsuario.html', error="El usuario no se ha podido actualizar, faltan campos", usuario=usuario, administrador=admin_value, 
+                    fecha_nacimiento = fecha_format, fecha_permiso = fecha_permiso)     
+                else:
+                    return render_template('usuario/actualizarUsuario.html', error="El usuario no se ha podido actualizar, faltan campos", usuario=usuario, administrador=admin_value, 
+                    fecha_nacimiento = fecha_format)        
+                
          
 @bpclient.route('/app/delete/trayecto/<id_trayecto>/pasajero/<id_pasajero>')
 def delete_pasajero_trayecto(id_trayecto, id_pasajero):
@@ -432,15 +448,16 @@ def create_vehiculo(administrador):
                 usuario_data.add_vehiculo_to_usuario(session['id'], vehiculos)
                 return redirect('/app/vehiculos/usuarios/' + session['id'])
         else:
-            return render_template('vehiculo/nuevoVehiculo.html', error="No se ha podido crear el vehiculo, faltan campos")
+            return render_template('vehiculo/nuevoVehiculo.html', error="No se ha podido crear el vehiculo, faltan campos", 
+            administrador = admin_value, usuarios = list(users))
 
 @bpclient.route('/app/vehiculos/update/<id>/<administrador>', methods=['GET', 'POST'])
 def update_vehiculo(id, administrador):
     admin_value = int(administrador)
+    users = usuario_data.find_usuarios()
+    vehiculo = vehiculo_data.find_vehiculo(id)
     if request.method == 'GET':
-        vehiculo = vehiculo_data.find_vehiculo(id)
         if admin_value == 1:
-            users = usuario_data.find_usuarios()
             return render_template('vehiculo/editarVehiculo.html', vehiculo=vehiculo, administrador = admin_value, usuarios = list(users))    
         else:
             return render_template('vehiculo/editarVehiculo.html', vehiculo=vehiculo)    
@@ -467,13 +484,17 @@ def update_vehiculo(id, administrador):
                     if not oid in vehiculos:
                         vehiculos.append(oid)
                         usuario_data.add_vehiculo_to_usuario(usuario, vehiculos)
+                else:
+                    return render_template('vehiculo/editarVehiculo.html', error="Se debe asignar el vehiculo a un usuario", 
+                    administrador = 1, vehiculo = vehiculo, usuarios = list(users))
             if response == "Acierto":
                 if admin_value == 1:
                     return redirect('/app/administrador/vehiculos')
                 else:
                     return redirect('/')
         else:
-            return render_template('vehiculo/editarVehiculo.html', error="El vehiculo no se ha podido actualizar, faltan campos") 
+            return render_template('vehiculo/editarVehiculo.html', error="El vehiculo no se ha podido actualizar, faltan campos",
+            vehiculo=vehiculo, administrador = admin_value, usuarios = list(users)) 
 
 @bpclient.route('/app/vehiculos/delete/<id>/<administrador>', methods=['GET'])
 def delete_vehiculo(id, administrador):

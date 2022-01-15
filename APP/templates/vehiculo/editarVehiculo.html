@@ -68,9 +68,12 @@
                 <label for="usuario_seleccionado">Asignar veh&iacute;culo a usuario</label>
                 <div class="col-sm-10">
                     <select class="form-control" name="usuario_seleccionado" id="usuario_seleccionado">
-                        <option value="---" selected>----------</option>
                         {%for user in usuarios%}
+                        {% if vehiculo._id in user.vehiculos %} 
+                        <option value="{{user._id}}" selected>{{user.nombre_completo}} - {{user.correo}}</option>
+                        {%else%}
                         <option value="{{user._id}}">{{user.nombre_completo}} - {{user.correo}}</option>
+                        {% endif %}
                         {%endfor%}
                     </select>
                 </div>

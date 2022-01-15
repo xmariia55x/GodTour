@@ -59,3 +59,7 @@
     padding-left: 4%;
     padding-top: 4%;
 }
+#botonCentrado {
+    text-align: center;
+    justify-content: center;
+}

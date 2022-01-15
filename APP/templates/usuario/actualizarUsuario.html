@@ -1,6 +1,12 @@
 {% extends "base.html" %}
-
-{% block title %}Actualizar perfil{% endblock %}
+{%if administrador is not none and administrador == 1 %}
+{% set admin = administrador %}
+{% set titulo = 'Actualizar usuario' %}
+{%else%}
+{% set admin = 0 %}
+{% set titulo = 'Actualizar perfil' %}
+{%endif%}
+{% block title %}{{titulo}}{% endblock %}
 
 {% block head %}
 {{super()}}
@@ -10,67 +16,56 @@
 {% block content %}
 
 <!--<div style="text-align: center;"> -->
-    {%if fecha_permiso%}
-    {% set value = fecha_permiso %}
-    {%else%}
-    {% set value = '' %}
-    {%endif%}
-<h1 style="text-align: center;">Actualizar perfil</h1><br>
-<div style="padding: 1% 15%;">
+{%if fecha_permiso%}
+{% set value = fecha_permiso %}
+{%else%}
+{% set value = '' %}
+{%endif%}
+{%if usuario.foto_perfil is none%}
+{%set picture = '/static/images/perfil-del-usuario.png'%}
+{%else%}
+{%set picture = usuario.foto_perfil%}
+{%endif%}
+<h1 style="text-align: center;">{{titulo}}</h1><br>
+<div id="principal">
     {%if error%}
     <div class="alert alert-danger" role="alert">
         {{error}}
     </div>
     {%endif%}
-    <form action="{{url_for('bpclient.update_usuario',id=usuario._id)}}" method="POST" enctype="multipart/form-data">
-        <div class="form-group row alinear">
-            <label for="nombre_completo" class="col-sm-2 col-form-label">Nombre</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" name="nombre_completo" value="{{usuario.nombre_completo}}"
-                    required>
+    <form action="{{url_for('bpclient.update_usuario',id=usuario._id, administrador = admin)}}" method="POST"
+        enctype="multipart/form-data">
+        <label class="form-label">Nombre </label>
+        <input type="text" class="form-control col-xs-3" id="nombre_completo" name="nombre_completo"
+            value="{{ usuario.nombre_completo}}"></br>
+
+        <label class="form-label">DNI </label>
+        <input type="text" class="form-control col-xs-3" id="dni" name="dni" value="{{ usuario.dni}}"></br>
+
+        <label class="form-label">Correo electr&oacute;nico </label>
+        <input type="email" class="form-control col-xs-3" id="correo" name="correo" value="{{ usuario.correo}}"></br>
+
+        <label class="form-label">Fecha de nacimiento </label>
+        <input type="date" class="form-control col-xs-3" id="fecha_nacimiento" name="fecha_nacimiento"
+            value="{{fecha_nacimiento}}"></br>
+
+        <label class="form-label">Fecha del permiso </label>
+        <input type="date" class="form-control col-xs-3" id="antiguedad_permiso" name="antiguedad_permiso"
+            value="{{value}}"></br>
+
+        <label class="form-label">Foto de perfil </label>
+        <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <img src="{{picture}}" width="100" height="100">
+                    <input type="file" class="form-control" id="foto_perfil" name="foto_perfil">
+                </div>
+
             </div>
         </div>
 
-        <div class="form-group row alinear">
-            <label for="correo" class="col-sm-2 col-form-label">Correo</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" name="correo" value="{{usuario.correo}}" required>
-            </div>
-        </div>
+        <input type="submit" class="btn btn-outline-info btn-lg" id="botonCentrado" value="Actualizar" />
 
-        <div class="form-group row alinear">
-            <label for="dni" class="col-sm-2 col-form-label">DNI</label>
-            <div class="col-sm-10">
-                <input type="text" class="form-control" name="dni" value="{{usuario.dni}}" required>
-            </div>
-        </div>
-
-        <div class="form-group row alinear">
-            <label for="fecha_nacimiento" class="col-sm-2 col-form-label">Fecha de nacimiento</label>
-            <div class="col-sm-10">
-                <input type="date" class="form-control" name="fecha_nacimiento" value="{{fecha_nacimiento}}" required>
-            </div>
-        </div>
-
-        <div class="form-group row alinear">
-            <label for="antiguedad_permiso" class="col-sm-2 col-form-label">Antigüedad permiso</label>
-            <div class="col-sm-10">
-                <input type="date" class="form-control" name="antiguedad_permiso" value={{value}}>
-            </div>
-        </div>
-
-        <div class="form-group row alinear">
-            <label for="foto_perfil" class="col-sm-2 col-form-label">Foto de perfil</label><br>
-            <div class="col-sm-10">
-                <img src="{{usuario.foto_perfil}}" alt="" width="200" height="200"
-                    style="padding: 5% 5%;">
-            </div>
-            <input type="file" class="form-control" id="foto_perfil" name="foto_perfil">
-        </div>
-        <br>
-        <div class="col text-center">
-            <input class="btn btn-outline-info" type="submit" value="Actualizar">
-        </div>
     </form>
 </div>
 {% endblock %}

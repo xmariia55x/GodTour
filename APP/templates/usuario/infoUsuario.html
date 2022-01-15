@@ -12,6 +12,11 @@
 {%else%}
 {%set picture = usuario.foto_perfil%}
 {%endif%}
+{%if fecha_permiso%}
+{% set value = fecha_permiso %}
+{%else%}
+{% set value = '' %}
+{%endif%}
 {% block head %}
 {{super()}}
 <link rel="stylesheet" href="{{ url_for('static', filename='css/usuarioStyles.css') }}">
@@ -19,36 +24,58 @@
 
 {% block content %}
 <div id="principal">
-    <div id="parteIzquierda">
-        <label class="form-label">Nombre </label>
-        <input type="text" class="form-control col-xs-3" id="nombre" name="nombre" value="{{ usuario.nombre_completo}}" readonly></br>
-    
-        <label class="form-label">Correo electr&oacute;nico </label>
-        <input type="email" class="form-control col-xs-3" id="correo" name="correo" value="{{ usuario.correo}}"
-          readonly></br>
-    
-        <label class="form-label">Fecha de nacimiento </label>
-        <input type="date" class="form-control col-xs-3" id="fecha_nacimiento" name="fecha_nacimiento" value="{{fecha_nacimiento}}"
-          readonly></br>
-    
-        <label class="form-label">Fecha del permiso </label>
-        <input type="date" class="form-control col-xs-3" id="fecha_permiso" name="fecha_permiso" value="{{fecha_permiso}}" readonly></br>
-    
-        <label class="form-label">Valoraci&oacute;n </label>
-        <input type="text" class="form-control col-xs-3" id="valoracion" name="valoracion" value="{{ usuario.valoracion_media}}"
-          readonly></br>
+  <div id="parteIzquierda">
+    <label class="form-label">Nombre </label>
+    <input type="text" class="form-control col-xs-3" id="nombre" name="nombre" value="{{ usuario.nombre_completo}}"
+      readonly></br>
+
+    <label class="form-label">DNI </label>
+    <input type="text" class="form-control col-xs-3" id="dni" name="dni" value="{{ usuario.dni}}" readonly></br>
+
+    <label class="form-label">Correo electr&oacute;nico </label>
+    <input type="email" class="form-control col-xs-3" id="correo" name="correo" value="{{ usuario.correo}}"
+      readonly></br>
+
+    <label class="form-label">Fecha de nacimiento </label>
+    <input type="date" class="form-control col-xs-3" id="fecha_nacimiento" name="fecha_nacimiento"
+      value="{{fecha_nacimiento}}" readonly></br>
+
+    <label class="form-label">Fecha del permiso </label>
+    <input type="date" class="form-control col-xs-3" id="fecha_permiso" name="fecha_permiso" value="{{value}}"
+      readonly></br>
+
+    <label class="form-label">Valoraci&oacute;n </label>
+    <input type="text" class="form-control col-xs-3" id="valoracion" name="valoracion"
+      value="{{ usuario.valoracion_media}}" readonly></br>
+
+  </div>
+
+  <div id="parteDerecha">
+    <label class="form-label">Foto de perfil </label>
+    <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner">
+        <div class="carousel-item active">
+          <img src="{{picture}}" class="d-block w-50">
+        </div>
+      </div>
     </div>
 
-    <div id="parteDerecha">
-        <label class="form-label">Foto de perfil </label>
-        <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
-          <div class="carousel-inner">
-            <div class="carousel-item active">
-              <img src="{{picture}}" class="d-block w-100">
-            </div>
-          </div>
-        </div>
+    {% if vehiculos is not none and vehiculos |count > 0 %}
+    <label class="col-form-label">Vehiculos</label>
+    {% for vehiculo in vehiculos %}
+    <div class="col">
+      <label class="form-check-label" for="vehiculos">{{vehiculo.marca}} {{vehiculo.modelo}} -
+        {{vehiculo.matricula}}</label>
+      <input type="checkbox" value="{{vehiculo._id}}" name="vehiculos" id="vehiculos" checked disabled/>
     </div>
+    {% endfor %}
+
+    {%else%}
+    <div class="alert alert-primary" role="alert">
+      A&uacute;n no tiene veh&iacute;culos
+    </div>
+    {% endif %}
+  </div>
 </div>
 
 {% endblock %}
