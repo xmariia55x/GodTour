@@ -1,45 +1,69 @@
-<!--
+{% extends "base.html" %}
 
- ESTA PANTALLA NO ES SEGURO QUE SE LLEGUE A UTILIZAR, SEGURAMENTE SE HAGA CON EL OAUTH.
+{% block title %}Actualizar perfil{% endblock %}
 
+{% block head %}
+{{super()}}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/usuarioStyles.css') }}">
+{% endblock %}
 
+{% block content %}
+<h1 style="text-align: center;">Actualizar perfil</h1><br>
+<div style="padding: 1% 15%;">
+    {%if error%}
+    <div class="alert alert-danger" role="alert">
+        {{error}}
+    </div>
+    {%endif%}
+    <form action="{{url_for('bpclient.create_usuario')}}" method="POST" enctype="multipart/form-data">
+        <div class="form-group row alinear">
+            <label for="nombre_completo" class="col-sm-2 col-form-label">Nombre</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="nombre_completo" value="{{nombre}}"
+                    required>
+            </div>
+        </div>
 
--->
+        <div class="form-group row alinear">
+            <label for="correo" class="col-sm-2 col-form-label">Correo</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="correo" value="{{correo}}" required>
+            </div>
+        </div>
 
+        <div class="form-group row alinear">
+            <label for="dni" class="col-sm-2 col-form-label">DNI</label>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" name="dni" value="" required>
+            </div>
+        </div>
 
-<!DOCTYPE html>
-<html>
+        <div class="form-group row alinear">
+            <label for="fecha_nacimiento" class="col-sm-2 col-form-label">Fecha de nacimiento</label>
+            <div class="col-sm-10">
+                <input type="date" class="form-control" name="fecha_nacimiento" value="" required>
+            </div>
+        </div>
 
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>
-        Nuevo Usuario
-    </title>
-    <meta name="description" content="">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="">
-</head>
+        <div class="form-group row alinear">
+            <label for="antiguedad_permiso" class="col-sm-2 col-form-label">Antigüedad permiso</label>
+            <div class="col-sm-10">
+                <input type="date" class="form-control" name="antiguedad_permiso" value="" required>
+            </div>
+        </div>
 
-<body>
-    <h1>Nuevo Usuario</h1><br>
-
-    <form action="{{url_for('bpclient.create_usuario')}}" method="POST">
-        <label>Nombre: </label>
-        <input type="text" name="nombre_completo" required><br>
-        <label>Correo: </label>
-        <input type="text" name="correo" required><br>
-        <label>DNI: </label>
-        <input type="text" name="dni" required><br>
-        <label>Fecha: </label>
-        <input type="date" name="fecha_nacimiento" required><br>
-        <label>Antiguedad: </label>
-        <input type="date" name="antiguedad_permiso"><br>
-        <label>Foto: </label>
-        <input type="text" name="foto_perfil" ><br>
-        <input type="submit" value="Crear"/>
+        <div class="form-group row alinear">
+            <label for="foto_perfil" class="col-sm-2 col-form-label">Foto de perfil</label><br>
+            <div class="col-sm-10">
+                <img src="{{picture}}" alt="" width="200" height="200"
+                    style="padding: 5% 5%;">
+            </div>
+            <input type="file" class="form-control" id="foto_perfil" name="foto_perfil" required>
+        </div>
+        <br>
+        <div class="col text-center">
+            <input class="btn btn-outline-info" type="submit" value="Crear">
+        </div>
     </form>
-
-</body>
-
-</html>
+</div>
+{% endblock %}

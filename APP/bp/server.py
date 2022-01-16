@@ -48,7 +48,7 @@ def get_usuarios():
         usuarios = usuario_data.find_usuarios()
     else:
         if email:
-            usuarios = usuario_data.find_usuario_by_email(email)
+            usuarios = usuario_data.find_usuarios_by_email(email)
         else:
             return not_found("Parámetros introducidos no válidos")
 

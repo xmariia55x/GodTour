@@ -15,19 +15,26 @@ def find_usuario(id):
 
 def create_usuario(nombre_completo,correo,dni,fecha_nacimiento,antiguedad_permiso,
 foto_perfil,valoracion_media):
-        #Lo creamos porque necesitamos una hora
-        hora = "00:00"
-        id = usuario_db.insert_one(
-            {
-             "nombre_completo": nombre_completo,
-             "correo": correo,
-             "dni": dni,
-             "fecha_nacimiento": float(date_converter.date_to_timestamp(fecha_nacimiento, hora)),
-             "antiguedad_permiso": float(date_converter.date_to_timestamp(antiguedad_permiso, hora)),
-             "foto_perfil": foto_perfil,
-             "valoracion_media": valoracion_media
-            }
-        )
+    #Lo creamos porque necesitamos una hora
+    hora = "00:00"
+    if antiguedad_permiso is None:
+        antiguedad = None
+    else:    
+        antiguedad = float(date_converter.date_to_timestamp(antiguedad_permiso, hora))
+    id = usuario_db.insert_one(
+        {
+            "nombre_completo": nombre_completo,
+            "correo": correo,
+            "dni": dni,
+            "fecha_nacimiento": float(date_converter.date_to_timestamp(fecha_nacimiento, hora)),
+            "antiguedad_permiso": antiguedad,
+            "foto_perfil": foto_perfil,
+            "valoracion_media": valoracion_media
+        }
+    )
+
+    return id
+
 
 def update_usuario(id, nombre_completo, correo, dni, fecha_nacimiento, antiguedad_permiso, foto_perfil):
     #Lo creamos porque necesitamos una hora

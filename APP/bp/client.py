@@ -41,56 +41,56 @@ bpclient = Blueprint('bpclient', __name__, template_folder='templates')
 @bpclient.route('/')
 def init():
     # Esto ira en el login
-    session['id'] = "6194e4dbc76e95c373d80508"
+    # session['id'] = "6194e4dbc76e95c373d80508"
+    # return render_template("login.html")
     return render_template("inicio.html",municipios = datos_abiertos.municipios, trayectos = list(trayecto_data.find_trayectos()))
 
 @bpclient.route('/favicon.ico')
 def favicon():
     return "/static/images/favicon.ico", 200
 
-@bpclient.route('/app/login', methods=["POST"])
+@bpclient.route('/app/login', methods=['GET', 'POST'])
 def login():
-    try:
-        token = request.form.get('idtoken')
-        CLIENT_ID = "892536618714-0r5ftehtfat890vn603mu7jtq80bcnfd.apps.googleusercontent.com"
-        # Specify the CLIENT_ID of the app that accesses the backend:
-        idinfo = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
+    if request.method == 'GET':
+        return render_template("login.html")
+    else:
+        #try:
+            token = request.form.get('idtoken')
+            CLIENT_ID = "892536618714-0r5ftehtfat890vn603mu7jtq80bcnfd.apps.googleusercontent.com"
+            # Specify the CLIENT_ID of the app that accesses the backend:
+            idinfo = id_token.verify_oauth2_token(token, requests.Request(), CLIENT_ID)
 
-        # Or, if multiple clients access the backend server:
-        # idinfo = id_token.verify_oauth2_token(token, requests.Request())
-        # if idinfo['aud'] not in [CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]:
-        #     raise ValueError('Could not verify audience.')
+            # Or, if multiple clients access the backend server:
+            # idinfo = id_token.verify_oauth2_token(token, requests.Request())
+            # if idinfo['aud'] not in [CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]:
+            #     raise ValueError('Could not verify audience.')
 
-        # If auth request is from a G Suite domain:
-        # if idinfo['hd'] != GSUITE_DOMAIN_NAME:
-        #     raise ValueError('Wrong hosted domain.')
+            # If auth request is from a G Suite domain:
+            # if idinfo['hd'] != GSUITE_DOMAIN_NAME:
+            #     raise ValueError('Wrong hosted domain.')
 
-        # ID token is valid. Get the user's Google Account ID from the decoded token.
-        userid = idinfo['sub']
-        user_email = idinfo['email']
+            # ID token is valid. Get the user's Google Account ID from the decoded token.
+            userid = idinfo['sub']
+            user_email = idinfo['email']
+            print("AQUI")
+            usuario = usuario_data.find_usuario_by_email(user_email)
+            print(usuario)
+            
+            print(user_email)
+            print(usuario)
 
-        usuario = usuario_data.find_usuario_by_email(user_email)
-        print(user_email)
-        print(usuario)
-
-        if usuario is None:
-            # El usuario no está registrado, lo mandamos a la pantalla de registro
-            user_name = idinfo['name']
-            user_picture = idinfo['picture']
-        else:
-            # El usuario está ya registrado
-            # Meter el usuario obtenido en sesión
-            session['id'] = usuario.get('_id')
-            session['usuario'] = usuario
-            return "/"
-
-
-    except ValueError:
-    # Invalid token
-        pass
-
-    return "/"
-
+            if usuario is None:
+                # El usuario no está registrado, lo mandamos a la pantalla de registro
+                return "0"
+            else:
+                # El usuario está ya registrado
+                # Meter el usuario obtenido en sesión
+                session['id'] = usuario.get('_id')
+                session['usuario'] = usuario
+                return "1"
+        #except ValueError:
+            # Invalid token
+        #    return "error"
 
 # -----------------------------------------------------ADMINISTRADOR-------------------------------------------------------------
 @bpclient.route('/app/admin', methods=['GET'])
@@ -116,23 +116,25 @@ def get_usuario(id):
 #Crea un nuevo usuario
 @bpclient.route('/app/usuarios/create', methods=['GET', 'POST'])
 def create_usuario():
-    if request.method == 'GET':
-        return render_template('usuario/crearUsuario.html')
-    else:
-        nombre_completo = request.form.get('nombre_completo')
-        correo = request.form.get('correo')
-        dni = request.form.get('dni')
-        fecha_nacimiento = request.form.get('fecha_nacimiento')
-        antiguedad_permiso = request.form.get('antiguedad_permiso')
-        foto_perfil = request.form.get('foto_perfil')
-        valoracion_media = 0
+    nombre_completo = request.form.get('nombre_completo')
+    correo = request.form.get('correo')
+    dni = request.form.get('dni')
+    fecha_nacimiento = request.form.get('fecha_nacimiento')
+    antiguedad_permiso = request.form.get('antiguedad_permiso')
+    valoracion_media = 0
+    foto_perfil = request.files.getlist("foto_perfil")
+    foto_url = None
+    for foto in foto_perfil:
+        if foto.filename:
+            response = cloudinary.uploader.upload(foto)
+            foto_url = response["url"]
 
-        if nombre_completo and correo and dni and fecha_nacimiento:
-            usuario_data.create_usuario(nombre_completo,correo,dni,fecha_nacimiento,
-            antiguedad_permiso,foto_perfil,valoracion_media)
-            return redirect("/app/usuarios")
-        else:
-            return render_template('usuario/nuevoUsuario.html', error="No se ha podido crear el usuario, faltan campos")
+    if nombre_completo and correo and dni and fecha_nacimiento and foto_url:
+        usuario_data.create_usuario(nombre_completo,correo,dni,fecha_nacimiento,
+        antiguedad_permiso,foto_url,valoracion_media)
+        return render_template("inicio.html", municipios = datos_abiertos.municipios, trayectos = list(trayecto_data.find_trayectos()))
+    else:
+        return render_template('login.html', error="No se ha podido crear el usuario, faltan campos")
 
 #Elimina un usuario cuyo id coincide con el que se pasa por parametro
 @bpclient.route('/app/usuarios/delete/<id>', methods=['GET'])
