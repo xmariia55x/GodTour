@@ -43,3 +43,5 @@ def update_vehiculo(id, marca, modelo, matricula, color, plazas, fotos_vehiculo)
 
 def delete_vehiculo(id):
     vehiculo_db.delete_one({'_id': ObjectId(id)})
+
+

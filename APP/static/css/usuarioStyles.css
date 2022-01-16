@@ -1,3 +1,31 @@
+.img-thumbnail {
+    padding: .25rem;
+    background-color: #fff;
+    border: 1px solid #dee2e6;
+    border-radius: .25rem;
+    max-width: 100%;
+    height: auto;
+}
+
+.social-link {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #666;
+    border-radius: 50%;
+    transition: all 0.3s;
+    font-size: 0.9rem;
+}
+
+.row {
+    display: flex;
+    margin-left:-5px;
+    margin-right:-5px;
+}
+
 .cards{
     display: flex;
     flex-direction: row;
@@ -6,4 +34,32 @@
     justify-content: center;
 }
 
-div.alinear label { text-align:right; }
+.separarCards{
+    padding: 3%; 
+}
+
+#btnCrearUsuario {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 2%;
+}
+#principal {
+    padding: 2% 15%;
+}
+
+#parteIzquierda {
+    width: 50%;
+    float: left;
+}
+
+#parteDerecha {
+    float: left;
+    width: 50%;
+    padding-left: 4%;
+    padding-top: 4%;
+}
+#botonCentrado {
+    text-align: center;
+    justify-content: center;
+}
