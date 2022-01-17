@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Info trayecto{% endblock %}
+
+{% set disabled = "disabled" if trayecto.pasajeros|length > 0 else "" %}
+
+{% block head %} 
+{{super()}}
+{% endblock %}}
+
+{% block content %}
+Muchas gracias
+<a href="{{ url_for( 'bpclient.init') }}"> Pulse aquí para continuar </a>
+{%endblock%}

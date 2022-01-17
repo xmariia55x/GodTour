@@ -98,8 +98,11 @@ def administrador():
 
 @bpclient.route('/app/Conversacion/<trayecto>', methods=['GET'])
 def get_conversacion_trayecto(trayecto):
+    lista = []
     listaConversaciones = conversacion_data.find_conversaciones_trayecto(trayecto) #Pasa el traecto actual como parametro
-    return render_template('conversacion/conversacionesTrayecto.html', listaConversaciones = list(listaConversaciones))
+    for conver in listaConversaciones:
+       lista.add(conver,usuario_data.find_usuario(conver.autor).nombre) 
+    return render_template('conversacion/conversacionesTrayecto.html', listaConversaciones = list(lista))
 
 # ---------------------------------------------FIN CONVERSACION-----------------------------------------------------------
 
@@ -250,9 +253,7 @@ def get_trayecto(id):
         pasajero = usuario_data.find_usuario(p)
         lista_pasajeros.append(pasajero)
 
-    print(type(trayecto["creador"]))
-    print(type(session["id"]))
-
+    
     return render_template("trayecto/info_trayecto.html", trayecto = trayecto, fecha = fecha_format, hora= hora_format, pasajeros = lista_pasajeros,vehiculo=vehiculo, session = session)
 
 @bpclient.route('/app/trayectos/create', methods=["GET", "POST"])
@@ -353,10 +354,12 @@ def update_trayecto(id):
 
     return redirect("/app/trayectos/usuarios/creados/"+str(trayecto["creador"]))
 
-@bpclient.route('/app/trayectos/reservar/<id>', methods=["GET"])
+@bpclient.route('/app/trayectos/reservar/<id>', methods=["POST"])
 def reserva_trayecto(id):
     trayecto = trayecto_data.find_trayecto(id)
-    return render_template('trayecto/reservar_trayecto.html', trayecto = trayecto)
+    precio = request.form.get("precio")
+    print(precio)
+    return render_template('trayecto/reservar_trayecto.html', trayecto = trayecto, precio = precio)
 
 @bpclient.route('/app/trayectos/usuarios/creados/<id>')
 def get_trayectos_creados_usuario(id):
