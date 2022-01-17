@@ -104,8 +104,11 @@ def administrador():
 
 @bpclient.route('/app/Conversacion/<trayecto>', methods=['GET'])
 def get_conversacion_trayecto(trayecto):
+    lista = []
     listaConversaciones = conversacion_data.find_conversaciones_trayecto(trayecto) #Pasa el traecto actual como parametro
-    return render_template('conversacion/conversacionesTrayecto.html', listaConversaciones = list(listaConversaciones))
+    for conver in listaConversaciones:
+       lista.add(conver,usuario_data.find_usuario(conver.autor).nombre) 
+    return render_template('conversacion/conversacionesTrayecto.html', listaConversaciones = list(lista))
 
 # ---------------------------------------------FIN CONVERSACION-----------------------------------------------------------
 
