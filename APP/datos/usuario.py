@@ -3,6 +3,7 @@ from bson import json_util
 from bson.objectid import ObjectId
 from datetime import datetime
 import pymongo
+import json
 import fechas as date_converter
 
 def find_usuarios():
