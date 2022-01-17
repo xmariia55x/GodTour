@@ -58,29 +58,6 @@
         {% endfor %}
     <br>
     <br>
-
-    <!--
-      Esto es para Twitter
-    -->   
-    <a class="twitter-share-button"
-    href="https://twitter.com/intent/tweet?text=Mira%20el%20viaje%20que%20acabo%20de%20descubrir%20en..."
-    data-size="large" >Compartir</a>
-
-    <!--
-      Boton para reservar el trayecto
-    -->
-
-    {%if trayecto.creador | string() != session.id %}
-      
-      <input class="btn btn-outline-info" type="submit" value="Reservar">
-    </form>
-    {%endif%}
-  
-    <!--
-      Prueba para PayPal
-    -->
-
-  
 </div>
 
 <div id="divDerecha">
@@ -115,7 +92,24 @@
     {% endif %}
     
     
-    
+    <div id=divBtnDerecha>
+          <!--
+      Esto es para Twitter
+    -->   
+      <a class="twitter-share-button"
+      href="https://twitter.com/intent/tweet?text=Mira%20el%20viaje%20que%20acabo%20de%20descubrir%20en..."
+      data-size="large" >Compartir</a>
+
+    <!--
+      Boton para reservar el trayecto
+    -->
+
+      {%if trayecto.creador | string() != session.id %}
+      
+        <input class="btn btn-outline-info" type="submit" value="Reservar">
+      </form>
+      {%endif%}
+    </div>
 </div>
     
 {% endblock %}
