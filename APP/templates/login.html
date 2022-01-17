@@ -73,7 +73,7 @@
                 var contenido = document.getElementById("contenido");
 
                 var xhr = new XMLHttpRequest();
-                xhr.open('POST', 'http://localhost:5000');
+                xhr.open('POST', 'http://localhost:5000/login');
                 xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                 xhr.onload = function () {
                     console.log('Signed in as: ' + xhr.responseText);

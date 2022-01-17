@@ -40,18 +40,26 @@ cloudinary.config(
 
 bpclient = Blueprint('bpclient', __name__, template_folder='templates')
 
+@bpclient.route('/')
+def arranque():
+    return redirect('/login')
+
 @bpclient.route('/app')
 def init():
     # Esto ira en el login
     # session['id'] = "6194e4dbc76e95c373d80508"
     # return render_template("login.html")
-    return render_template("inicio.html",municipios = datos_abiertos.municipios, trayectos = list(trayecto_data.find_trayectos()))
+    if 'id' not in session:
+        return render_template("login.html")
+    else:
+        return render_template("inicio.html",municipios = datos_abiertos.municipios, trayectos = list(trayecto_data.find_trayectos()))
+
 
 @bpclient.route('/favicon.ico')
 def favicon():
     return "/static/images/favicon.ico", 200
 
-@bpclient.route('/', methods=['GET', 'POST'])
+@bpclient.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'GET':
         return render_template("login.html")
@@ -137,22 +145,20 @@ def create_usuario():
     fecha_nacimiento = request.form.get('fecha_nacimiento')
     antiguedad_permiso = request.form.get('antiguedad_permiso')
     valoracion_media = 0
-    foto_perfil = request.files.getlist("foto_perfil")
+    foto_perfil = request.files.getlist("foto_perfil")[0]
     foto_url = None
-    if len(foto_perfil) == 0:
-        foto_url = "https://res.cloudinary.com/cloudgodtour/image/upload/v1642355490/perfil-del-usuario_fmvduw.png"
+    if foto_perfil.filename:
+        response = cloudinary.uploader.upload(foto)
+        foto_url = response["url"]
     else:
-        for foto in foto_perfil:
-            if foto.filename:
-                response = cloudinary.uploader.upload(foto)
-                foto_url = response["url"]
+        foto_url = "https://res.cloudinary.com/cloudgodtour/image/upload/v1642355490/perfil-del-usuario_fmvduw.png"
 
     if nombre_completo and correo and dni and fecha_nacimiento and foto_url:
         userid = usuario_data.create_usuario(nombre_completo,correo,dni,fecha_nacimiento,
         antiguedad_permiso,foto_url,valoracion_media)
         usuario = usuario_data.find_usuario_by_email(correo)
         session['id'] = str(usuario["_id"])
-        return render_template("inicio.html",municipios = datos_abiertos.municipios, trayectos = list(trayecto_data.find_trayectos()))
+        return redirect('/app')
     else:
         return render_template('login.html', error="No se ha podido crear el usuario, faltan campos")
 
