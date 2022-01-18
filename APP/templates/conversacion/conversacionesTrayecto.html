@@ -23,36 +23,7 @@
 <div style="padding: 2% 15%">
     <h1 style="text-align: center">Chat del trayecto</h1>
 
-        {% for conversacion in listaConversaciones %}
-        <div class="d-flex justify-content-center">
-            <div class="row text-center container separarCards">
-                <div class="mx-auto">
-                    <div  class="bg-white rounded shadow-sm py-5 px-4">
-                       
-                        <h5 class="mb-0">Origen: {{ trayecto.origen.nombre }} </h5>
-                        <h5 class="mb-0">Destino: {{ trayecto.destino.nombre }} </h5>
-                        <span class="small text-muted">Duracion {{ trayecto.duracion }}</span><br>
-                        <span class="small text-muted">Precio {{ trayecto.precio}}</span><br>
-                        <span class="small text-muted">Plazas totales: {{ trayecto.plazas}} </span><br>
-
-                        <ul class="social mb-0 list-inline mt-3">
-                            <li class="list-inline-item"><img
-                                    src="https://img.icons8.com/bubbles/75/000000/information.png"
-                                    onclick="window.location.href='{{ url_for('bpclient.get_trayecto', id = trayecto._id ) }}';" />
-                            </li>
-                            <!--<li class="list-inline-item">
-                                <img src="https://img.icons8.com/bubbles/75/000000/star.png"/> De momento no se hace nada al valorar
-                            </li>-->
-                            <li class="list-inline-item"><img
-                                    src="https://img.icons8.com/bubbles/75/000000/delete-sign.png"
-                                    onclick="window.location.href='{{ url_for( 'bpclient.delete_pasajero_trayecto', id_trayecto = trayecto._id, id_pasajero = session['id'] ) }}';" />
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
+        
 
         <div>
 
@@ -67,10 +38,14 @@
                                 </div>
                                 <div class="box-body">
                                     <div class="direct-chat-messages">
+
+                                        {% for conversacion in listaConversaciones %}
                                         <div class="direct-chat-msg">
-                                            <div class="direct-chat-info clearfix"> <span class="direct-chat-name pull-left">Timona Siera</span> <span class="direct-chat-timestamp pull-right">23 Jan 2:00 pm</span> </div> <img class="direct-chat-img" src="https://img.icons8.com/color/36/000000/administrator-male.png" alt="message user image">
-                                            <div class="direct-chat-text"> For what reason would it be advisable for me to think about business content? </div>
+                                            <div class="direct-chat-info clearfix"> <span class="direct-chat-name pull-left">{{ autor.nombre }}</span> <span class="direct-chat-timestamp pull-right">23 Jan 2:00 pm</span> </div> <img class="direct-chat-img" src="https://img.icons8.com/color/36/000000/administrator-male.png" alt="message user image">
+                                            <div class="direct-chat-text"> {{ conversacion.texto }} </div>
                                         </div>
+                                        {% endfor %}
+                                        
                                         <div class="direct-chat-msg right">
                                             <div class="direct-chat-info clearfix"> <span class="direct-chat-name pull-right">Sarah Bullock</span> <span class="direct-chat-timestamp pull-left">23 Jan 2:05 pm</span> </div> <img class="direct-chat-img" src="https://img.icons8.com/office/36/000000/person-female.png" alt="message user image">
                                             <div class="direct-chat-text"> Thank you for your believe in our supports </div>
