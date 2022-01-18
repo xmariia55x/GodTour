@@ -149,7 +149,7 @@ def create_usuario():
     foto_perfil = request.files.getlist("foto_perfil")[0]
     foto_url = None
     if foto_perfil.filename:
-        response = cloudinary.uploader.upload(foto)
+        response = cloudinary.uploader.upload(foto_perfil)
         foto_url = response["url"]
     else:
         foto_url = "https://res.cloudinary.com/cloudgodtour/image/upload/v1642355490/perfil-del-usuario_fmvduw.png"
