@@ -98,7 +98,7 @@
     {% endif %}
     
 
-    {%if trayecto.creador | string() != session.id %}
+    {%if puedePagar%}
       <!--
       Prueba para PayPal
       -->
