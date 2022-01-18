@@ -277,11 +277,12 @@ def get_trayecto(id):
 def create_trayecto():
     usuario = usuario_data.find_usuario("6194e4dbc76e95c373d80508")
     if request.method == "GET":
-        vehiculos_id = usuario["vehiculos"]
+        vehiculos_id = usuario.get("vehiculos")
         lista_vehiculos = []
-        for v in vehiculos_id:
-            vehiculo = vehiculo_data.find_vehiculo(v)
-            lista_vehiculos.append(vehiculo)
+        if vehiculos_id is not None:
+            for v in vehiculos_id:
+                vehiculo = vehiculo_data.find_vehiculo(v)
+                lista_vehiculos.append(vehiculo)
         return render_template("trayecto/nuevoTrayecto.html", usuario = usuario, vehiculos = lista_vehiculos)
     else: #POST
         creador = request.form.get("creador")
