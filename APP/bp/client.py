@@ -260,8 +260,18 @@ def get_trayecto(id):
         pasajero = usuario_data.find_usuario(p)
         lista_pasajeros.append(pasajero)
 
+    puedePagar = True
+
+    idSession = ObjectId(session["id"])
+
+    #Si es el creador, no podrá pagar
+    if idSession == trayecto["creador"]:
+        puedePagar = False
+    else:
+        if idSession in pasajeros:
+            puedePagar = False
     
-    return render_template("trayecto/info_trayecto.html", trayecto = trayecto, fecha = fecha_format, hora= hora_format, pasajeros = lista_pasajeros,vehiculo=vehiculo, session = session)
+    return render_template("trayecto/info_trayecto.html", trayecto = trayecto, fecha = fecha_format, hora= hora_format, pasajeros = lista_pasajeros,vehiculo=vehiculo, session = session, puedePagar = puedePagar)
 
 @bpclient.route('/app/trayectos/create', methods=["GET", "POST"])
 def create_trayecto():
