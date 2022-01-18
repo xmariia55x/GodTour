@@ -81,6 +81,20 @@ def delete_trayecto(id):
     result = trayecto_db.delete_one({'_id': ObjectId(id)})
     return result
 
+def add_pasajero(idTrayecto, idPasajero):
+    trayecto = find_trayecto(idTrayecto)
+    pasajeros = trayecto["pasajeros"]
+    pasajeros.append(idPasajero)
+    filter = {"_id": ObjectId(idTrayecto)}
+    
+    new_values = {"$set":{
+            "pasajeros": pasajeros
+    }}
+        
+    result = trayecto_db.update_one(filter, new_values)
+    return result
+
+
 '''
 def update_restringido_trayecto(id, periodicidad, fotos_opcionales, plazas_totales, vehiculo):
     filter = {"_id": ObjectId(id)}

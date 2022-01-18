@@ -24,7 +24,7 @@
     <!-- Los hidden están para pasarle las coordenadas -->
     <input type="hidden" id="latOrigen" value="{{trayecto.origen.latitud}}" />
     <input type="hidden" id="lonOrigen" value="{{trayecto.origen.longitud}}" />
-
+    <input type="hidden" id="idTrayecto" value="{{trayecto._id}}" />
     
     <label class="form-label">Destino: </label>
     <input type="text" class="form-control col-xs-3" id="dir_destino" value="{{trayecto.destino.nombre}}" readonly></br>
@@ -98,11 +98,11 @@
     {% endif %}
     
 
-      {%if trayecto.creador | string() != session.id %}
+    {%if trayecto.creador | string() != session.id %}
       <!--
       Prueba para PayPal
--->
-</br>
+      -->
+  </br>
     <div id="smart-button-container">
       <div style="text-align: center;">
         <div id="paypal-button-container"></div>
@@ -129,6 +129,8 @@
   
         onApprove: function(data, actions) {
           return actions.order.capture().then(function(orderData) {
+
+            var idTrayecto = document.getElementById("idTrayecto").value;
             
             // Full available details
             console.log('Capture result', orderData, JSON.stringify(orderData, null, 2));
@@ -136,11 +138,11 @@
             // Show a success message within this page, e.g.
             const element = document.getElementById('paypal-button-container');
             element.innerHTML = '';
-            element.innerHTML = '<h3>Thank you for your payment!</h3>';
+            element.innerHTML = '<h3>¡Gracias por realizar su pago!</h3>';
             
             //Aquí modelamos que se añada en la lista de pasajeros.
             //Volvemos a la pantalla inicial.
-            element.innerHTML += '<a href = "{{url_for("bpclient.init")}}"> Volver a la pantalla anterior </a>'
+            element.innerHTML += '<a href = "{{url_for("bpclient.reserva_trayecto", id = trayecto._id)}}"> Pulse aquí para confirmar su pago </a>'
             // Or go to another URL:  actions.redirect('thank_you.html');
             //actions.redirect('pagado.html');
           });

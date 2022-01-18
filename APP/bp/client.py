@@ -360,13 +360,13 @@ def update_trayecto(id):
                                       fecha, hora, duracion, periodicidad, precio, urls, plazas_totales, vehiculo, pasajeros)
 
     return redirect("/app/trayectos/usuarios/creados/"+str(trayecto["creador"]))
-
-@bpclient.route('/app/trayectos/reservar/<id>', methods=["POST"])
+#cambiar
+@bpclient.route('/app/trayectos/reservar/<id>', methods=["GET"])
 def reserva_trayecto(id):
-    trayecto = trayecto_data.find_trayecto(id)
-    precio = request.form.get("precio")
-    print(precio)
-    return render_template('trayecto/reservar_trayecto.html', trayecto = trayecto, precio = precio)
+    #Aqui vamos a modelar lo de reservar el trayecto    
+    idPasajero = session["id"]
+    trayecto_data.add_pasajero(id,idPasajero)
+    return redirect("/app")
 
 @bpclient.route('/app/trayectos/usuarios/creados/<id>')
 def get_trayectos_creados_usuario(id):
