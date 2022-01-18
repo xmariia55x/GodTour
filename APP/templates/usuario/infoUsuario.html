@@ -1,12 +1,15 @@
 {% extends "base.html" %}
+
+<!--
 {%if administrador is not none and administrador == 1 %}
 {% set admin = administrador %}
 {% set titulo = 'Datos usuario' %}
 {%else%}
 {% set admin = 0 %}
 {% set titulo = 'Mi perfil' %}
-{%endif%}
-{% block title %}{{titulo}}{% endblock %}
+{%endif%}-->
+
+{% block title %}{{'Mi perfil'}}{% endblock %}
 {%if usuario.foto_perfil is none%}
 {%set picture = '/static/images/perfil-del-usuario.png'%}
 {%else%}
