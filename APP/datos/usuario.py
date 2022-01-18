@@ -112,16 +112,18 @@ def find_vehiculos_usuario(id):
     usuario_completo = usuario_db.find_one({'_id': ObjectId(id)})
     vehiculos = usuario_completo.get('vehiculos')
     lista_vehiculos = []
-    for vehiculo in vehiculos:
-        lista_vehiculos.append(vehiculo_db.find_one({'_id': ObjectId(vehiculo)}))
+    if vehiculos is not None:
+        for vehiculo in vehiculos:
+            lista_vehiculos.append(vehiculo_db.find_one({'_id': ObjectId(vehiculo)}))
     return lista_vehiculos
 
 def find_vehiculos_usuario_by_id(id):
     usuario_completo = usuario_db.find_one({'_id': ObjectId(id)})
     vehiculos = usuario_completo.get('vehiculos')
     lista_vehiculos = []
-    for vehiculo in vehiculos:
-        lista_vehiculos.append(ObjectId(vehiculo_db.find_one({'_id': ObjectId(vehiculo)}).get('_id')))
+    if vehiculos is not None:
+        for vehiculo in vehiculos:
+            lista_vehiculos.append(ObjectId(vehiculo_db.find_one({'_id': ObjectId(vehiculo)}).get('_id')))
     return lista_vehiculos
 
 def delete_vehiculo_from_usuarios_list(id_vehiculo):

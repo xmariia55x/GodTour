@@ -122,10 +122,11 @@ def get_usuarios():
     return render_template("/usuario/listaUsuarios.html",usuarios = list(usuarios), administrador = 1) 
 
 #Devuelve un usuario cuyo id coincide con el que se pasa por parámetro
-@bpclient.route('/app/usuarios/<id>/<administrador>', methods=['GET'])
-def get_usuario(id, administrador):
+#Se le ha quitado el parametro del adminisitrador
+@bpclient.route('/app/usuarios/<id>', methods=['GET'])
+def get_usuario(id):
     usuario = usuario_data.find_usuario(id)
-    admin_value = int(administrador)
+    #admin_value = int(administrador)
     vehiculos = usuario_data.find_vehiculos_usuario(id)
     fecha_nacimiento_format, hora_nacimiento_format = date_converter.timestamp_to_date(usuario["fecha_nacimiento"])
     if usuario is None:
@@ -133,7 +134,7 @@ def get_usuario(id, administrador):
     else:
         if(usuario["antiguedad_permiso"] is not None):
             fecha_permiso_format, hora_permiso_format = date_converter.timestamp_to_date(usuario["antiguedad_permiso"])
-        return render_template("usuario/infoUsuario.html",usuario = usuario, administrador = admin_value, 
+        return render_template("usuario/infoUsuario.html",usuario = usuario, 
         fecha_nacimiento = fecha_nacimiento_format, fecha_permiso = fecha_permiso_format, vehiculos = list(vehiculos))
 
 #Crea un nuevo usuario
