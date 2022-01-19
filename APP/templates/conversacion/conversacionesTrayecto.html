@@ -2,7 +2,7 @@
 
 {% block title %}Mis reservas{% endblock %}
 
-{% block head %} 
+{% block head %}
 {{super()}}
 
 
@@ -23,54 +23,92 @@
 <div style="padding: 2% 15%">
     <h1 style="text-align: center">Chat del trayecto</h1>
 
-        
 
-        <div>
 
-            <div class="page-content page-container" id="page-content">
-                <div class="padding">
-                    <div class="row container d-flex justify-content-center">
-                        <div class="col-md-4">
-                            <div class="box box-warning direct-chat direct-chat-warning">
-                                <div class="box-header with-border">
-                                    <h3 class="box-title">Chat Messages</h3>
-                                    <div class="box-tools pull-right"> <span data-toggle="tooltip" title="" class="badge bg-yellow" data-original-title="3 New Messages">20</span> <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i> </button> <button type="button" class="btn btn-box-tool" data-toggle="tooltip" title="" data-widget="chat-pane-toggle" data-original-title="Contacts"> <i class="fa fa-comments"></i></button> <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i> </button> </div>
-                                </div>
-                                <div class="box-body">
-                                    <div class="direct-chat-messages">
-
-                                        {% for conversacion in listaConversaciones %}
-                                        <div class="direct-chat-msg">
-                                            <div class="direct-chat-info clearfix"> <span class="direct-chat-name pull-left">{{ autor.nombre }}</span> <span class="direct-chat-timestamp pull-right">23 Jan 2:00 pm</span> </div> <img class="direct-chat-img" src="https://img.icons8.com/color/36/000000/administrator-male.png" alt="message user image">
-                                            <div class="direct-chat-text"> {{ conversacion.texto }} </div>
-                                        </div>
-                                        {% endfor %}
-                                        
-                                        <div class="direct-chat-msg right">
-                                            <div class="direct-chat-info clearfix"> <span class="direct-chat-name pull-right">Sarah Bullock</span> <span class="direct-chat-timestamp pull-left">23 Jan 2:05 pm</span> </div> <img class="direct-chat-img" src="https://img.icons8.com/office/36/000000/person-female.png" alt="message user image">
-                                            <div class="direct-chat-text"> Thank you for your believe in our supports </div>
-                                        </div>
-                                        <div class="direct-chat-msg">
-                                            <div class="direct-chat-info clearfix"> <span class="direct-chat-name pull-left">Timona Siera</span> <span class="direct-chat-timestamp pull-right">23 Jan 5:37 pm</span> </div> <img class="direct-chat-img" src="https://img.icons8.com/color/36/000000/administrator-male.png" alt="message user image">
-                                            <div class="direct-chat-text"> For what reason would it be advisable for me to think about business content? </div>
-                                        </div>
-                                        <div class="direct-chat-msg right">
-                                            <div class="direct-chat-info clearfix"> <span class="direct-chat-name pull-right">Sarah Bullock</span> <span class="direct-chat-timestamp pull-left">23 Jan 6:10 pm</span> </div> <img class="direct-chat-img" src="https://img.icons8.com/office/36/000000/person-female.png" alt="message user image">
-                                            <div class="direct-chat-text"> I would love to. </div>
-                                        </div>
+    <div>
+        <input type="hidden" id="user" value={{session.id}} />
+        <input type="hidden" id="trayecto" value={{listaConversaciones[0].id_trayecto}} />
+        <div class="page-content page-container" id="page-content">
+            <div class="padding">
+                <div class="row container d-flex justify-content-center">
+                    <div class="col-md-4" style="width: 100%; height: 100%;">
+                        <div class="box box-warning direct-chat direct-chat-warning">
+                            <div class="box-header with-border">
+                                <h3 class="box-title">Mensajes</h3>
+                                <div class="box-tools pull-right"> <span data-toggle="tooltip" title=""
+                                        class="badge bg-yellow" data-original-title="3 New Messages"></span> <button
+                                        type="button" class="btn btn-box-tool" data-widget="collapse"><i
+                                            class="fa fa-minus"></i> </button> <button type="button"
+                                        class="btn btn-box-tool" data-toggle="tooltip" title=""
+                                        data-widget="chat-pane-toggle" data-original-title="Contacts"> <i
+                                            class="fa fa-comments"></i></button> <button type="button"
+                                        class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i>
+                                    </button> </div>
+                            </div>
+                            <div class="box-body">
+                                <div class="direct-chat-messages">
+                                    {% for c in listaConversaciones %}
+                                    {%if c.id | string() != session.id %}
+                                    <div class="direct-chat-msg">
+                                        <div class="direct-chat-info clearfix"> <span
+                                                class="direct-chat-name pull-left">{{ c.autor }}</span> <span
+                                                class="direct-chat-timestamp pull-right">{{c.fecha}} {{c.hora}}</span>
+                                        </div> <img class="direct-chat-img"
+                                            src="https://img.icons8.com/color/36/000000/administrator-male.png"
+                                            alt="message user image">
+                                        <div class="direct-chat-text"> {{ c.texto }} </div>
                                     </div>
+                                    {%else%}
+                                    <div class="direct-chat-msg right">
+                                        <div class="direct-chat-info clearfix"> <span
+                                                class="direct-chat-name pull-right">{{ c.autor }}</span> <span
+                                                class="direct-chat-timestamp pull-left">{{c.fecha}} {{c.hora}}</span>
+                                        </div> <img class="direct-chat-img"
+                                            src="https://img.icons8.com/office/36/000000/person-female.png"
+                                            alt="message user image">
+                                        <div class="direct-chat-text"> {{ c.texto }} </div>
+                                    </div>
+                                    {%endif%}
+
+                                    {% endfor %}
+
+
                                 </div>
-                                <div class="box-footer">
-                                    <form action="#" method="post">
-                                        <div class="input-group"> <input type="text" name="message" placeholder="Type Message ..." class="form-control"> <span class="input-group-btn"> <button type="button" class="btn btn-warning btn-flat">Send</button> </span> </div>
-                                    </form>
-                                </div>
+                            </div>
+                            <div class="box-footer">
+                                    <div class="input-group"> <input type="text" id="message" name="message"
+                                            placeholder="Di algo..." class="form-control"> <span
+                                            class="input-group-btn"> 
+                                            <button type="button" class="btn btn-warning btn-flat" onclick="postMessage()">Enviar</button> </span> </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
 </div>
+
+
+
+<script>
+    function postMessage() {
+        var messageText = document.getElementById("message").value;
+
+        if(messageText != ""){
+        var user = document.getElementById("user").value;
+        var trayecto = document.getElementById("trayecto").value;
+        var xmlhttp = new XMLHttpRequest();
+        xmlhttp.open("GET", "/app/conversacion/add/message?author=" + user+"&message="+messageText+"&trayecto="+trayecto, true);
+        console.log(messageText);
+        console.log(user);
+        console.log(trayecto);
+        xmlhttp.send();
+        location.reload();
+
+        }
+    }
+    
+</script>
 {% endblock %}

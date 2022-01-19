@@ -64,6 +64,9 @@
     <a class="twitter-share-button"
     href="https://twitter.com/intent/tweet?text=Mira%20el%20viaje%20que%20acabo%20de%20descubrir%20en..."
     data-size="large" >Compartir</a>
+    
+    <a class="btn btn-outline-info btn-xs" href="/app/conversacion/{{trayecto._id}}" > Chat del Trayecto </a>
+
 </div>
 
 <div id="divDerecha">
@@ -108,6 +111,9 @@
         <div id="paypal-button-container"></div>
       </div>
     </div>
+  </form>
+ 
+ 
   <script src="https://www.paypal.com/sdk/js?client-id=sb&enable-funding=venmo&currency=EUR" data-sdk-integration-source="button-factory"></script>
   <script>
     function initPayPalButton() {

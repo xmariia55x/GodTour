@@ -1,7 +1,7 @@
 #from crypt import methods
 from logging import NullHandler
 from urllib.parse import urlparse
-from flask import Flask, request, jsonify, Response, session, redirect, Blueprint,send_from_directory
+from flask import Flask, request, jsonify, Response, session, redirect, Blueprint,send_from_directory, url_for
 from flask.templating import render_template
 from flask_pymongo import PyMongo
 import pymongo
@@ -103,14 +103,31 @@ def administrador():
 # -----------------------------------------------------FIN ADMINISTRADOR-------------------------------------------------------------
 
 # ---------------------------------------------CONVERSACION-----------------------------------------------------------
-
-@bpclient.route('/app/Conversacion/<trayecto>', methods=['GET'])
+#
+@bpclient.route('/app/conversacion/<trayecto>', methods=['GET'])
 def get_conversacion_trayecto(trayecto):
     lista = []
-    listaConversaciones = conversacion_data.find_conversaciones_trayecto(trayecto) #Pasa el traecto actual como parametro
+    listaConversaciones = conversacion_data.find_conversaciones_trayecto(trayecto) #Pasa el trayecto actual como parametro
     for conver in listaConversaciones:
-        lista.append(conver,usuario_data.find_usuario(conver["autor"]))
+        fecha,hora = date_converter.timestamp_to_date(conver["stamp"])
+        dato = {'texto':conver["texto"], 'autor':usuario_data.find_usuario(conver["autor"])["nombre_completo"], 'fecha': fecha, 'hora': hora,
+         'id': conver["autor"], 'id_trayecto':trayecto}
+        lista.append(dato)
     return render_template('conversacion/conversacionesTrayecto.html', listaConversaciones = list(lista))
+
+@bpclient.route('/app/conversacion/add/message', methods=['GET'])
+def add_message_to_conversation(): 
+    
+    trayecto = request.args.get("trayecto")
+    autor = request.args.get("author")
+    texto = request.args.get("message")
+    print(trayecto)
+    print(autor)
+    print(texto)
+    conversacion_data.create_conversacion(trayecto,autor,texto)
+    print("que dise")
+    return redirect('/app/conversacion/61c9a40e0a302a1be180925e', code=302)
+ 
 
 # ---------------------------------------------FIN CONVERSACION-----------------------------------------------------------
 

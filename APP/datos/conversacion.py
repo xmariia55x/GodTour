@@ -4,7 +4,7 @@ from mongoDB import conversacion_db
 from bson import json_util
 from bson.objectid import ObjectId
 import fechas as date_converter
-
+from datetime import datetime
 def find_conversaciones():
     conversaciones = conversacion_db.find()
     return conversaciones
@@ -21,14 +21,13 @@ def find_conversaciones_autor(id):
     conversaciones_autor = conversacion_db.find({'autor': ObjectId(id)})
     return conversaciones_autor
 
-def create_conversacion(trayecto, autor, texto, fecha, hora):
-    trayecto_db.insert_one(
+def create_conversacion(trayecto, autor, texto):
+    conversacion_db.insert_one(
         {
             "trayecto": ObjectId(trayecto),
-            "duracion": ObjectId(autor),
-            "duracion": str(texto),
-            "timestamp": float(date_converter.date_to_timestamp(fecha, hora)),
-            })
+            "autor": ObjectId(autor),
+            "texto": str(texto),
+            "stamp": datetime.now().timestamp() })
 
 def delete_conversacion(id):
     result = conversacion_db.delete_one({'_id': ObjectId(id)})
