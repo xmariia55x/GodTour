@@ -111,9 +111,9 @@ def get_conversacion_trayecto(trayecto):
     for conver in listaConversaciones:
         fecha,hora = date_converter.timestamp_to_date(conver["stamp"])
         dato = {'texto':conver["texto"], 'autor':usuario_data.find_usuario(conver["autor"])["nombre_completo"], 'fecha': fecha, 'hora': hora,
-         'id': conver["autor"], 'id_trayecto':trayecto}
+        'id': conver["autor"], 'id_trayecto':trayecto}
         lista.append(dato)
-    return render_template('conversacion/conversacionesTrayecto.html', listaConversaciones = list(lista))
+    return render_template('conversacion/conversacionesTrayecto.html', listaConversaciones = list(lista), trayecto = trayecto)
 
 @bpclient.route('/app/conversacion/add/message', methods=['GET'])
 def add_message_to_conversation(): 

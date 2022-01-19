@@ -27,7 +27,7 @@
 
     <div>
         <input type="hidden" id="user" value={{session.id}} />
-        <input type="hidden" id="trayecto" value={{listaConversaciones[0].id_trayecto}} />
+        <input type="hidden" id="trayecto" value={{trayecto}} />
         <div class="page-content page-container" id="page-content">
             <div class="padding">
                 <div class="row container d-flex justify-content-center">
@@ -47,6 +47,7 @@
                             </div>
                             <div class="box-body">
                                 <div class="direct-chat-messages">
+                                    {%if listaConversaciones | count > 0%}
                                     {% for c in listaConversaciones %}
                                     {%if c.id | string() != session.id %}
                                     <div class="direct-chat-msg">
@@ -71,7 +72,17 @@
                                     {%endif%}
 
                                     {% endfor %}
-
+                                    {%else%}
+                                    <div class="direct-chat-msg">
+                                        <div class="direct-chat-info clearfix"> <span
+                                                class="direct-chat-name pull-left">Administrador</span> <span
+                                                class="direct-chat-timestamp pull-right">JUSTO AHORA</span>
+                                        </div> <img class="direct-chat-img"
+                                            src="https://img.icons8.com/color/36/000000/administrator-male.png"
+                                            alt="message user image">
+                                        <div class="direct-chat-text"> A&uacute;n no hay mensajes, s&eacute; el primero en mandar uno </div>
+                                    </div>
+                                    {%endif%}
 
                                 </div>
                             </div>
