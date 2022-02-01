@@ -227,21 +227,7 @@ def delete_pasajero_trayecto(id_trayecto, id_pasajero):
 # ---------------------------------------------FIN USUARIO-----------------------------------------------------------
 
 # ---------------------------------------------INICIO TRAYECTO-------------------------------------------------------
-#Devuelve una lista de trayectos
-'''@bpclient.route('/app/administrador/trayectos', methods=['GET'])
-def get_trayectos():
-    trayectos = trayecto_data.find_trayectos()
-    return render_template("trayecto/listaTrayectos.html",trayectos=list(trayectos))
-'''
-'''
-#Devuelve los trayectos de un creador
-@bpclient.route('/app/trayectos/creador/<id>', methods=['GET'])
-def get_trayectos_creador(id):
-    trayectos_creador = trayecto_data.find_trayectos_creador(id)
-    #response = json_util.dumps(trayectos_creador)
-    #return Response(response, mimetype='application/json')
-    return 
-'''
+
 #Devuelve un trayecto cuyo id coincide con el que se pasa por parámetro
 @bpclient.route('/app/trayectos/ver/<id>', methods=['GET'])
 def get_trayecto(id):

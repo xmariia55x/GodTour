@@ -19,26 +19,7 @@ import datos.usuario as usuario_data
 import datos.vehiculo as vehiculo_data
 
 bpserver = Blueprint('bpserver', __name__)
-
-'''ultima_actualizacion_trafico = 0
-
-ultima_actualizacion_gasolineras = 0
-class FlaskApp(Flask):
-  def run(self, host=None, port=None, debug=None, load_dotenv=True, **options):
-    if not self.debug or os.getenv('WERKZEUG_RUN_MAIN') == 'true':
-      with self.app_context():
-        global gasolineras_datos_abiertos, ultima_actualizacion_gasolineras 
-        gasolineras_datos_abiertos = datos_abiertos.descargar_gasolineras() 
-        ultima_actualizacion_gasolineras = datetime.now()
-    super(FlaskApp, self).run(host=host, port=port, debug=debug, load_dotenv=load_dotenv, **options)
-app = FlaskApp(__name__)
-
-client = pymongo.MongoClient("mongodb+srv://Gestionpymongo:Gestionpymongo@cluster0.iixvr.mongodb.net/iweb?retryWrites=true&w=majority&ssl=true&ssl_cert_reqs=CERT_NONE")
-db = client.get_default_database()
-'''
 # -----------------------------------------------------USUARIO-------------------------------------------------------------
-# Obtengo la colección de usuarios
-
 #Devuelve una lista con los usuarios
 @bpserver.route('/api/usuarios', methods=['GET'])
 def get_usuarios():
@@ -94,7 +75,8 @@ def create_usuario():
             "fecha_nacimiento": fecha_nacimiento,
             "antiguedad_permiso": antiguedad_permiso,
             "foto_perfil": foto_perfil,
-            "valoracion_media": valoracion_media
+            "valoracion_media": valoracion_media,
+            "vehiculos" : []
         }
         return response
     else:
@@ -127,7 +109,7 @@ def update_usuario(id):
         return not_found("No se ha podido actualizar el usuario con el id: " + id)
 
 #Devuelve una lista de usuarios ordenados alfabeticamente, orden ascendente -> python.ASCENDING , orden descendente -> python.DESCENDING
-@bpserver.route('/api/usuarios/by_name', methods=['GET'])
+@bpserver.route('/api/usuarios/name', methods=['GET'])
 def get_usuario_ordered_by_name():
     usuarios = usuario_data.find_usuarios.sort("nombre_completo", pymongo.ASCENDING)
     response = json_util.dumps(usuarios)
@@ -273,61 +255,10 @@ def update_trayecto(id):
             return response
     else:
         return not_found("No se ha podido actualizar el trayecto con id: " + id)
-''''
-#Devuelve los trayectos cuyo destino coincide con el que se pasa por parámetro 
-@bpserver.route('/trayecto/by_destino', methods=['POST'])
-def get_trayecto_destino():
-    destino = request.json['destino']
-    if destino:
-        trayecto = trayecto_db.find({'destino': destino})
-        response = json_util.dumps(trayecto)
-        if response == '[]':
-            return not_found("No se han encontrado trayectos con destino " + destino)
-        else:     
-            return Response(response, mimetype='application/json')
-    else:
-        return not_found("No se ha indicado un destino")
-    
-#Devuelve los trayectos cuyos origenes y destinos coinciden con los pasados por parámetro 
-@bpserver.route('/trayecto/by_origen_destino', methods=['POST'])
-def get_trayecto_origen_destino():
-    origen = request.json['origen']
-    destino = request.json['destino']
-    if origen and destino:
-        trayecto = trayecto_db.find({'origen': origen, 'destino': destino})
-        response = json_util.dumps(trayecto)
-        if response == '[]':
-            return not_found("No se han encontrado trayectos con origen " + origen + " y destino " + destino)
-        else:     
-            return Response(response, mimetype='application/json')
-    else:
-        return not_found("No se han indicado trayectos con origen " + origen + " y destino " + destino)
 
-#Devuelve los trayectos cuyo precio es menor que la cantidad indicada por parametro
-@bpserver.route('/trayecto/by_precio', methods=['POST'])
-def get_trayecto_precio():
-    precio = request.json['precio']
-    if precio:
-        trayecto = trayecto_db.find({'precio': { "$lt" : precio }})
-        response = json_util.dumps(trayecto)
-        if response == '[]':
-            return not_found("Trayectos con precio menor a " + str(precio) + " no encontrados")
-        else:     
-            return Response(response, mimetype='application/json')
-    else:
-        return not_found("No se ha indicado un precio")
-'''
 #Devuelve los usuarios de un trayecto a partir del id del trayecto indicado por parametro
 @bpserver.route('/api/trayectos/<id>/usuarios', methods=['GET'])
 def get_usuario_trayecto(id):
-    '''
-    trayecto = trayecto_db.find_one({'_id': ObjectId(id)})
-    pasajeros = trayecto.get("pasajeros")
-    lista_pasajeros = []
-    for pasajero in pasajeros:
-        usuario = usuario_db.find_one({'_id': pasajero})
-        lista_pasajeros.append(usuario)
-    '''
     lista_pasajeros = trayecto_data.get_usuarios_by_trayecto(id)
     if lista_pasajeros is None:
         return not_found("El trayecto con id: " + id + " no tiene usuarios")
