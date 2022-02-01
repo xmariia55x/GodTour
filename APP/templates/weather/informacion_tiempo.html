@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Predicci&oacute;n del tiempo {% endblock %}
+
+{% block head %}
+{{super()}}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/informacionTiempo.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="card card-1">
+        <div id="demo" class="carousel slide" data-ride="carousel">
+            <!-- Indicators -->
+            <ul class="carousel-indicators">
+                <li data-target="#demo" data-slide-to="0" class="active"></li>
+            </ul> <!-- The slideshow -->
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="row">
+                        <div class="col-6">
+                            <div class="temp">{{tiempo_actual.temperatura_celsius}}&deg;</div>
+                            <div class="location">{{informacion_destino.nombre_destino}}, {{informacion_destino.comunidad_autonoma}}, {{informacion_destino.pais}}</div>
+                        </div>
+                        <div class="col-6 justify-content-right"> <img class="img-fluid" src="{{tiempo_actual.icono}}"> </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card card-3">
+        <div id="demo" class="carousel slide" data-ride="carousel">
+            <!-- Indicators -->
+            <ul class="carousel-indicators">
+                <li data-target="#demo" data-slide-to="0" class="active"></li>
+            </ul> <!-- The slideshow -->
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="row">
+                        {%for prediccion in predicciones%}
+                        <div class="col">
+                            <div class="row rowTempMax">{{prediccion.temp_max}}&deg;</div>
+                            <div class="row rowTempMin">{{prediccion.temp_min}}&deg;</div>
+                            <div class="row row2"><img class="img-fluid" width="60" height="60" src="{{prediccion.icono}}" /></div>
+                            <div class="row row3">{{prediccion.fecha}}</div>
+                        </div>
+                        {%endfor%}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

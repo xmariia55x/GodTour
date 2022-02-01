@@ -20,7 +20,7 @@ import datos.usuario as usuario_data
 import datos.vehiculo as vehiculo_data
 import datos.conversacion as conversacion_data
 import datos.datos_abiertos as datos_abiertos
-
+import datos.weather_api as prediccion_tiempo
 #Subir archivos
 import cloudinary
 from cloudinary.uploader import upload
@@ -517,4 +517,9 @@ def get_trafico():
 def get_gasolineras():    
     return render_template("datos_abiertos/gasolineras.html", provincias = datos_abiertos.provincias, municipios = datos_abiertos.municipios)
 # --------------------------------------------- FIN DATOS ABIERTOS - GASOLINERA -----------------------------------------------------------
-
+# --------------------------------------------- API PREDICCION DEL TIEMPO -----------------------------------------------------------
+@bpclient.route("/app/tiempo/<latitud>/<longitud>", methods=['GET'])
+def get_prediccion(latitud, longitud):
+    predicciones, informacion_destino, tiempo_actual = prediccion_tiempo.get_prediccion_tiempo(latitud, longitud)
+    return render_template("weather/informacion_tiempo.html", predicciones = predicciones, informacion_destino = informacion_destino, tiempo_actual = tiempo_actual)
+# --------------------------------------------- FIN API PREDICCION DEL TIEMPO -----------------------------------------------------------
