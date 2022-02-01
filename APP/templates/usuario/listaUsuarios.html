@@ -9,11 +9,6 @@
 {% block content %}
 <div id="principal">
     <h1 style="text-align: center">Usuarios registrados</h1>
-    {%if administrador is not none and administrador == 1 %}
-    {% set admin = administrador %}
-    {%else%}
-    {% set admin = 0 %}
-    {%endif%}
 
     {%if usuarios |count >0%}
     <div class="cards">
@@ -38,14 +33,14 @@
                         <ul class="social mb-0 list-inline mt-3">
                             <li class="list-inline-item"><img
                                     src="https://img.icons8.com/bubbles/75/000000/information.png"
-                                    onclick="window.location.href='{{ url_for( 'bpclient.get_usuario', id = usuario._id , administrador = admin) }}';" />
+                                    onclick="window.location.href='{{ url_for( 'bpclient.get_usuario', id = usuario._id) }}';" />
                             </li>
                             <li class="list-inline-item"><img src="https://img.icons8.com/bubbles/75/000000/edit.png"
-                                    onclick="window.location.href='{{ url_for( 'bpclient.update_usuario', id = usuario._id, administrador = admin ) }}';" />
+                                    onclick="window.location.href='{{ url_for( 'bpclient.update_usuario', id = usuario._id) }}';" />
                             </li>
                             <li class="list-inline-item"><img
                                     src="https://img.icons8.com/bubbles/75/000000/delete-sign.png"
-                                    onclick="window.location.href='{{ url_for( 'bpclient.delete_usuario', id = usuario._id, administrador = admin ) }}';" />
+                                    onclick="window.location.href='{{ url_for( 'bpclient.delete_usuario', id = usuario._id) }}';" />
                             </li>
                         </ul>
                     </div>
@@ -65,7 +60,7 @@
 
 
     <div id="btnCrearUsuario">
-        <form action="{{url_for('bpclient.create_usuario', administrador = admin )}}" method="GET">
+        <form action="{{url_for('bpclient.create_usuario')}}" method="GET">
             <input class="btn btn-outline-info" type="submit" value="Crear nuevo usuario">
         </form>
     </div>

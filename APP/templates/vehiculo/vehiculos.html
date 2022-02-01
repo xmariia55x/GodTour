@@ -8,15 +8,8 @@
 {% endblock %}
 {% block content %}
 <div style="padding: 2% 15%">
-    {%if administrador is not none and administrador == 1 %}
     <h1 style="text-align: center">Veh&iacute;culos registrados</h1>
     <br>
-    {% set admin = administrador %}
-    {%else%}
-    <h1 style="text-align: center">Mis veh&iacute;culos</h1>
-    <br>
-    {% set admin = 0 %}
-    {%endif%}
 
     {%if vehiculos |count >0%}
     <div class="cards">
@@ -45,11 +38,11 @@
                                     onclick="window.location.href='{{ url_for( 'bpclient.get_vehiculo', id = vehiculo._id ) }}';" />
                             </li>
                             <li class="list-inline-item"><img src="https://img.icons8.com/bubbles/75/000000/edit.png"
-                                    onclick="window.location.href='{{ url_for( 'bpclient.update_vehiculo', id = vehiculo._id, administrador = admin ) }}';" />
+                                    onclick="window.location.href='{{ url_for( 'bpclient.update_vehiculo', id = vehiculo._id) }}';" />
                             </li>
                             <li class="list-inline-item"><img
                                     src="https://img.icons8.com/bubbles/75/000000/delete-sign.png"
-                                    onclick="window.location.href='{{ url_for( 'bpclient.delete_vehiculo', id = vehiculo._id, administrador = admin ) }}';" />
+                                    onclick="window.location.href='{{ url_for( 'bpclient.delete_vehiculo', id = vehiculo._id) }}';" />
                             </li>
                         </ul>
                     </div>
@@ -68,7 +61,7 @@
     {% endif %}
 
     <div id="btnCrearVehiculo">
-        <form action="{{url_for('bpclient.create_vehiculo', administrador = admin )}}" method="GET">
+        <form action="{{url_for('bpclient.create_vehiculo')}}" method="GET">
             <input class="btn btn-outline-info" type="submit" value="Crear nuevo veh&iacute;culo">
         </form>
     </div>

@@ -168,7 +168,7 @@ def get_trayectos_usuario_pasajero(id):
 def delete_pasajero_trayecto(id_trayecto, id_pasajero):
     trayecto = find_trayecto(id_trayecto)
     pasajeros = trayecto.get("pasajeros")
-    pasajeros.delete(ObjectId(id_pasajero))
+    pasajeros.remove(ObjectId(id_pasajero))
     filter = {"_id": ObjectId(id_trayecto)}
 
     new_values = {"$set":{ 

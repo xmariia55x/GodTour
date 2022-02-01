@@ -1,12 +1,6 @@
 {% extends "base.html" %}
-{%if administrador is not none and administrador == 1 %}
-{% set admin = administrador %}
-{% set titulo = 'Actualizar usuario' %}
-{%else%}
-{% set admin = 0 %}
-{% set titulo = 'Actualizar perfil' %}
-{%endif%}
-{% block title %}{{titulo}}{% endblock %}
+
+{% block title %}Actualizar perfil{% endblock %}
 
 {% block head %}
 {{super()}}
@@ -33,7 +27,7 @@
         {{error}}
     </div>
     {%endif%}
-    <form action="{{url_for('bpclient.update_usuario',id=usuario._id, administrador = admin)}}" method="POST"
+    <form action="{{url_for('bpclient.update_usuario',id=usuario._id)}}" method="POST"
         enctype="multipart/form-data">
         <label class="form-label">Nombre </label>
         <input type="text" class="form-control col-xs-3" id="nombre_completo" name="nombre_completo"

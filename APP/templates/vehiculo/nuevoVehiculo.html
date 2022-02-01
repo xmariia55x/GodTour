@@ -15,12 +15,7 @@
         {{error}}
     </div>
     {%endif%}
-    {%if administrador is not none and administrador == 1 %}
-    {% set admin = administrador %}
-    {%else%}
-    {%set admin = 0%}
-    {%endif%}
-    <form action="{{url_for('bpclient.create_vehiculo', administrador = admin)}}" method="POST"
+    <form action="{{url_for('bpclient.create_vehiculo')}}" method="POST"
         enctype="multipart/form-data">
 
         <label class="form-label">Marca: </label>
@@ -41,22 +36,6 @@
         <label class="form-label">Fotos del veh&iacute;culo: </label>
         <input type="file" class="form-control col-xs-3" id="fotos_vehiculo" name="fotos_vehiculo" multiple="multiple"
             required></br>
-
-        {%if admin == 1 and usuarios|count > 0%}
-        <div class="form-group row">
-            <label for="usuario_seleccionado">Asignar veh&iacute;culo a usuario</label>
-            <div class="col-sm-10">
-                <select class="form-control" name="usuario_seleccionado" id="usuario_seleccionado">
-                    <option value="---">----------</option>
-                    {%for user in usuarios%}
-                    <option value="{{user._id}}">{{user.nombre_completo}} - {{user.correo}}</option>
-                    {%endfor%}
-                </select>
-            </div>
-
-        </div>
-        {%endif%}
-
         <div class="col text-center">
             <input class="btn btn-outline-info btn-lg" type="submit" value="Crear">
         </div>

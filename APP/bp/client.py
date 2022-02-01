@@ -96,11 +96,6 @@ def login():
             # Invalid token
         #    return "error"
 
-# -----------------------------------------------------ADMINISTRADOR-------------------------------------------------------------
-@bpclient.route('/app/admin', methods=['GET'])
-def administrador():
-    return render_template("/administrador/administrador.html") 
-# -----------------------------------------------------FIN ADMINISTRADOR-------------------------------------------------------------
 
 # ---------------------------------------------CONVERSACION-----------------------------------------------------------
 #
@@ -132,18 +127,11 @@ def add_message_to_conversation():
 # ---------------------------------------------FIN CONVERSACION-----------------------------------------------------------
 
 # -----------------------------------------------------USUARIO-------------------------------------------------------------
-#Devuelve una lista con los usuarios
-@bpclient.route('/app/administrador/usuarios', methods=['GET'])
-def get_usuarios():
-    usuarios = usuario_data.find_usuarios()
-    return render_template("/usuario/listaUsuarios.html",usuarios = list(usuarios), administrador = 1) 
 
 #Devuelve un usuario cuyo id coincide con el que se pasa por parámetro
-#Se le ha quitado el parametro del adminisitrador
 @bpclient.route('/app/usuarios/<id>', methods=['GET'])
 def get_usuario(id):
     usuario = usuario_data.find_usuario(id)
-    #admin_value = int(administrador)
     vehiculos = usuario_data.find_vehiculos_usuario(id)
     fecha_nacimiento_format, hora_nacimiento_format = date_converter.timestamp_to_date(usuario["fecha_nacimiento"])
     if usuario is None:
@@ -181,19 +169,14 @@ def create_usuario():
         return render_template('login.html', error="No se ha podido crear el usuario, faltan campos")
 
 #Elimina un usuario cuyo id coincide con el que se pasa por parametro
-@bpclient.route('/app/usuarios/delete/<id>/<administrador>', methods=['GET'])
-def delete_usuario(id, administrador):
-    admin_value = int(administrador)
+@bpclient.route('/app/usuarios/delete/<id>', methods=['GET'])
+def delete_usuario(id):
     usuario_data.delete_usuario(id) #Eliminar los vehiculos del usuario y los trayectos donde el usuario es creador y pasajero
-    if admin_value == 1:
-        return redirect('/app/administrador/usuarios')
-    else:
-        return redirect("/")
+    return redirect("/")
 
 #Actualiza la informacion del usuario cuyo id coincide con el que se pasa por parametro
-@bpclient.route('/app/usuarios/update/<id>/<administrador>', methods=['GET','POST'])
-def update_usuario(id, administrador):
-    admin_value = int(administrador)
+@bpclient.route('/app/usuarios/update/<id>', methods=['GET','POST'])
+def update_usuario(id):
     usuario = usuario_data.find_usuario(id)
     fecha_format, hora_format = date_converter.timestamp_to_date(usuario["fecha_nacimiento"])
     fecha_permiso = None
@@ -201,10 +184,10 @@ def update_usuario(id, administrador):
         fecha_permiso, hora_permiso = date_converter.timestamp_to_date(usuario["antiguedad_permiso"])
     if request.method == 'GET':
         if fecha_permiso != None: 
-            return render_template('usuario/actualizarUsuario.html', usuario=usuario, administrador=admin_value, 
+            return render_template('usuario/actualizarUsuario.html', usuario=usuario, 
             fecha_nacimiento = fecha_format, fecha_permiso = fecha_permiso)      
         else:
-            return render_template('usuario/actualizarUsuario.html', usuario=usuario, administrador = admin_value, 
+            return render_template('usuario/actualizarUsuario.html', usuario=usuario, 
             fecha_nacimiento = fecha_format)    
     else:    
         nombre_completo = request.form.get('nombre_completo')
@@ -227,16 +210,13 @@ def update_usuario(id, administrador):
         if nombre_completo and correo and dni and fecha_nacimiento:
             response = usuario_data.update_usuario(id, nombre_completo, correo, dni, fecha_nacimiento, antiguedad_permiso, url)
             if response == "Acierto":
-                if admin_value == 1:
-                    return redirect('/app/administrador/usuarios')
-                else:
-                    return redirect('/app/usuarios/'+id)
+                return redirect('/app/usuarios/'+id)
         else:
                 if fecha_permiso != None: 
-                    return render_template('usuario/actualizarUsuario.html', error="El usuario no se ha podido actualizar, faltan campos", usuario=usuario, administrador=admin_value, 
+                    return render_template('usuario/actualizarUsuario.html', error="El usuario no se ha podido actualizar, faltan campos", usuario=usuario,  
                     fecha_nacimiento = fecha_format, fecha_permiso = fecha_permiso)     
                 else:
-                    return render_template('usuario/actualizarUsuario.html', error="El usuario no se ha podido actualizar, faltan campos", usuario=usuario, administrador=admin_value, 
+                    return render_template('usuario/actualizarUsuario.html', error="El usuario no se ha podido actualizar, faltan campos", usuario=usuario,  
                     fecha_nacimiento = fecha_format)        
                 
          
@@ -248,10 +228,11 @@ def delete_pasajero_trayecto(id_trayecto, id_pasajero):
 
 # ---------------------------------------------INICIO TRAYECTO-------------------------------------------------------
 #Devuelve una lista de trayectos
-@bpclient.route('/app/administrador/trayectos', methods=['GET'])
+'''@bpclient.route('/app/administrador/trayectos', methods=['GET'])
 def get_trayectos():
     trayectos = trayecto_data.find_trayectos()
-    return render_template("trayecto/listaTrayectos.html",trayectos=list(trayectos), administrador = 1)
+    return render_template("trayecto/listaTrayectos.html",trayectos=list(trayectos))
+'''
 '''
 #Devuelve los trayectos de un creador
 @bpclient.route('/app/trayectos/creador/<id>', methods=['GET'])
@@ -443,11 +424,11 @@ def get_composedQuery():
 
 # --------------------------------------------- VEHICULO -----------------------------------------------------------
 ##Este por ahora no haria falta
-@bpclient.route('/app/administrador/vehiculos', methods=['GET'])
+'''@bpclient.route('/app/administrador/vehiculos', methods=['GET'])
 def get_vehiculos():
     vehiculos = vehiculo_data.find_vehiculos()
     return render_template('vehiculo/vehiculos.html', vehiculos = list(vehiculos), administrador = 1)
-
+'''
 #Devuelve los vehiculos del usuario con dicho id
 @bpclient.route('/app/vehiculos/usuarios/<id>', methods=['GET'])
 def get_vehiculos_usuario(id):
@@ -462,15 +443,10 @@ def get_vehiculo(id):
     else: 
         return render_template('vehiculo/infoVehiculo.html', vehiculo=vehiculo)    
 
-@bpclient.route('/app/vehiculos/create/<administrador>', methods=["GET","POST"])
-def create_vehiculo(administrador):
-    admin_value = int(administrador)
-    users = usuario_data.find_usuarios()
+@bpclient.route('/app/vehiculos/create', methods=["GET","POST"])
+def create_vehiculo():
     if request.method == 'GET':
-        if admin_value == 1:
-            return render_template('vehiculo/nuevoVehiculo.html', administrador = admin_value, usuarios = list(users))    
-        else:
-            return render_template('vehiculo/nuevoVehiculo.html')
+        return render_template('vehiculo/nuevoVehiculo.html')
     else:
         marca= request.form.get('marca')
         modelo= request.form.get('modelo')
@@ -485,36 +461,18 @@ def create_vehiculo(administrador):
             urls.append(response["url"])
         vehiculos = usuario_data.find_vehiculos_usuario_by_id(session['id'])
         if marca and modelo and matricula and color and plazas:
-            if admin_value == 1:
-                usuario = request.form.get('usuario_seleccionado')
-                if usuario != "---":
-                    id = vehiculo_data.create_vehiculo(marca, modelo, matricula, color, plazas, urls)
-                    vehiculos_usuario = usuario_data.find_vehiculos_usuario_by_id(usuario)
-                    vehiculos_usuario.append(ObjectId(id))
-                    usuario_data.add_vehiculo_to_usuario(usuario, vehiculos_usuario)
-                    return redirect('/app/administrador/vehiculos')
-                else:
-                    return render_template('vehiculo/nuevoVehiculo.html', error="Se debe asignar el vehiculo a un usuario", 
-                    administrador = 1, usuarios = list(users))
-            else:
-                id = vehiculo_data.create_vehiculo(marca, modelo, matricula, color, plazas, urls)
-                vehiculos.append(ObjectId(id))
-                usuario_data.add_vehiculo_to_usuario(session['id'], vehiculos)
-                return redirect('/app/vehiculos/usuarios/' + session['id'])
+            id = vehiculo_data.create_vehiculo(marca, modelo, matricula, color, plazas, urls)
+            vehiculos.append(ObjectId(id))
+            usuario_data.add_vehiculo_to_usuario(session['id'], vehiculos)
+            return redirect('/app/vehiculos/usuarios/' + session['id'])
         else:
-            return render_template('vehiculo/nuevoVehiculo.html', error="No se ha podido crear el vehiculo, faltan campos", 
-            administrador = admin_value, usuarios = list(users))
+            return render_template('vehiculo/nuevoVehiculo.html', error="No se ha podido crear el vehiculo, faltan campos")
 
-@bpclient.route('/app/vehiculos/update/<id>/<administrador>', methods=['GET', 'POST'])
-def update_vehiculo(id, administrador):
-    admin_value = int(administrador)
-    users = usuario_data.find_usuarios()
+@bpclient.route('/app/vehiculos/update/<id>', methods=['GET', 'POST'])
+def update_vehiculo(id):
     vehiculo = vehiculo_data.find_vehiculo(id)
     if request.method == 'GET':
-        if admin_value == 1:
-            return render_template('vehiculo/editarVehiculo.html', vehiculo=vehiculo, administrador = admin_value, usuarios = list(users))    
-        else:
-            return render_template('vehiculo/editarVehiculo.html', vehiculo=vehiculo)    
+        return render_template('vehiculo/editarVehiculo.html', vehiculo=vehiculo)    
     else:    
         marca= request.form.get('marca')
         modelo= request.form.get('modelo') 
@@ -530,40 +488,17 @@ def update_vehiculo(id, administrador):
                 urls.append(response["url"])
         if marca and modelo and matricula and color and plazas:
             response = vehiculo_data.update_vehiculo(id, marca, modelo, matricula, color, int(plazas), urls)
-            if admin_value == 1:
-                usuario = request.form.get('usuario_seleccionado')
-                if usuario != "---":
-                    vehiculos = usuario_data.find_vehiculos_usuario_by_id(usuario)
-                    oid = ObjectId(id)
-                    if not oid in vehiculos:
-                        vehiculos.append(oid)
-                        usuario_data.add_vehiculo_to_usuario(usuario, vehiculos)
-                else:
-                    return render_template('vehiculo/editarVehiculo.html', error="Se debe asignar el vehiculo a un usuario", 
-                    administrador = 1, vehiculo = vehiculo, usuarios = list(users))
             if response == "Acierto":
-                if admin_value == 1:
-                    return redirect('/app/administrador/vehiculos')
-                else:
-                    return redirect('/')
+                return redirect('/app/vehiculos/usuarios/'+session['id'])
         else:
             return render_template('vehiculo/editarVehiculo.html', error="El vehiculo no se ha podido actualizar, faltan campos",
-            vehiculo=vehiculo, administrador = admin_value, usuarios = list(users)) 
+            vehiculo=vehiculo) 
 
-@bpclient.route('/app/vehiculos/delete/<id>/<administrador>', methods=['GET'])
-def delete_vehiculo(id, administrador): #HABRIA QUE ELIMINAR LOS TRAYECTOS DONDE EL VEHICULO PARTICIPA
-    admin_value = int(administrador)
-    if admin_value == 1:
-        usuario_data.delete_vehiculo_from_usuarios_list(id)
-    else:
-        usuario_data.delete_vehiculo_usuario(session['id'] , id)
-    
+@bpclient.route('/app/vehiculos/delete/<id>', methods=['GET'])
+def delete_vehiculo(id): #HABRIA QUE ELIMINAR LOS TRAYECTOS DONDE EL VEHICULO PARTICIPA
+    usuario_data.delete_vehiculo_usuario(session['id'] , id)
     vehiculo_data.delete_vehiculo(id)
-
-    if admin_value == 1:
-        return redirect('/app/administrador/vehiculos')
-    else :
-        return redirect('/app/vehiculos/usuarios/' + session['id'])
+    return redirect('/app/vehiculos/usuarios/' + session['id'])
 # ---------------------------------------------FIN VEHICULO -----------------------------------------------------------
 
 # --------------------------------------------- DATOS ABIERTOS - TRAFICO -----------------------------------------------------------
@@ -581,6 +516,5 @@ def get_trafico():
 @bpclient.route('/app/gasolineras', methods=['GET'])
 def get_gasolineras():    
     return render_template("datos_abiertos/gasolineras.html", provincias = datos_abiertos.provincias, municipios = datos_abiertos.municipios)
-
-
 # --------------------------------------------- FIN DATOS ABIERTOS - GASOLINERA -----------------------------------------------------------
+

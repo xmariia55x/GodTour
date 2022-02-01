@@ -29,6 +29,7 @@ foto_perfil,valoracion_media):
             "dni": dni,
             "fecha_nacimiento": float(date_converter.date_to_timestamp(fecha_nacimiento, hora)),
             "antiguedad_permiso": antiguedad,
+            "vehiculos": [],
             "foto_perfil": foto_perfil,
             "valoracion_media": valoracion_media
         }
