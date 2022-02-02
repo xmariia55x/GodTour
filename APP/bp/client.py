@@ -299,6 +299,7 @@ def create_trayecto():
 @bpclient.route('/app/trayectos/delete/<id>', methods=['GET'])
 def delete_trayecto(id):
     trayecto_data.delete_trayecto(id)
+    conversacion_data.delete_conversacion_trayecto(id)
     return redirect("/app")
 
 #Actualiza la informacion del trayecto cuyo id coincide con el que se pasa por parametro
@@ -481,9 +482,13 @@ def update_vehiculo(id):
             vehiculo=vehiculo) 
 
 @bpclient.route('/app/vehiculos/delete/<id>', methods=['GET'])
-def delete_vehiculo(id): #HABRIA QUE ELIMINAR LOS TRAYECTOS DONDE EL VEHICULO PARTICIPA
+def delete_vehiculo(id):
     usuario_data.delete_vehiculo_usuario(session['id'] , id)
     vehiculo_data.delete_vehiculo(id)
+    trayectos = trayecto_data.get_trayectos_by_vehiculo(id)
+    for trayecto in trayectos:
+        conversacion_data.delete_conversacion_trayecto(str(trayecto["_id"]))
+    trayecto_data.delete_trayecto_vehiculo(id)
     return redirect('/app/vehiculos/usuarios/' + session['id'])
 # ---------------------------------------------FIN VEHICULO -----------------------------------------------------------
 
