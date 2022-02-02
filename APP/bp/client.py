@@ -116,11 +116,7 @@ def add_message_to_conversation():
     trayecto = request.args.get("trayecto")
     autor = request.args.get("author")
     texto = request.args.get("message")
-    print(trayecto)
-    print(autor)
-    print(texto)
     conversacion_data.create_conversacion(trayecto,autor,texto)
-    print("que dise")
     return redirect('/app/conversacion/'+trayecto, code=302)
  
 
