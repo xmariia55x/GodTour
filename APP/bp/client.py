@@ -96,6 +96,10 @@ def login():
             # Invalid token
         #    return "error"
 
+@bpclient.route('/logout')
+def logout():
+    session.pop('id', None)
+    return redirect('/app')
 
 # ---------------------------------------------CONVERSACION-----------------------------------------------------------
 #
