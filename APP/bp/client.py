@@ -172,7 +172,7 @@ def create_usuario():
 @bpclient.route('/app/usuarios/delete/<id>', methods=['GET'])
 def delete_usuario(id):
     usuario_data.delete_usuario(id) #Eliminar los vehiculos del usuario y los trayectos donde el usuario es creador y pasajero
-    return redirect("/")
+    return redirect("/app")
 
 #Actualiza la informacion del usuario cuyo id coincide con el que se pasa por parametro
 @bpclient.route('/app/usuarios/update/<id>', methods=['GET','POST'])
@@ -259,7 +259,7 @@ def get_trayecto(id):
 
 @bpclient.route('/app/trayectos/create', methods=["GET", "POST"])
 def create_trayecto():
-    usuario = usuario_data.find_usuario("6194e4dbc76e95c373d80508")
+    usuario = usuario_data.find_usuario(session['id'])
     if request.method == "GET":
         vehiculos_id = usuario.get("vehiculos")
         lista_vehiculos = []
@@ -293,13 +293,13 @@ def create_trayecto():
         trayecto_data.create_trayecto(creador, origen_nombre, origen_latitud, origen_longitud, destino_nombre, destino_latitud, destino_longitud,
                                       fecha, hora, duracion, periodicidad, precio, urls, plazas_totales, vehiculo)
     
-    return redirect("/")
+    return redirect("/app")
 
 #Elimina un trayecto cuyo id coincide con el que se pasa por parametro
 @bpclient.route('/app/trayectos/delete/<id>', methods=['GET'])
 def delete_trayecto(id):
     trayecto_data.delete_trayecto(id)
-    return redirect("/")
+    return redirect("/app")
 
 #Actualiza la informacion del trayecto cuyo id coincide con el que se pasa por parametro
 @bpclient.route('/app/trayectos/update/<id>', methods=['GET', 'POST'])
