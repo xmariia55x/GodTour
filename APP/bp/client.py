@@ -121,7 +121,7 @@ def add_message_to_conversation():
     print(texto)
     conversacion_data.create_conversacion(trayecto,autor,texto)
     print("que dise")
-    return redirect('/app/conversacion/61c9a40e0a302a1be180925e', code=302)
+    return redirect('/app/conversacion/'+trayecto, code=302)
  
 
 # ---------------------------------------------FIN CONVERSACION-----------------------------------------------------------
@@ -259,7 +259,7 @@ def get_trayecto(id):
 
 @bpclient.route('/app/trayectos/create', methods=["GET", "POST"])
 def create_trayecto():
-    usuario = usuario_data.find_usuario("6194e4dbc76e95c373d80508")
+    usuario = usuario_data.find_usuario(session['id'])
     if request.method == "GET":
         vehiculos_id = usuario.get("vehiculos")
         lista_vehiculos = []
