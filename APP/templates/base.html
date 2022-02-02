@@ -48,10 +48,12 @@
                                     <div class="dropdown-divider"></div>
                                     <a href="/app/trayectos/usuarios/creados/{{session['id']}}" class="dropdown-item">Mis viajes publicados</a>
                                     <a href="/app/trayectos/usuarios/contratados/{{session['id']}}" class="dropdown-item">Mis viajes contratados</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" onclick="signOut()" role="button">Salir</a>
                                 </div>
                             </ul>
                         </div>
-                        <a class="btn btn-danger" onclick="signOut()" role="button">Salir</a>
+                        
                     </div>
                     {% endblock %}
                 </div>
