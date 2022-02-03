@@ -38,7 +38,7 @@ foto_perfil,valoracion_media):
     return id
 
 
-def update_usuario(id, nombre_completo, correo, dni, fecha_nacimiento, antiguedad_permiso, foto_perfil):
+def update_usuario(id,nombre_completo,correo,dni,fecha_nacimiento,antiguedad_permiso,foto_perfil,valoracion_media):
     #Lo creamos porque necesitamos una hora
     hora = "00:00"
     if antiguedad_permiso is None:

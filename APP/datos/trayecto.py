@@ -16,8 +16,9 @@ def find_trayectos_creador(id):
     trayectos_creador = trayecto_db.find({'creador': ObjectId(id)})
     return trayectos_creador
 
-def create_trayecto(creador, origen_nombre, origen_latitud, origen_longitud, destino_nombre, destino_latitud, destino_longitud,
-                    fecha, hora, duracion, periodicidad, precio, fotos_opcionales, plazas_totales, vehiculo):
+def create_trayecto(creador, origen_nombre, origen_latitud, origen_longitud, destino_nombre, 
+                                               destino_latitud, destino_longitud, fecha, hora, duracion, periodicidad, precio, 
+                                               fotos_opcionales, plazas_totales, vehiculo):
     lista_fotos_trayecto = []
     for foto in fotos_opcionales:
         lista_fotos_trayecto.append(foto)
@@ -112,15 +113,15 @@ def update_restringido_trayecto(id, periodicidad, fotos_opcionales, plazas_total
 # QUERIES
 ###################################################################################################################################
 def get_trayectos_by_destino(destino):
-    trayectos = trayecto_db.find({'destino.nombre': destino})
+    trayectos = trayecto_db.find({'destino.nombre': { "$regex": destino + '.*', "$options" :'i' }})
     return trayectos
 
 def get_trayectos_by_origen(origen):
-    trayectos = trayecto_db.find({'origen.nombre': origen})
+    trayectos = trayecto_db.find({'origen.nombre': { "$regex": origen + '.*', "$options" :'i' }})
     return trayectos
 
 def get_trayectos_by_origen_destino(origen, destino):
-    trayectos = trayecto_db.find({'origen.nombre': origen, 'destino.nombre': destino})
+    trayectos = trayecto_db.find({'destino.nombre': { "$regex": destino + '.*', "$options" :'i' }, "origen.nombre":  { "$regex": origen + '.*', "$options" :'i' }})
     return trayectos
 
 def get_trayectos_by_precio(precio):

@@ -1,6 +1,7 @@
 from logging import NullHandler
 from flask import Flask, request, jsonify, Response, Blueprint
 from flask_pymongo import PyMongo
+from numpy import empty
 import pymongo
 import sys
 from bson import json_util
@@ -26,7 +27,7 @@ def get_usuarios():
 
     email = request.args.get("email")
     if len(request.args) == 0:
-        usuarios = usuario_data.find_usuarios.sort("nombre_completo", pymongo.ASCENDING)
+        usuarios = usuario_data.find_usuarios().sort("nombre_completo", pymongo.ASCENDING)
     else:
         if email:
             usuarios = usuario_data.find_usuarios_by_email(email)
@@ -65,7 +66,7 @@ def create_usuario():
         id = usuario_data.create_usuario(nombre_completo,correo,dni,fecha_nacimiento,antiguedad_permiso,foto_perfil,valoracion_media) 
 
         if id is None:
-             return not_found("No se hapodido crear el usuario")
+             return not_found("No se ha podido crear el usuario")
 
         response = {
             "id": str(id),
@@ -101,7 +102,7 @@ def update_usuario(id):
     valoracion_media = request.json.get('valoracion_media')
 
     if nombre_completo and correo and dni and fecha_nacimiento:     
-        usuario_data.update_usuario(nombre_completo,correo,dni,fecha_nacimiento,antiguedad_permiso,foto_perfil,valoracion_media)
+        usuario_data.update_usuario(id,nombre_completo,correo,dni,fecha_nacimiento,antiguedad_permiso,foto_perfil,valoracion_media)
         response = jsonify({'message': 'El usuario con id '+id+' se ha actualizado exitosamente'})
         
         return response
@@ -252,10 +253,10 @@ def update_trayecto(id):
 @bpserver.route('/api/trayectos/<id>/usuarios', methods=['GET'])
 def get_usuario_trayecto(id):
     lista_pasajeros = trayecto_data.get_usuarios_by_trayecto(id)
-    if lista_pasajeros is None:
+    response = json_util.dumps(lista_pasajeros)
+    if response == "[]":
         return not_found("El trayecto con id: " + id + " no tiene usuarios")
     else:
-        response = json_util.dumps(lista_pasajeros)
         return Response(response, mimetype='application/json')
 
 # ---------------------------------------------FIN TRAYECTO-----------------------------------------------------------
