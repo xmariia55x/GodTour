@@ -93,16 +93,16 @@
         var messageText = document.getElementById("message").value;
 
         if(messageText != ""){
-        var user = document.getElementById("user").value;
-        var trayecto = document.getElementById("trayecto").value;
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.open("GET", "/app/conversacion/add/message?author=" + user+"&message="+messageText+"&trayecto="+trayecto, true);
-        console.log(messageText);
-        console.log(user);
-        console.log(trayecto);
-        xmlhttp.send();
-        location.reload();
-
+            var user = document.getElementById("user").value;
+            var trayecto = document.getElementById("trayecto").value;
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.open("GET", "/app/conversacion/add/message?author=" + user+"&message="+messageText+"&trayecto="+trayecto, true);
+            xmlhttp.send();
+            setTimeout(function(){
+                //do what you need here
+                window.location.reload(true);
+            }, 125);
+            
         }
     }
     

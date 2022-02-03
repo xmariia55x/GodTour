@@ -182,3 +182,11 @@ def get_trayectos_composedQuery(lista):
     results = trayecto_db.find({'$and': lista})
    
     return results
+
+def delete_trayecto_vehiculo(id_vehiculo):
+    result = trayecto_db.delete_many({'vehiculo': ObjectId(id_vehiculo)})
+    return result
+
+def get_trayectos_by_vehiculo(id_vehiculo):
+    trayectos = trayecto_db.find({'vehiculo': ObjectId(id_vehiculo)})
+    return trayectos

@@ -25,10 +25,10 @@
                         <span class="navbar-toggler-icon"></span>
                     </button>
                     <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
-                        <a class="navbar-brand" href="/"><img src="/static/images/logo.png" id="logo"></a>
+                        <a class="navbar-brand" href="/app"><img src="/static/images/logo.png" id="logo"></a>
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="/">Bienvenido a GodTour</a>
+                                <a class="nav-link active" aria-current="page" href="/app">Bienvenido a GodTour</a>
                             </li>
 
                             <li class="nav-item">
@@ -48,10 +48,12 @@
                                     <div class="dropdown-divider"></div>
                                     <a href="/app/trayectos/usuarios/creados/{{session['id']}}" class="dropdown-item">Mis viajes publicados</a>
                                     <a href="/app/trayectos/usuarios/contratados/{{session['id']}}" class="dropdown-item">Mis viajes contratados</a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" onclick="signOut()" role="button">Salir</a>
                                 </div>
                             </ul>
                         </div>
-                        <a class="btn btn-danger" onclick="signOut()" role="button">Salir</a>
+                        
                     </div>
                     {% endblock %}
                 </div>

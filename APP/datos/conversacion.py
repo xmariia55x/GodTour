@@ -33,6 +33,10 @@ def delete_conversacion(id):
     result = conversacion_db.delete_one({'_id': ObjectId(id)})
     return result
 
+def delete_conversacion_trayecto(id_trayecto):
+    result = conversacion_db.delete_many({'trayecto': ObjectId(id_trayecto)})
+    return result
+
 ###################################################################################################################################
 # QUERIES
 ###################################################################################################################################
