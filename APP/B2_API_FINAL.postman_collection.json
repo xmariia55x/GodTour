@@ -1,0 +1,2103 @@
+{
+	"info": {
+		"_postman_id": "01866820-4052-49dd-9e94-b3219e1c4fa5",
+		"name": "B2_API_FINAL",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Usuario",
+			"item": [
+				{
+					"name": "Lista con los usuarios de la base de datos ordenados alfabéticamente (A-Z)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/usuarios",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"usuarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con los usuarios de la base de datos cuyo mail coincide (o parte)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/usuarios?email=adri",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"usuarios"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "adri"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando obtiene usuario a partir de (parte de) su correo",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/usuarios?email=anto",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"usuarios"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "anto"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Usuario cuyo id coincide con el que se pasa por parámetro",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/usuarios/61e680aaa0565bafdfa950d0",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"usuarios",
+								"61e680aaa0565bafdfa950d0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando obtiene un usuario cuyo id no coincide con el del parámetro",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/usuarios/61e680aaa0565bafdfa950d",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"usuarios",
+								"61e680aaa0565bafdfa950d"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crea un nuevo usuario y lo añade a la base de datos",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre_completo\":\"Andrea Velasco Vazquez\",\r\n    \"correo\":\"emailficticio@gmail.com\",\r\n    \"dni\":\"87553245L\",\r\n    \"fecha_nacimiento\":\"1970-11-11\",\r\n    \"antiguedad_permiso\":\"1970-11-11\",\r\n    \"foto_perfil\":\"http://res.cloudinary.com/cloudgodtour/image/upload/v1642499472/yldt2ren5php56ebst46.png\"\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/usuarios",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"usuarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando crea un nuevo usuario y no contiene la información imprescindible",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre_completo\":\"Andres Velasco Garcia\",\r\n    \"correo\":\"\",\r\n    \"dni\":\"87553245L\",\r\n    \"fecha_nacimiento\":\"11/11/1970\",\r\n    \"antiguedad_permiso\":\"12/02/1989\",\r\n    \"foto_perfil\":\"http://res.cloudinary.com/cloudgodtour/image/upload/v1642499472/yldt2ren5php56ebst46.png\"\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/usuarios",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"usuarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualiza la información del usuario cuyo id coincide con el que se pasa por parámetro",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre_completo\":\"Javier Blanco Navarro\",\r\n    \"correo\":\"javiblanco@gmail.com\",\r\n    \"dni\":\"30955893D\",\r\n    \"fecha_nacimiento\":\"1999-01-01\",\r\n    \"antiguedad_permiso\":\"2018-07-10\",\r\n    \"foto_perfil\":\"https://res.cloudinary.com/cloudgodtour/image/upload/v1642499472/yldt2ren5php56ebst46.png\",\r\n    \"valoracion_media\":9\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/usuarios/61e7346532f37667e9deaa02",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"usuarios",
+								"61e7346532f37667e9deaa02"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando actualiza la información del usuario y no contiene la información imprescindible",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nombre_completo\":\"Javier Blanco Navarro\",\r\n    \"correo\":\"\",\r\n    \"dni\":\"30955893D\",\r\n    \"fecha_nacimiento\":\"1999-01-01\",\r\n    \"antiguedad_permiso\":\"2018-07-10\",\r\n    \"foto_perfil\":\"https://res.cloudinary.com/cloudgodtour/image/upload/v1642499472/yldt2ren5php56ebst46.png\",\r\n    \"valoracion_media\":8\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/usuarios/61e7346532f37667e9deaa02",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"usuarios",
+								"61e7346532f37667e9deaa02"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Elimina un usuario cuyo id coincide con el que se pasa por parámetro",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/usuarios/61fb18a8c25a4d63399606e3",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"usuarios",
+								"61fb18a8c25a4d63399606e3"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Trayecto",
+			"item": [
+				{
+					"name": "Lista con los trayectos de la base de datos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/trayectos",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"trayectos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Trayecto cuyo id coincide con el que se pasa por parámetro",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/trayectos/61c9a40e0a302a1be180925e",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"trayectos",
+								"61c9a40e0a302a1be180925e"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando obtiene un trayecto cuyo id no coincide con el que se pasa por parámetro",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/trayectos/61c9a40e0a302a1be180925",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"trayectos",
+								"61c9a40e0a302a1be180925"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Trayecto/s cuyo destino coincide con el que se indica",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/trayectos?destino=Cortijo",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"trayectos"
+							],
+							"query": [
+								{
+									"key": "destino",
+									"value": "Cortijo"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Trayecto/s cuyo origen y destino coinciden con los que se indican",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/trayectos?origen=Huesca&destino=Cortijo",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"trayectos"
+							],
+							"query": [
+								{
+									"key": "origen",
+									"value": "Huesca"
+								},
+								{
+									"key": "destino",
+									"value": "Cortijo"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Trayecto/s cuyo origen coincide (o parte) con el indicado en la URL",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/trayectos?origen=Huesca",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"trayectos"
+							],
+							"query": [
+								{
+									"key": "origen",
+									"value": "Huesca"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Trayecto/s cuyo precio es igual o menor al indicado",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/trayectos?precio=5",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"trayectos"
+							],
+							"query": [
+								{
+									"key": "precio",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no obtiene trayecto/s cuyo precio esta vacio",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/trayecto/by_precio?precio=",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"trayecto",
+								"by_precio"
+							],
+							"query": [
+								{
+									"key": "precio",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crea un nuevo trayecto",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"creador\":\"61e68d91c362853d864a62c4\",\r\n    \"destino_nombre\": \"Pl. de John F. Kennedy, 29014 Málaga\",\r\n    \"destino_latitud\": 37.65,\r\n    \"destino_longitud\": -2.7083,\r\n    \"duracion\":20,\r\n    \"fecha\":\"07/02/2022\",\r\n    \"hora\":\"09:00\",\r\n    \"origen_nombre\": \"1, Calle Nicolás Maquiavelo, Cortijo Alto, Teatinos-Universidad, Málaga, Málaga-Costa del Sol, Málaga, Andalucía, 29006, España\",\r\n    \"origen_latitud\": 36.7103302,\r\n    \"origen_longitud\": -4.4618726,\r\n    \"periodicidad\":\"0\",\r\n    \"precio\":3,\r\n    \"fotos_opcionales\":\"\",\r\n    \"plazas_totales\":7,\r\n    \"vehiculo\": \"61bb632b3eb8266a5ff476a0\", \r\n    \"pasajeros\": []\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/trayectos",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"trayectos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando crea un nuevo trayecto y no contiene la información imprescindible",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\r\n    \"destino_nombre\": \"Pl. de John F. Kennedy, 29014 Málaga\",\r\n    \"destino_latitud\": 37.65,\r\n    \"destino_longitud\": -2.7083,\r\n    \"duracion\":20,\r\n    \"fecha\":\"07/02/2022\",\r\n    \"hora\":\"09:00\",\r\n    \"origen_nombre\": \"1, Calle Nicolás Maquiavelo, Cortijo Alto, Teatinos-Universidad, Málaga, Málaga-Costa del Sol, Málaga, Andalucía, 29006, España\",\r\n    \"origen_latitud\": 36.7103302,\r\n    \"origen_longitud\": -4.4618726,\r\n    \"periodicidad\":\"0\",\r\n    \"precio\":3,\r\n    \"fotos_opcionales\":\"\",\r\n    \"plazas_totales\":7,\r\n    \"vehiculo\": \"61bb632b3eb8266a5ff476a0\", \r\n    \"pasajeros\": []\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/trayectos",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"trayectos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualiza la información del trayecto cuyo id coincide con el que se pasa por parámetro",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"creador\":\"61952be630765b96bbfda30c\",\r\n    \"destino_nombre\": \"Pl. de John F. Kennedy, 29014 Málaga\",\r\n    \"destino_latitud\": 37.65,\r\n    \"destino_longitud\": -2.7083,\r\n    \"duracion\":20,\r\n    \"fecha\":\"07/02/2022\",\r\n    \"hora\":\"09:00\",\r\n    \"origen_nombre\": \"1, Calle Nicolás Maquiavelo, Cortijo Alto, Teatinos-Universidad, Málaga, Málaga-Costa del Sol, Málaga, Andalucía, 29006, España\",\r\n    \"origen_latitud\": 36.7103302,\r\n    \"origen_longitud\": -4.4618726,\r\n    \"periodicidad\":\"0\",\r\n    \"precio\":7,\r\n    \"fotos_opcionales\":\"\",\r\n    \"plazas_totales\":7,\r\n    \"vehiculo\": \"61bb632b3eb8266a5ff476a0\", \r\n    \"pasajeros\": []\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/trayectos/61fb314790256478cf35bf3f",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"trayectos",
+								"61fb314790256478cf35bf3f"
+							]
+						},
+						"description": "Updatea un trayecto"
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando actualiza la información del trayecto y no contiene la información imprescindible",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"creador\":\"61952be630765b96bbfda30c\",\r\n    \"destino_latitud\": 37.65,\r\n    \"destino_longitud\": -2.7083,\r\n    \"duracion\":20,\r\n    \"fecha\":\"07/02/2022\",\r\n    \"hora\":\"09:00\",\r\n    \"origen_nombre\": \"1, Calle Nicolás Maquiavelo, Cortijo Alto, Teatinos-Universidad, Málaga, Málaga-Costa del Sol, Málaga, Andalucía, 29006, España\",\r\n    \"origen_latitud\": 36.7103302,\r\n    \"origen_longitud\": -4.4618726,\r\n    \"periodicidad\":\"0\",\r\n    \"precio\":7,\r\n    \"fotos_opcionales\":\"\",\r\n    \"plazas_totales\":7,\r\n    \"vehiculo\": \"61bb632b3eb8266a5ff476a0\", \r\n    \"pasajeros\": []\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/trayectos/61fb314790256478cf35bf3f",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"trayectos",
+								"61fb314790256478cf35bf3f"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Usuarios de un trayecto a partir del id del trayecto que se pasa por parámetro",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/trayectos/61fb0cc51b5585d9fef28c96/usuarios",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"trayectos",
+								"61fb0cc51b5585d9fef28c96",
+								"usuarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando obtiene usuarios de un trayecto que no tiene usuarios",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/trayectos/61c9a40e0a302a1be180925e/usuarios",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"trayectos",
+								"61c9a40e0a302a1be180925e",
+								"usuarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Elimina un trayecto cuyo id coincide con el que se pasa por parámetro",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/trayectos/61fb314790256478cf35bf3f",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"trayectos",
+								"61fb314790256478cf35bf3f"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Vehiculo",
+			"item": [
+				{
+					"name": "Lista con los vehiculos de la base de datos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/vehiculos",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"vehiculos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Vehiculo cuyo id coincide con el que se pasa por parámetro",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/vehiculos/61bb632b3eb8266a5ff476a0",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"vehiculos",
+								"61bb632b3eb8266a5ff476a0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Crea un nuevo vehículo",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"marca\": \"Volkswagen\",\r\n    \"modelo\": \"Rodeo\",\r\n    \"matricula\": \"9863MGQ\",\r\n    \"color\": \"gris\",\r\n    \"plazas\": 5,\r\n    \"fotos_vehiculo\":[]\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/vehiculos",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"vehiculos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Actualiza la información del vehículo cuyo id coincide con el que se pasa por parámetro",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"marca\": \"Volkswagen\",\r\n    \"modelo\": \"Tivoli\",\r\n    \"matricula\": \"9863MGQ\",\r\n    \"color\": \"gris\",\r\n    \"plazas\": 5,\r\n    \"fotos_vehiculo\":[]\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/vehiculos/61fb38f05b9d6953b6e8b3a8",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"vehiculos",
+								"61fb38f05b9d6953b6e8b3a8"
+							]
+						},
+						"description": "Updatea un trayecto"
+					},
+					"response": []
+				},
+				{
+					"name": "Elimina un vehículo cuyo id coincide con el que se pasa por parámetro",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/vehiculos/61fb38f05b9d6953b6e8b3a8",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"vehiculos",
+								"61fb38f05b9d6953b6e8b3a8"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Datos abiertos tráfico",
+			"item": [
+				{
+					"name": "Lista con las incidencias de tráfico del conjunto de datos abiertos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/incidencias",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"incidencias"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las incidencias de tráfico de la provincia indicada",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/incidencias?provincia=Málaga",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"incidencias"
+							],
+							"query": [
+								{
+									"key": "provincia",
+									"value": "Málaga"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las incidencias de tráfico en el rango y la latitud y longitud proporcionadas en el body",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/incidencias?rango=100&latitude=36.7196&longitude=-4.42002",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"incidencias"
+							],
+							"query": [
+								{
+									"key": "rango",
+									"value": "100"
+								},
+								{
+									"key": "latitude",
+									"value": "36.7196"
+								},
+								{
+									"key": "longitude",
+									"value": "-4.42002"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las incidencias de tráfico a partir de la ubicación en tiempo real en el rango indicado",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rango\": 50\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/incidencias?rango=100",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"incidencias"
+							],
+							"query": [
+								{
+									"key": "rango",
+									"value": "100"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no hay incidencias de tráfico a partir de la ubicación en tiempo real en el rango proporcionado en el body",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/incidencias?rango=5",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"incidencias"
+							],
+							"query": [
+								{
+									"key": "rango",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no hay incidencias de tráfico en el rango y la latitud y longitud proporcionados",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/incidencias?rango=5&latitude=36.73428&longitude=-4.56591",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"incidencias"
+							],
+							"query": [
+								{
+									"key": "rango",
+									"value": "5"
+								},
+								{
+									"key": "latitude",
+									"value": "36.73428"
+								},
+								{
+									"key": "longitude",
+									"value": "-4.56591"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las incidencias de tráfico causadas por la nieve en la latitud, longitud y rango proporcionados",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"latitude\": 36.73428,\r\n    \"longitude\": -4.56591,\r\n    \"rango\": 500\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/incidencias?rango=100&latitude=36.73428&longitude=-4.56591&causa=METEOROLOGICA",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"incidencias"
+							],
+							"query": [
+								{
+									"key": "rango",
+									"value": "100"
+								},
+								{
+									"key": "latitude",
+									"value": "36.73428"
+								},
+								{
+									"key": "longitude",
+									"value": "-4.56591"
+								},
+								{
+									"key": "causa",
+									"value": "METEOROLOGICA"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las incidencias de tráfico causadas por la nieve a partir de la ubicación en tiempo real en el rango proporcionado en el body",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/incidencias?rango=500&causa=METEOROLOGICA",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"incidencias"
+							],
+							"query": [
+								{
+									"key": "rango",
+									"value": "500"
+								},
+								{
+									"key": "causa",
+									"value": "METEOROLOGICA"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no hay incidencias de tráfico causadas por la nieve en la latitud, longitud y rango indicadas",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/incidencias?rango=5&latitude=36.73428&longitude=-4.56591&causa=METEOROLOGICA",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"incidencias"
+							],
+							"query": [
+								{
+									"key": "rango",
+									"value": "5"
+								},
+								{
+									"key": "latitude",
+									"value": "36.73428"
+								},
+								{
+									"key": "longitude",
+									"value": "-4.56591"
+								},
+								{
+									"key": "causa",
+									"value": "METEOROLOGICA"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no hay incidencias de tráfico causadas por la nieve a partir de la ubicación en tiempo real en el rango proporcionado",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"rango\": 5\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/incidencias?rango=5&causa=METEOROLOGICA",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"incidencias"
+							],
+							"query": [
+								{
+									"key": "rango",
+									"value": "5"
+								},
+								{
+									"key": "causa",
+									"value": "METEOROLOGICA"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las incidencias de tráfico causadas por obras en la latitud, longitud y rango proporcionados",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/incidencias?rango=50&latitude=36.73428&longitude=-4.56591&causa=OBRAS",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"incidencias"
+							],
+							"query": [
+								{
+									"key": "rango",
+									"value": "50"
+								},
+								{
+									"key": "latitude",
+									"value": "36.73428"
+								},
+								{
+									"key": "longitude",
+									"value": "-4.56591"
+								},
+								{
+									"key": "causa",
+									"value": "OBRAS"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las incidencias de tráfico causadas por obras a partir de la ubicación en tiempo real en el rango proporcionado",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/incidencias?rango=50&causa=OBRAS",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"incidencias"
+							],
+							"query": [
+								{
+									"key": "rango",
+									"value": "50"
+								},
+								{
+									"key": "causa",
+									"value": "OBRAS"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no hay incidencias de tráfico causadas por obras en la latitud, longitud y rango proporcionados",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/incidencias?rango=5&latitude=36.73428&longitude=-4.56591&causa=OBRAS",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"incidencias"
+							],
+							"query": [
+								{
+									"key": "rango",
+									"value": "5"
+								},
+								{
+									"key": "latitude",
+									"value": "36.73428"
+								},
+								{
+									"key": "longitude",
+									"value": "-4.56591"
+								},
+								{
+									"key": "causa",
+									"value": "OBRAS"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no hay incidencias de tráfico causadas por obras a partir de la ubicación en tiempo real en el rango proporcionado",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/incidencias?rango=5&causa=OBRAS",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"incidencias"
+							],
+							"query": [
+								{
+									"key": "rango",
+									"value": "5"
+								},
+								{
+									"key": "causa",
+									"value": "OBRAS"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las incidencias de tráfico causadas por cortes de carreteras en la latitud, longitud y rango proporcionados",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/incidencias?rango=500&latitude=36.73428&longitude=-4.56591&causa=CONO",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"incidencias"
+							],
+							"query": [
+								{
+									"key": "rango",
+									"value": "500"
+								},
+								{
+									"key": "latitude",
+									"value": "36.73428"
+								},
+								{
+									"key": "longitude",
+									"value": "-4.56591"
+								},
+								{
+									"key": "causa",
+									"value": "CONO"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las incidencias de tráfico causadas por cortes de carreteras a partir de la ubicación en tiempo real en el rango proporcionado",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/incidencias?rango=500&causa=CONO",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"incidencias"
+							],
+							"query": [
+								{
+									"key": "rango",
+									"value": "500"
+								},
+								{
+									"key": "causa",
+									"value": "CONO"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no hay incidencias de tráfico causadas por cortes en carreteras en la latitud, longitud y rango proporcionados",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/incidencias?rango=5&latitude=36.73428&longitude=-4.56591&causa=CONO",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"incidencias"
+							],
+							"query": [
+								{
+									"key": "rango",
+									"value": "5"
+								},
+								{
+									"key": "latitude",
+									"value": "36.73428"
+								},
+								{
+									"key": "longitude",
+									"value": "-4.56591"
+								},
+								{
+									"key": "causa",
+									"value": "CONO"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no hay incidencias de tráfico causadas por cortes de carretera a partir de la ubicación en tiempo real en el rango proporcionado",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/incidencias?rango=5&causa=CONO",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"incidencias"
+							],
+							"query": [
+								{
+									"key": "rango",
+									"value": "5"
+								},
+								{
+									"key": "causa",
+									"value": "CONO"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las incidencias de tráfico causadas por el clima en la latitud, longitud y rango proporcionados",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/incidencias?rango=500&latitude=36.73428&longitude=-4.56591&causa=PUERTOS DE MONTA?A",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"incidencias"
+							],
+							"query": [
+								{
+									"key": "rango",
+									"value": "500"
+								},
+								{
+									"key": "latitude",
+									"value": "36.73428"
+								},
+								{
+									"key": "longitude",
+									"value": "-4.56591"
+								},
+								{
+									"key": "causa",
+									"value": "PUERTOS DE MONTA?A"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las incidencias de tráfico causadas por el clima a partir de la ubicación en tiempo real en el rango proporcionado",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/incidencias?rango=500&causa=PUERTOS DE MONTA?A",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"incidencias"
+							],
+							"query": [
+								{
+									"key": "rango",
+									"value": "500"
+								},
+								{
+									"key": "causa",
+									"value": "PUERTOS DE MONTA?A"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no hay incidencias de tráfico causadas por el clima en la latitud, longitud y rango proporcionados",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/incidencias?rango=5&latitude=36.73428&longitude=-4.56591&causa=PUERTOS DE MONTA?A",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"incidencias"
+							],
+							"query": [
+								{
+									"key": "rango",
+									"value": "5"
+								},
+								{
+									"key": "latitude",
+									"value": "36.73428"
+								},
+								{
+									"key": "longitude",
+									"value": "-4.56591"
+								},
+								{
+									"key": "causa",
+									"value": "PUERTOS DE MONTA?A"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no hay incidencias de tráfico causadas por el clima a partir de la ubicación en tiempo real en el rango proporcionado en el body",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/incidencias?rango=5&causa=PUERTOS DE MONTA?A",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"incidencias"
+							],
+							"query": [
+								{
+									"key": "rango",
+									"value": "5"
+								},
+								{
+									"key": "causa",
+									"value": "PUERTOS DE MONTA?A"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Datos abiertos gasolinera",
+			"item": [
+				{
+					"name": "Lista con las gasolineras del conjunto de datos abiertos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/gasolineras",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"gasolineras"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las gasolineras de una localidad ordenadas por el precio de gasolina 95 (de más barato a más caro)",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/gasolineras?municipio=CARTAMA",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"gasolineras"
+							],
+							"query": [
+								{
+									"key": "municipio",
+									"value": "CARTAMA"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando obtiene las gasolineras de una localidad ordenadas por el precio de gasolina 95 y no hay gasolineras",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/gasolineras?municipio=Alpandeire",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"gasolineras"
+							],
+							"query": [
+								{
+									"key": "municipio",
+									"value": "Alpandeire"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las gasolineras en el rango y latitud y longitud indicadas en el body",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/gasolineras?rango=100&latitude=36.73428&longitude=-4.56591",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"gasolineras"
+							],
+							"query": [
+								{
+									"key": "rango",
+									"value": "100"
+								},
+								{
+									"key": "latitude",
+									"value": "36.73428"
+								},
+								{
+									"key": "longitude",
+									"value": "-4.56591"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las gasolineras a partir de la ubicación en tiempo real en el rango indicado",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/gasolineras?rango=50",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"gasolineras"
+							],
+							"query": [
+								{
+									"key": "rango",
+									"value": "50"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no hay gasolineras en el rango y latitud y longitud indicadas",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/gasolineras?rango=1&latitude=36.73428&longitude=-4.56591",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"gasolineras"
+							],
+							"query": [
+								{
+									"key": "rango",
+									"value": "1"
+								},
+								{
+									"key": "latitude",
+									"value": "36.73428"
+								},
+								{
+									"key": "longitude",
+									"value": "-4.56591"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no hay gasolineras en el rango indicado a partir de la ubicación en tiempo real",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/gasolineras?rango=0",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"gasolineras"
+							],
+							"query": [
+								{
+									"key": "rango",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Lista con las gasolineras de una provincia que están abiertas 24h",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/gasolineras?provincia=Málaga",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"gasolineras"
+							],
+							"query": [
+								{
+									"key": "provincia",
+									"value": "Málaga"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Devuelve error cuando no encuentra gasolineras abiertas 24 horas en una provincia",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": " {\r\n    \"Provincia\":\"Alpandeire\"\r\n}"
+						},
+						"url": {
+							"raw": "{{LOCAL_SERVER}}/api/gasolineras?provincia=Alpandeire",
+							"host": [
+								"{{LOCAL_SERVER}}"
+							],
+							"path": [
+								"api",
+								"gasolineras"
+							],
+							"query": [
+								{
+									"key": "provincia",
+									"value": "Alpandeire"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "LOCAL_SERVER",
+			"value": "http://127.0.0.1:5000"
+		}
+	]
+}

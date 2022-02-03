@@ -309,6 +309,7 @@ def create_vehiculo():
 @bpserver.route('/api/vehiculos/<id>', methods=['DELETE'])
 def delete_vehiculo(id):
     vehiculo_data.delete_vehiculo(id)
+    trayecto_data.delete_trayecto_vehiculo(id)
     response = jsonify({'message': 'El vehiculo con id '+id+' se ha eliminado exitosamente'})
     return response
 
