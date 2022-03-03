@@ -11,3 +11,14 @@ Esta aplicación ha sido desarrollada como proyecto de una de las asignaturas de
 - Gestión de los vehículos de un usuario.
 - Conociendo la ubicación del usuario es posible obtener las gasolineras cercanas a su ubicación ordenadas por el precio de la gasolina 95 haciendo uso de datos abiertos.
 - Conociendo la ubicación del usuario es posible obtener las incidencias de tráfico cercanas a su ubicación ordenadas por tipo haciendo uso de datos abiertos.
+
+Para el desarrollo se han empleado las siguientes tecnologías:
+- Python junto con Flask.
+- HTML, CSS, JavaScript, Bootstrap.
+- Cloudinary para almacenar las imágenes.
+- Google OAuth.
+- Twitter API.
+- OpenStreetMap.
+- WeatherAPI.
+- Geocoder/Geopy.
+- MongoDB para almacenar los datos.
